@@ -1,8 +1,10 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QTableWidgetItem
 from PyQt5.uic import loadUi
-import mysql.connector
 import sys
 import subprocess
+
+# Importar la clase BaseDeDatos
+from base_de_datos import BaseDeDatos
 
 def regresar():
     # Cierra la ventana actual
@@ -34,37 +36,17 @@ def insertar_ip():
     # Obtiene el número de habitación ingresado en el QLineEdit
     habitacion = ui.lineEdit_2.text()
 
-    # Conecta con la base de datos
-    try:
-        connection = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="1234",
-            database="tvip"
-        )
-        cursor = connection.cursor()
+    # Crear una instancia de la clase BaseDeDatos
+    base_datos = BaseDeDatos()
 
-        # Inserta la IP y el número de habitación en la tabla correspondiente
-        query = "INSERT INTO habitaciones (ip, numero) VALUES (%s, %s)"
-        values = (ip, habitacion)
-        cursor.execute(query, values)
-        connection.commit()
-
+    # Inserta la IP y el número de habitación en la base de datos
+    if base_datos.insertar_ip(ip, habitacion):
         # Muestra un mensaje de éxito
         QMessageBox.information(window, "Éxito", "La IP y el número de habitación se han agregado correctamente.")
-
         # Actualiza el QTableWidget con las IPs y números de habitación almacenados en la base de datos
-        actualizar_tablewidget(cursor)
-
-    except mysql.connector.Error as error:
-        # Muestra un mensaje de error en caso de fallo en la conexión o la consulta
-        QMessageBox.critical(window, "Error", f"Error al conectar con la base de datos: {error}")
-
-    finally:
-        # Cierra la conexión
-        if connection.is_connected():
-            cursor.close()
-            connection.close()
+        actualizar_tablewidget(base_datos)
+    else:
+        QMessageBox.critical(window, "Error", "Error al insertar la IP y el número de habitación.")
 
 def eliminar_ip():
     # Obtiene la fila seleccionada en el QTableWidget
@@ -74,39 +56,19 @@ def eliminar_ip():
         # Obtiene la IP de la fila seleccionada
         ip = ui.tableWidget.item(selected_row, 0).text()
 
-        # Conecta con la base de datos
-        try:
-            connection = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                password="1234",
-                database="tvip"
-            )
-            cursor = connection.cursor()
+        # Crear una instancia de la clase BaseDeDatos
+        base_datos = BaseDeDatos()
 
-            # Elimina la IP de la base de datos
-            query = "DELETE FROM habitaciones WHERE Ip = %s"
-            values = (ip,)
-            cursor.execute(query, values)
-            connection.commit()
-
+        # Elimina la IP de la base de datos
+        if base_datos.eliminar_ip(ip):
             # Muestra un mensaje de éxito
             QMessageBox.information(window, "Éxito", "La IP y el número de habitación se han eliminado correctamente.")
 
-            # Actualiza el QTableWidget con las IPs y números de habitación almacenados en la base de datos
-            actualizar_tablewidget(cursor)
+            # Elimina la fila seleccionada del QTableWidget
+            ui.tableWidget.removeRow(selected_row)
+        else:
+            QMessageBox.critical(window, "Error", "Error al eliminar la IP y el número de habitación.")
 
-        except mysql.connector.Error as error:
-            # Muestra un mensaje de error en caso de fallo en la conexión o la consulta
-            QMessageBox.critical(window, "Error", f"Error al conectar con la base de datos: {error}")
-
-        finally:
-            # Cierra la conexión
-            if connection.is_connected():
-                cursor.close()
-                connection.close()
-    else:
-        QMessageBox.warning(window, "Advertencia", "Selecciona una IP para eliminar.")
 
 def editar_ip():
     # Obtiene la fila seleccionada en el QTableWidget
@@ -130,57 +92,33 @@ def guardar_cambios():
         nueva_ip = ui.lineEdit.text()
         nueva_habitacion = ui.lineEdit_2.text()
 
-        # Conecta con la base de datos
-        try:
-            connection = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                password="1234",
-                database="tvip"
-            )
-            cursor = connection.cursor()
+        # Crear una instancia de la clase BaseDeDatos
+        base_datos = BaseDeDatos()
 
-            # Actualiza la fila correspondiente en la base de datos con los nuevos valores
-            query = "UPDATE habitaciones SET ip = %s, numero = %s WHERE ip = %s"
-            values = (nueva_ip, nueva_habitacion, ui.tableWidget.item(selected_row, 0).text())
-            cursor.execute(query, values)
-            connection.commit()
-
+        # Actualiza la fila correspondiente en la base de datos con los nuevos valores
+        if base_datos.actualizar_ip(ui.tableWidget.item(selected_row, 0).text(), nueva_ip, nueva_habitacion):
             # Muestra un mensaje de éxito
             QMessageBox.information(window, "Éxito", "Los cambios se han guardado correctamente.")
-
             # Actualiza el QTableWidget con las IPs y números de habitación almacenados en la base de datos
-            actualizar_tablewidget(cursor)
+            actualizar_tablewidget(base_datos)
+        else:
+            QMessageBox.critical(window, "Error", "Error al guardar los cambios.")
 
-        except mysql.connector.Error as error:
-            # Muestra un mensaje de error en caso de fallo en la conexión o la consulta
-            QMessageBox.critical(window, "Error", f"Error al conectar con la base de datos: {error}")
+def actualizar_tablewidget(base_datos):
+    # Obtiene los datos de la base de datos usando la instancia de la clase BaseDeDatos
+    datos = base_datos.obtener_datos()
 
-        finally:
-            # Cierra la conexión
-            if connection.is_connected():
-                cursor.close()
-                connection.close()
-    else:
-        QMessageBox.warning(window)
+    if datos:
+        # Limpia el contenido actual del QTableWidget
+        ui.tableWidget.clearContents()
+        ui.tableWidget.setRowCount(len(datos))
 
-
-def actualizar_tablewidget(cursor):
-    # Ejecuta la consulta para obtener todas las IPs y números de habitación almacenados
-    query = "SELECT Ip, numero FROM habitaciones"
-    cursor.execute(query)
-    data = cursor.fetchall()
-
-    # Limpia el contenido actual del QTableWidget
-    ui.tableWidget.clearContents()
-    ui.tableWidget.setRowCount(len(data))
-
-    # Agrega las IPs y números de habitación al QTableWidget
-    for row, (ip, habitacion) in enumerate(data):
-        item_ip = QTableWidgetItem(ip)
-        item_habitacion = QTableWidgetItem(str(habitacion))
-        ui.tableWidget.setItem(row, 0, item_ip)
-        ui.tableWidget.setItem(row, 1, item_habitacion)
+        # Agrega las IPs y números de habitación al QTableWidget
+        for row, (ip, habitacion) in enumerate(datos):
+            item_ip = QTableWidgetItem(ip)
+            item_habitacion = QTableWidgetItem(str(habitacion))
+            ui.tableWidget.setItem(row, 0, item_ip)
+            ui.tableWidget.setItem(row, 1, item_habitacion)
 
 # Crea una instancia de QApplication
 app = QApplication(sys.argv)
@@ -207,28 +145,9 @@ ui.btn_guardar.clicked.connect(guardar_cambios)
 window = QMainWindow()
 window.setCentralWidget(ui)
 
-# Conecta con la base de datos y actualiza el QTableWidget
-try:
-    connection = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="1234",
-        database="tvip"
-    )
-    cursor = connection.cursor()
-
-    # Actualiza el QTableWidget con las IPs y números de habitación almacenados en la base de datos
-    actualizar_tablewidget(cursor)
-
-except mysql.connector.Error as error:
-    # Muestra un mensaje de error en caso de fallo en la conexión o la consulta
-    QMessageBox.critical(window, "Error", f"Error al conectar con la base de datos: {error}")
-
-finally:
-    # Cierra la conexión
-    if connection.is_connected():
-        cursor.close()
-        connection.close()
+# Conecta con la base de datos y actualiza el QTableWidget usando la instancia de la clase BaseDeDatos
+base_datos = BaseDeDatos()
+actualizar_tablewidget(base_datos)
 
 # Establece el tamaño fijo de la ventana
 window.setFixedSize(827, 553)

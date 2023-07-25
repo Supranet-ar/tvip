@@ -42,9 +42,9 @@ def cerrar():
     ventana_exito.close()
     ventana_error.close()
 
-    # Función para abrir el archivo "habitaciones.py"
+    # Función para abrir el archivo "panel.py"
 def abrir_habitaciones():
-        subprocess.run(["python", "habitaciones.py"])
+        subprocess.run(["python", "panel.py"])
 
 
 

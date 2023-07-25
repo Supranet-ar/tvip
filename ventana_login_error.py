@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets, uic
 
 # Carga la interfaz de archivo.ui creado en Qt Designer
 app = QtWidgets.QApplication(sys.argv)
-window = uic.loadUi("ventana_loginerror.ui")
+window = uic.loadUi("ventana_login_error.ui")
 
 # Personaliza la interfaz y agrega funcionalidad si es necesario
 # Por ejemplo, puedes acceder a los elementos de la interfaz con sus nombres de objeto:

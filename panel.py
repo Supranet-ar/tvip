@@ -1,23 +1,24 @@
-#IMPORTACIONES#
 import sys
 import webbrowser
 import subprocess
-import mysql.connector
 import concurrent.futures
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.uic import loadUi
 import json
 import habitaciones
 
-#CREACION DE LA APLICACION#
+# Importar la clase BaseDeDatos
+from base_de_datos import BaseDeDatos
+
+# CREACION DE LA APLICACION
 app = QtWidgets.QApplication(sys.argv)
 
-#FUNCION ON_CLOSE PARA CERRAR ADECUADAMENTE CONEXION ABIERTA A LA BD#
+# FUNCION ON_CLOSE PARA CERRAR ADECUADAMENTE CONEXION ABIERTA A LA BD
 def on_close():
-    if 'connection' in locals() and connection.is_connected():
-        connection.close()
+    if 'base_datos' in locals():
+        base_datos.close_connection()
 
-#DEFINICION DE LA CLASE PANELCONTROL
+# DEFINICION DE LA CLASE PANELCONTROL
 class PanelControl(QtWidgets.QDialog):
     def __init__(self, ip):
         super().__init__()
@@ -27,32 +28,28 @@ class PanelControl(QtWidgets.QDialog):
 
         self.btn_abrir_kodi.clicked.connect(self.abrir_interfaz_kodi)
 
-    #FUNCION ABRIR_INTERFAZ_KODI#
+    # FUNCION ABRIR_INTERFAZ_KODI
     def abrir_interfaz_kodi(self):
         url = f"http://{self.ip}:8080"
         webbrowser.open(url)
 
-#DEFINCION DE LA CLASE MAINWINDOW,SUBCLASE QUE HEREDA CIERTAS CARACTERISTICAS DE HABITACIONES.MAINWINDOW#
+# DEFINCION DE LA CLASE MAINWINDOW, SUBCLASE QUE HEREDA CIERTAS CARACTERISTICAS DE HABITACIONES.MAINWINDOW
 class MainWindow(habitaciones.MainWindow):  # Heredar de habitaciones.MainWindow
     def __init__(self):
         super().__init__()
-        #CONEXION DE SEÑALES A LOS BOTONES DE LA VENTANA PRINCIPAL#
+        # Crear una instancia de la clase BaseDeDatos
+        self.base_datos = BaseDeDatos()
+
+        # CONEXION DE SEÑALES A LOS BOTONES DE LA VENTANA PRINCIPAL
         # Conectar la señal "clicked" de los botones en el QScrollArea para abrir la ventana de panel de control
         for button in self.scrollAreaWidgetContents.findChildren(QtWidgets.QPushButton):
             numero_habitacion = button.text()
             button.clicked.connect(lambda _, num=numero_habitacion: self.abrir_panel_control(num))
 
-    #FUNCION ABRIR_PANEL_CONTROL#
+    # FUNCION ABRIR_PANEL_CONTROL
     def abrir_panel_control(self, numero_habitacion):
         try:
-            connection = mysql.connector.connect(
-                host='localhost',
-                user='root',
-                password='',
-                database='tvip'
-            )
-
-            cursor = connection.cursor()
+            cursor = self.base_datos.conexion_db.cursor()
 
             cursor.execute("SELECT Ip FROM habitaciones WHERE Numero=%s", (numero_habitacion,))
             ip = cursor.fetchone()
@@ -67,11 +64,9 @@ class MainWindow(habitaciones.MainWindow):  # Heredar de habitaciones.MainWindow
             QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectarse a la base de datos:\n{error}")
 
         finally:
-            if 'connection' in locals() and connection.is_connected():
-                cursor.close()
-                connection.close()
+            cursor.close()
 
-    #FUNCION ENVIAR_PUBLICIDAD_A_HABITACIONES#
+    # FUNCION ENVIAR_PUBLICIDAD_A_HABITACIONES
     def enviar_publicidad_a_habitaciones(self, ip_activas):
         mensaje_publicidad = "¡Descuento especial por tiempo limitado! Visita nuestro sitio web."
 
@@ -103,7 +98,7 @@ class MainWindow(habitaciones.MainWindow):  # Heredar de habitaciones.MainWindow
             except Exception as e:
                 print(f'Error al enviar el mensaje de publicidad a la habitación {ip}: {str(e)}')
 
-    #FUNCION HACER PING Y ENVIAR MSJ#
+    # FUNCION HACER PING Y ENVIAR MSJ
     def ping_and_send_message(self):
         ip_activas = []
 
@@ -125,7 +120,7 @@ class MainWindow(habitaciones.MainWindow):  # Heredar de habitaciones.MainWindow
         # Enviar mensaje de publicidad a las habitaciones activas
         self.enviar_publicidad_a_habitaciones(ip_activas)
 
-#BLOQUE PRINCIPAL DEL PROGRAMA#
+# BLOQUE PRINCIPAL DEL PROGRAMA
 if __name__ == "__main__":
     window = MainWindow()
 
