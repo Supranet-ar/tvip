@@ -117,8 +117,8 @@ class MainWindow(habitaciones.MainWindow):  # Heredar de habitaciones.MainWindow
                     button.setStyleSheet("background-color: red")
                     print(f'La IP {ip} no está activa.')
 
-        # Enviar mensaje de publicidad a las habitaciones activas
-        self.enviar_publicidad_a_habitaciones(ip_activas)
+        # Enviar mensaje de publicidad a las habitaciones activas (Desactivado temporalmente)
+        #self.enviar_publicidad_a_habitaciones(ip_activas)
 
 # BLOQUE PRINCIPAL DEL PROGRAMA
 if __name__ == "__main__":
