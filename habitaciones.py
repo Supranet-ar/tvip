@@ -48,8 +48,8 @@ class MainWindow(QMainWindow):
 
     #CONEXION DE SEÑALES EN LA VENTANA PRINCIPAL#
         # Conectar la señal "clicked" de los botones en el QScrollArea a la función para ejecutar "panel.py"
-        for button in self.scrollAreaWidgetContents.findChildren(QPushButton):
-            button.clicked.connect(self.ejecutarArchivo)
+        #for button in self.scrollAreaWidgetContents.findChildren(QPushButton):
+            #button.clicked.connect(self.ejecutarArchivo)
 
         # Conectar la señal del botón "Agregar" a una función que ejecuta el archivo "ip.py"
         self.btn_agregar.clicked.connect(self.ejecutarip)
