@@ -124,7 +124,7 @@ def actualizar_tablewidget(base_datos):
 app = QApplication(sys.argv)
 
 # Carga el archivo .ui
-ui = loadUi("ventana_ip.ui")
+ui = loadUi("interfaz/ventana_ip.ui")
 
 # Conecta el botón "AGREGAR" con la función insertar_ip
 ui.btn_agregarbd.clicked.connect(insertar_ip)

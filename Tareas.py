@@ -19,3 +19,12 @@ if __name__ == "__main__":
     ventana.show()
 
     sys.exit(app.exec_())
+
+    # Cargar la interfaz de usuario
+    # loadUi("ventana_habitaciones.ui", self)
+
+    # Eliminar la conexión del botón "Programar Tarea"
+    # self.btn_programar.clicked.disconnect()
+
+    # Conectar el botón "Abrir Ventana" con la función para abrir la segunda ventana
+    # self.btn_programar.clicked.connect(self.abrirSegundaVentana)
