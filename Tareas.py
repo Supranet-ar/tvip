@@ -9,7 +9,7 @@ class VentanaPrincipal(QMainWindow):
         self.setWindowTitle("Ejemplo de ventana")
 
         # Cargar la interfaz de Qt Designer desde el archivo .ui
-        loadUi("Tareas_2ventana.ui", self)
+        loadUi("interfaz/Tareas_2ventana.ui", self)
 
 
 if __name__ == "__main__":

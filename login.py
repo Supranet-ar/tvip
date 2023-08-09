@@ -5,18 +5,18 @@ import subprocess
 
 # Carga la interfaz de archivo.ui creado en Qt Designer
 app = QtWidgets.QApplication(sys.argv)
-window = uic.loadUi("ventana_login.ui")
+window = uic.loadUi("interfaz/ventana_login.ui")
 
 # Carga la interfaz de login exitoso y login error
-ventana_exito = uic.loadUi("ventana_login_exito.ui")
-ventana_error = uic.loadUi("ventana_login_error.ui")
+ventana_exito = uic.loadUi("interfaz/ventana_login_exito.ui")
+ventana_error = uic.loadUi("interfaz/ventana_login_error.ui")
 
 # Función para verificar el usuario y la contraseña
 def verificar_usuario():
     usuario = window.usuarioLineEdit.text()
     contrasena = window.contrasenaLineEdit.text()
 
-    if usuario == "TVO10" and contrasena == "TVOCANAL":
+    if usuario == "tvip" and contrasena == "1234":
         mostrar_interfaz_exito()
     else:
         mostrar_interfaz_error()
@@ -44,9 +44,8 @@ def cerrar():
 
     # Función para abrir el archivo "panel.py"
 def abrir_habitaciones():
-        subprocess.run(["python", "panel.py"])
-
-
+        ventana_exito.close()
+        subprocess.run(["python", "main.py"])
 
 # Conecta la función verificar_usuario al botón de inicio de sesión
 window.iniciarSesionButton.clicked.connect(verificar_usuario)
@@ -67,5 +66,9 @@ ventana_error.intentarNuevamenteButton.clicked.connect(mostrar_interfaz_login)
 ventana_exito.okButton.clicked.connect(abrir_habitaciones)
 
 # Muestra la interfaz de login principal
+window.show()
+sys.exit(app.exec_())
+
+# Muestra la interfaz
 window.show()
 sys.exit(app.exec_())

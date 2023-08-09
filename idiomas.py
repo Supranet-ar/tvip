@@ -2,7 +2,7 @@ import sys
 from PyQt5 import QtWidgets, uic
 
 # Cargar el archivo .ui generado por Qt Designer
-qt_file = "idiomas.ui"
+qt_file = "interfaz/idiomas.ui"
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qt_file)
 
 class MyApp(QtWidgets.QMainWindow):
