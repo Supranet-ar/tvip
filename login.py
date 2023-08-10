@@ -16,7 +16,7 @@ def verificar_usuario():
     usuario = window.usuarioLineEdit.text()
     contrasena = window.contrasenaLineEdit.text()
 
-    if usuario == "TVO10" and contrasena == "TVOCANAL":
+    if usuario == "tvip" and contrasena == "1234":
         mostrar_interfaz_exito()
     else:
         mostrar_interfaz_error()
@@ -44,9 +44,8 @@ def cerrar():
 
     # Función para abrir el archivo "panel.py"
 def abrir_habitaciones():
-        subprocess.run(["python", "panel.py"])
-
-
+        ventana_exito.close()
+        subprocess.run(["python", "main.py"])
 
 # Conecta la función verificar_usuario al botón de inicio de sesión
 window.iniciarSesionButton.clicked.connect(verificar_usuario)
