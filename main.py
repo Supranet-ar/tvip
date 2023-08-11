@@ -132,7 +132,8 @@ class MainWindow(QtWidgets.QMainWindow):
             )
             cursor = connection.cursor()
 
-            query = "SELECT ip, numero FROM habitaciones"
+            # Asegurarse de que solo se obtengan habitaciones con IPs válidas
+            query = "SELECT ip, numero FROM habitaciones WHERE ip IS NOT NULL AND ip <> ''"
             cursor.execute(query)
             data = cursor.fetchall()
 
@@ -146,10 +147,22 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return []
 
+
     def cargar_datos_habitaciones(self):
+        # Inicializa todos los botones como ocultos
+        for i in range(1, 101):  #Rango de botones,asumiendo que tenemos 100 botones como máximo
+            btn = getattr(self, f"btn{i}", None)
+            if btn:
+                btn.hide()
+
         data = self.obtener_datos_habitaciones()
         self.ip_list = [ip for ip, _ in data]
         self.buttons = [getattr(self, f"btn{i+1}") for i in range(len(data))]
+
+        # Muestra solo los botones con IPs válidas
+        for btn in self.buttons:
+            btn.show()
+
 
     def ping(self, ip, timeout=1):
         try:
