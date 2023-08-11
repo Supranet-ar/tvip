@@ -31,8 +31,13 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
         self.ventanaPrincipal = ventanaPrincipal
         loadUi("interfaz/Tareas_2ventana.ui", self)
 
-        # Conectar el botón "Guardar" con la función para guardar los datos y volver a la primera ventana
+        # Señal para conectar el botón "Guardar" con la función para guardar los datos y volver a la primera ventana
         self.botonGuardar.clicked.connect(self.guardarDatos)
+
+        # se crea un temporizador para actualizar la hora cada segundo
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.actualizarHora)
+        self.timer.start(1000)  # Actualizar cada 1000 ms (1 segundo)
 
     # Función para guardar la tarea
     def guardarDatos(self):
@@ -43,6 +48,10 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
         self.close()
         self.ventanaPrincipal.show()
 
+    # función para actualizar la hora en el QDateTimeEdit
+    def actualizarHora(self):
+        hora_actual = QtCore.QDateTime.currentDateTime()
+        self.dateTimeEdit.setDateTime(hora_actual)
 # Clase principal
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -51,10 +60,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("Panel de control")
         self.setFixedSize(793, 543)
 
-        # Crear una instancia de la clase BaseDeDatos
+        # se crea una instancia de la clase BaseDeDatos
         self.base_datos = BaseDeDatos()
 
-        # Inicializar funciones para obtener los datos de las pantallas
+        # se inicializa funciones para obtener los datos de las pantallas
         self.obtener_datos_habitaciones()
         self.cargar_datos_habitaciones()
         self.ping_and_verify()
