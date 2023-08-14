@@ -119,6 +119,15 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.panel_control = PanelControl(ip[0])
                 self.panel_control.show()
 
+                # Mensaje con informacion del menu o pantalla actual
+                current_menu = self.obtener_menu_actual(ip[0])
+                if current_menu:
+                    QtWidgets.QMessageBox.information(self, "Información",
+                                                      f"El usuario está en el menú: {current_menu}")
+                else:
+                    QtWidgets.QMessageBox.warning(self, "Advertencia",
+                                                  f"No se encontró la IP para la habitación {numero_habitacion}")
+
                 # Llamar a la función enviar_publicidad_a_habitaciones aquí
                 self.enviar_publicidad_a_habitaciones([ip[0]])  # Enviar la IP como lista
 
@@ -205,6 +214,27 @@ class MainWindow(QtWidgets.QMainWindow):
                 print(f'Mensaje de publicidad enviado a la habitación {ip}')
             except requests.exceptions.RequestException as e:
                 print(f'Error al enviar el mensaje de publicidad a la habitación {ip}: {str(e)}')
+
+    def obtener_menu_actual(self, ip):
+        url = f"http://{ip}:8080/jsonrpc"
+        payload = {
+            "jsonrpc": "2.0",
+            "method": "GUI.GetProperties",
+            "params": {
+                "properties": ["currentwindow"]
+            },
+            "id": 1
+        }
+
+        try:
+            response = requests.post(url, json=payload)
+            response.raise_for_status()
+            data = response.json()
+            current_window = data["result"]["currentwindow"]["label"]
+            return current_window
+        except requests.exceptions.RequestException as e:
+            print(f'Error al obtener el menú actual de la habitación {ip}: {str(e)}')
+            return None
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
