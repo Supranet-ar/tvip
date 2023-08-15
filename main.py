@@ -10,10 +10,11 @@ from base_de_datos import BaseDeDatos
 
 # Panel de control avanzado
 class PanelControl(QtWidgets.QDialog):
-    def __init__(self, ip, parent=None):
+    def __init__(self, ip, numero_habitacion, parent=None):
         super().__init__(parent)
         loadUi("interfaz/panel_control.ui", self)
         self.ip = ip
+        self.setWindowTitle(f"Habitación {numero_habitacion}")
         self.btn_abrir_kodi.clicked.connect(self.abrir_interfaz_kodi)
         self.btn_estado.clicked.connect(self.mostrar_menu_actual)
 
@@ -125,7 +126,7 @@ class MainWindow(QtWidgets.QMainWindow):
             ip = cursor.fetchone()
 
             if ip:
-                self.panel_control = PanelControl(ip[0], self)
+                self.panel_control = PanelControl(ip[0], numero_habitacion, self)
                 self.panel_control.show()
 
                 self.enviar_publicidad_a_habitaciones([ip[0]])
