@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>192</width>
-    <height>157</height>
+    <height>220</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>130</y>
+     <y>180</y>
      <width>91</width>
      <height>23</height>
     </rect>
@@ -37,7 +37,7 @@ border-radius:10px;</string>
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>50</y>
+     <y>100</y>
      <width>131</width>
      <height>31</height>
     </rect>
@@ -54,7 +54,7 @@ border-radius:10px;</string>
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>90</y>
+     <y>140</y>
      <width>131</width>
      <height>31</height>
     </rect>
@@ -71,7 +71,7 @@ border-radius:10px;</string>
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>10</y>
+     <y>60</y>
      <width>131</width>
      <height>31</height>
     </rect>
@@ -82,6 +82,23 @@ border-radius:10px;</string>
    </property>
    <property name="text">
     <string>CONTROL AVANZADO</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_estado">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>20</y>
+     <width>131</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(115, 121, 212);
+</string>
+   </property>
+   <property name="text">
+    <string>VER ESTADO</string>
    </property>
   </widget>
  </widget>

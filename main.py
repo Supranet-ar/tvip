@@ -10,12 +10,21 @@ from base_de_datos import BaseDeDatos
 
 # Panel de control avanzado
 class PanelControl(QtWidgets.QDialog):
-    def __init__(self, ip):
-        super().__init__()
+    def __init__(self, ip, parent=None):
+        super().__init__(parent)
         loadUi("interfaz/panel_control.ui", self)
         self.ip = ip
         self.btn_abrir_kodi.clicked.connect(self.abrir_interfaz_kodi)
+        self.btn_estado.clicked.connect(self.mostrar_menu_actual)
 
+    def mostrar_menu_actual(self): #metodo para mostrar menu actual del usuario
+            current_menu = self.parent().obtener_menu_actual(self.ip)
+            if current_menu:
+                QtWidgets.QMessageBox.information(self, "Informacion",
+                                                  f"El usuario esta en el menu: {current_menu}")
+            else:
+                QtWidgets.QMessageBox.warning(self, "Advertencia",
+                                              f"No se encontro la IP para la habitacion {self.ip}")
     # Interfaz web de Kodi
     def abrir_interfaz_kodi(self):
         url = f"http://{self.ip}:8080"
@@ -116,23 +125,14 @@ class MainWindow(QtWidgets.QMainWindow):
             ip = cursor.fetchone()
 
             if ip:
-                self.panel_control = PanelControl(ip[0])
+                self.panel_control = PanelControl(ip[0], self)
                 self.panel_control.show()
 
-                # Mensaje con informacion del menu o pantalla actual
-                current_menu = self.obtener_menu_actual(ip[0])
-                if current_menu:
-                    QtWidgets.QMessageBox.information(self, "Información",
-                                                      f"El usuario está en el menú: {current_menu}")
-                else:
-                    QtWidgets.QMessageBox.warning(self, "Advertencia",
-                                                  f"No se encontró la IP para la habitación {numero_habitacion}")
-
-                # Llamar a la función enviar_publicidad_a_habitaciones aquí
-                self.enviar_publicidad_a_habitaciones([ip[0]])  # Enviar la IP como lista
+                self.enviar_publicidad_a_habitaciones([ip[0]])
 
             else:
-                QtWidgets.QMessageBox.warning(self, "Advertencia", f"No se encontró la IP para la habitación {numero_habitacion}")
+                QtWidgets.QMessageBox.warning(self, "Advertencia",
+                                              f"No se encontró la IP para la habitación {numero_habitacion}")
 
         except mysql.connector.Error as error:
             QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectarse a la base de datos:\n{error}")
@@ -228,6 +228,8 @@ class MainWindow(QtWidgets.QMainWindow):
             except requests.exceptions.RequestException as e:
                 print(f'Error al enviar el mensaje de publicidad a la habitación {ip}: {str(e)}')
 
+
+    #funcion para obtener el menu actual del usuario
     def obtener_menu_actual(self, ip):
         url = f"http://{ip}:8080/jsonrpc"
         payload = {
@@ -248,6 +250,7 @@ class MainWindow(QtWidgets.QMainWindow):
         except requests.exceptions.RequestException as e:
             print(f'Error al obtener el menú actual de la habitación {ip}: {str(e)}')
             return None
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
