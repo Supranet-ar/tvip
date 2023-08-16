@@ -252,9 +252,25 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f'Error al obtener el menú actual de la habitación {ip}: {str(e)}')
             return None
 
+class MainApp:
+    def __init__(self):
+        self.app = QtWidgets.QApplication([])
+
+        self.main_window = MainWindow()
+        self.ventana_tareas = VentanaSecundaria(self.main_window)
+
+        self.ventana_tareas.guardarDatosSignal.connect(self.main_window.agregarElemento)
+
+        self.main_window.show()
+
+        sys.exit(self.app.exec_())
+
+    def programar_tarea(self):
+        selected_datetime = self.ventana_tareas.dateTimeEdit.dateTime()
+        print("Tarea programada para:", selected_datetime.toString())
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication([])
+    app = MainApp()
     ventana = MainWindow()
     ventana.show()
     sys.exit(app.exec_())
