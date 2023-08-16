@@ -62,6 +62,8 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
     def actualizarHora(self):
         hora_actual = QtCore.QDateTime.currentDateTime()
         self.dateTimeEdit.setDateTime(hora_actual)
+        self.timer.timeout.disconnect(self.actualizarHora)
+
 # Clase principal
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
