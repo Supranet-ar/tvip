@@ -7,6 +7,8 @@ from PyQt5.uic import loadUi
 import requests
 import mysql.connector
 from base_de_datos import BaseDeDatos
+import threading
+import datetime
 
 # Panel de control avanzado
 class PanelControl(QtWidgets.QDialog):
@@ -52,11 +54,22 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
     # Función para guardar la tarea
     def guardarDatos(self):
         texto = self.comboBox.currentText()
-        fecha = self.dateTimeEdit.dateTime().toString("dd/MM/yyyy hh:mm:ss")
+        fecha = self.dateTimeEdit.dateTime().toPyDateTime()
         datos = f"Tarea: {texto}, Fecha: {fecha}"
         self.guardarDatosSignal.emit(datos)
         self.close()
         self.ventanaPrincipal.show()
+
+        # Programa la llamada a enviar_publicidad_a_habitaciones en el horario especificado
+        tiempo_restante = fecha - datetime.datetime.now()
+        if tiempo_restante.total_seconds() > 0:
+            threading.Timer(tiempo_restante.total_seconds(), self.programar_publicidad).start()
+
+    # ... (código anterior) ...
+
+    # Función para programar el envío de publicidad
+    def programar_publicidad(self):
+        self.ventanaPrincipal.enviar_publicidad_a_habitaciones(self.ventanaPrincipal.ip_activas)
 
     # función para actualizar la hora en el QDateTimeEdit
     def actualizarHora(self):
@@ -74,6 +87,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # se crea una instancia de la clase BaseDeDatos
         self.base_datos = BaseDeDatos()
+
+        # Almacena las IP activas
+        self.ip_activas = []
 
         # se inicializa funciones para obtener los datos de las pantallas
         self.obtener_datos_habitaciones()
@@ -194,14 +210,14 @@ class MainWindow(QtWidgets.QMainWindow):
             return False
 
     def ping_and_verify(self):
-        ip_activas = []
+        self.ip_activas = []
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
             results = executor.map(self.ping, self.ip_list)
 
             for ip, button, result in zip(self.ip_list, self.buttons, results):
                 if result:
-                    ip_activas.append(ip)
+                    self.ip_activas.append(ip)
                     button.setStyleSheet("background-color: green")
                     print(f'La IP {ip} está activa.')
                 else:
@@ -254,25 +270,8 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f'Error al obtener el menú actual de la habitación {ip}: {str(e)}')
             return None
 
-class MainApp:
-    def __init__(self):
-        self.app = QtWidgets.QApplication([])
-
-        self.main_window = MainWindow()
-        self.ventana_tareas = VentanaSecundaria(self.main_window)
-
-        self.ventana_tareas.guardarDatosSignal.connect(self.main_window.agregarElemento)
-
-        self.main_window.show()
-
-        sys.exit(self.app.exec_())
-
-    def programar_tarea(self):
-        selected_datetime = self.ventana_tareas.dateTimeEdit.dateTime()
-        print("Tarea programada para:", selected_datetime.toString())
-
 if __name__ == "__main__":
-    app = MainApp()
+    app = QtWidgets.QApplication([])
     ventana = MainWindow()
     ventana.show()
     sys.exit(app.exec_())
