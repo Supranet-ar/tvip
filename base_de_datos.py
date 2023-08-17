@@ -102,3 +102,17 @@ class BaseDeDatos:
             print(f"Error al eliminar tarea de la base de datos: {error}")
         finally:
             return False
+
+    def obtener_tareas(self):
+        try:
+            cursor = self.conexion_db.cursor()
+
+            select_query = "SELECT descripcion FROM tareas"
+            cursor.execute(select_query)
+            tareas = [row[0] for row in cursor.fetchall()]
+            print("Tareas recuperadas con exito")
+            return tareas
+
+        except mysql.connector.Error as error:
+            print(f"Error al obtener tareas de la base de datos: {error}")
+            return None

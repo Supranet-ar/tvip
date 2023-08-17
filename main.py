@@ -98,6 +98,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.obtener_datos_habitaciones()
         self.cargar_datos_habitaciones()
         self.ping_and_verify()
+        self.cargar_tareas_desde_bd()
 
         # CONEXION DE SEÑALES EN LA VENTANA PRINCIPAL
         for button in self.scrollAreaWidgetContents.findChildren(QtWidgets.QPushButton):
@@ -127,6 +128,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.segundaVentana = VentanaSecundaria(self)
         self.segundaVentana.guardarDatosSignal.connect(self.agregarElemento)
         self.segundaVentana.show()
+
+    def cargar_tareas_desde_bd(self):
+        tareas = self.base_datos.obtener_tareas()
+        for tarea in tareas:
+            self.listWidget.addItem(tarea)
 
     def agregarElemento(self, texto):
         self.listWidget.addItem(texto)
