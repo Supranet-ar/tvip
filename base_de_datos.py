@@ -1,5 +1,7 @@
 import mysql.connector
 
+
+# Base de datos local
 class BaseDeDatos:
     def __init__(self):
         self.connection = None
@@ -72,4 +74,18 @@ class BaseDeDatos:
             return True
         except mysql.connector.Error as error:
             print(f"Error al actualizar en la base de datos: {error}")
+            return False
+
+    def insertar_tarea(self, tarea):
+        try:
+            cursor = self.conexion_db.cursor()
+
+            # Insertar tarea en la tabla adecuada
+            insert_query = "INSERT INTO tareas (descripcion) VALUES (%s)"
+            cursor.execute(insert_query, (tarea,))
+            self.conexion_db.commit()
+            print("Tarea guardada en la base de datos")
+            return True
+        except mysql.connector.Error as error:
+            print(f"Error al insertar tarea en la base de datos: {error}")
             return False

@@ -60,6 +60,7 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
         segundos = fecha.second
         self.datos = f"Tarea: {texto}, Hora: {hora:02d}:{minutos:02d}:{segundos:02d}"
         self.guardarDatosSignal.emit(self.datos)
+        self.ventanaPrincipal.base_datos.insertar_tarea(self.datos)
         self.close()
         self.ventanaPrincipal.show()
 
