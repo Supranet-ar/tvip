@@ -55,8 +55,8 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
     def guardarDatos(self):
         texto = self.comboBox.currentText()
         fecha = self.dateTimeEdit.dateTime().toPyDateTime()
-        datos = f"Tarea: {texto}, Fecha: {fecha}"
-        self.guardarDatosSignal.emit(datos)
+        self.datos = f"Tarea: {texto}, Fecha: {fecha}"
+        self.guardarDatosSignal.emit(self.datos)
         self.close()
         self.ventanaPrincipal.show()
 
@@ -65,11 +65,10 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
         if tiempo_restante.total_seconds() > 0:
             threading.Timer(tiempo_restante.total_seconds(), self.programar_publicidad).start()
 
-    # ... (código anterior) ...
-
     # Función para programar el envío de publicidad
     def programar_publicidad(self):
         self.ventanaPrincipal.enviar_publicidad_a_habitaciones(self.ventanaPrincipal.ip_activas)
+        self.ventanaPrincipal.removerElemento(self.datos)
 
     # función para actualizar la hora en el QDateTimeEdit
     def actualizarHora(self):
@@ -127,6 +126,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def agregarElemento(self, texto):
         self.listWidget.addItem(texto)
+
+    def removerElemento(self, tarea):
+        for index in range(self.listWidget.count()):
+            item = self.listWidget.item(index)
+            if item.text() == tarea:
+                self.listWidget.takeItem(index)
+                break
 
     def cerrarVentana(self):
         self.close()
