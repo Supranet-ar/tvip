@@ -80,7 +80,6 @@ class BaseDeDatos:
         try:
             cursor = self.conexion_db.cursor()
 
-            # Insertar tarea en la tabla adecuada
             insert_query = "INSERT INTO tareas (descripcion) VALUES (%s)"
             cursor.execute(insert_query, (tarea,))
             self.conexion_db.commit()
@@ -88,4 +87,18 @@ class BaseDeDatos:
             return True
         except mysql.connector.Error as error:
             print(f"Error al insertar tarea en la base de datos: {error}")
+            return False
+
+    def eliminar_tarea(self, tarea):
+        try:
+            cursor = self.conexion_db.cursor()
+
+            delete_query = "DELETE FROM tareas WHERE descripcion = %s"
+            cursor.execute(delete_query, (tarea,))
+            self.conexion_db.commit()
+            print("Tarea eliminada en la base de datos")
+            return True
+        except mysql.connector.Error as error:
+            print(f"Error al eliminar tarea de la base de datos: {error}")
+        finally:
             return False

@@ -132,6 +132,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.listWidget.addItem(texto)
 
     def removerElemento(self, tarea):
+        self.base_datos.eliminar_tarea(tarea)
         for index in range(self.listWidget.count()):
             item = self.listWidget.item(index)
             if item.text() == tarea:
