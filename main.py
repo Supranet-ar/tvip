@@ -55,7 +55,10 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
     def guardarDatos(self):
         texto = self.comboBox.currentText()
         fecha = self.dateTimeEdit.dateTime().toPyDateTime()
-        self.datos = f"Tarea: {texto}, Fecha: {fecha}"
+        hora = fecha.hour
+        minutos = fecha.minute
+        segundos = fecha.second
+        self.datos = f"Tarea: {texto}, Hora: {hora:02d}:{minutos:02d}:{segundos:02d}"
         self.guardarDatosSignal.emit(self.datos)
         self.close()
         self.ventanaPrincipal.show()
