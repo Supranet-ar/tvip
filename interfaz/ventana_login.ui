@@ -14,8 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">
-background-color: rgb(77, 62, 127)</string>
+   <string notr="true">background-color: rgb(13, 25, 43);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label">
@@ -28,12 +27,11 @@ background-color: rgb(77, 62, 127)</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 36pt &quot;MS Shell Dlg 2&quot;;
-color:white;
+     <string notr="true">font: 75 30pt &quot;Bahnschrift Condensed&quot;;
 </string>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#7379d4;&quot;&gt;TVO CATAMARCA&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#09c184;&quot;&gt;TVO CATAMARCA&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
@@ -46,13 +44,11 @@ color:white;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 36pt &quot;MS Shell Dlg 2&quot;;
-font: 16pt &quot;MS Shell Dlg 2&quot;;
-color:white;
+     <string notr="true">font: 75 16pt &quot;Bahnschrift Condensed&quot;;
 </string>
     </property>
     <property name="text">
-     <string>Ingrese su usuario, por favor.</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#09c184;&quot;&gt;Ingrese su usuario, por favor.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
@@ -65,13 +61,11 @@ color:white;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 36pt &quot;MS Shell Dlg 2&quot;;
-font: 16pt &quot;MS Shell Dlg 2&quot;;
-color:white;
+     <string notr="true">font: 75 30pt &quot;Bahnschrift Condensed&quot;;
 </string>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:20pt; color:#7379d4;&quot;&gt;Usuario:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:20pt; color:#09c184;&quot;&gt;Usuario:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_4">
@@ -84,13 +78,12 @@ color:white;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 36pt &quot;MS Shell Dlg 2&quot;;
-font: 16pt &quot;MS Shell Dlg 2&quot;;
-color:white;
+     <string notr="true">font: 75 30pt &quot;Bahnschrift Condensed&quot;;
+
 </string>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:20pt; color:#7379d4;&quot;&gt;Contraseña:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:20pt; color:#09c184;&quot;&gt;Contraseña:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="usuarioLineEdit">
@@ -103,7 +96,7 @@ color:white;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);
+     <string notr="true">background-color: rgb(12, 81, 73);
 border-radius:10px;</string>
     </property>
    </widget>
@@ -117,7 +110,7 @@ border-radius:10px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);
+     <string notr="true">background-color: rgb(12, 81, 73);
 border-radius:10px;</string>
     </property>
    </widget>
@@ -132,11 +125,15 @@ border-radius:10px;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">border-radius:20px;
-font: 10pt &quot;MS Shell Dlg 2&quot;;
-background-color: rgb(115, 121, 212);</string>
+font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+background-color: rgb(10, 137, 103);</string>
     </property>
     <property name="text">
      <string>Ingresar</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../../../Downloads/feather/log-in.svg</normaloff>../../../Downloads/feather/log-in.svg</iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="salirButton">
@@ -150,11 +147,16 @@ background-color: rgb(115, 121, 212);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">border-radius:5px;
-font: 10pt &quot;MS Shell Dlg 2&quot;;
-background-color: rgb(115, 121, 212);</string>
+font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+background-color: rgb(10, 137, 103);
+</string>
     </property>
     <property name="text">
      <string>Salir</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../../../Downloads/feather/log-out.svg</normaloff>../../../Downloads/feather/log-out.svg</iconset>
     </property>
    </widget>
    <widget class="QWidget" name="verticalWidget" native="true">
@@ -167,7 +169,7 @@ background-color: rgb(115, 121, 212);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);</string>
+     <string notr="true">background-color: rgb(12, 81, 73);</string>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout"/>
    </widget>
@@ -181,7 +183,7 @@ background-color: rgb(115, 121, 212);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);</string>
+     <string notr="true">background-color: rgb(12, 81, 73);</string>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2"/>
    </widget>
@@ -195,7 +197,7 @@ background-color: rgb(115, 121, 212);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);</string>
+     <string notr="true">background-color: rgb(12, 81, 73);</string>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3"/>
    </widget>

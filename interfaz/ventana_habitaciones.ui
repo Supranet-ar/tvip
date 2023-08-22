@@ -7,31 +7,32 @@
     <x>0</x>
     <y>0</y>
     <width>798</width>
-    <height>537</height>
+    <height>538</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(216, 216, 203);
-background-color: rgb(77, 62, 127);</string>
+   <string notr="true">background-color: rgb(13, 25, 43);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>10</y>
+      <y>0</y>
       <width>241</width>
-      <height>41</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 20pt &quot;MS Shell Dlg 2&quot;;</string>
+     <string notr="true">font: 75 30pt &quot;Bahnschrift Condensed&quot;;
+
+</string>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#7379d4;&quot;&gt;HABITACIONES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#09c184;&quot;&gt;HABITACIONES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QWidget" name="verticalWidget" native="true">
@@ -44,7 +45,7 @@ background-color: rgb(77, 62, 127);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);</string>
+     <string notr="true">background-color: rgb(12, 81, 73);</string>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <property name="spacing">
@@ -74,7 +75,7 @@ background-color: rgb(77, 62, 127);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);</string>
+     <string notr="true">background-color: rgb(12, 81, 73);</string>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2"/>
    </widget>
@@ -88,7 +89,7 @@ background-color: rgb(77, 62, 127);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);</string>
+     <string notr="true">background-color: rgb(12, 81, 73);</string>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3"/>
    </widget>
@@ -102,7 +103,7 @@ background-color: rgb(77, 62, 127);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);</string>
+     <string notr="true">background-color: rgb(12, 81, 73);</string>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_4"/>
    </widget>
@@ -116,7 +117,7 @@ background-color: rgb(77, 62, 127);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);</string>
+     <string notr="true">background-color: rgb(12, 81, 73);</string>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_5"/>
    </widget>
@@ -131,10 +132,16 @@ background-color: rgb(77, 62, 127);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">border-radius:20px;
-background-color: rgb(115, 121, 212);</string>
+background-color: rgb(10, 137, 103);
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;
+</string>
     </property>
     <property name="text">
      <string>AGREGAR</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../../../Downloads/feather/database.svg</normaloff>../../../Downloads/feather/database.svg</iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_2">
@@ -148,7 +155,7 @@ background-color: rgb(115, 121, 212);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">border-radius:20px;
-background-color: rgb(115, 121, 212);</string>
+background-color: rgb(10, 137, 103);</string>
     </property>
     <property name="text">
      <string>BOTON 1</string>
@@ -165,7 +172,7 @@ background-color: rgb(115, 121, 212);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">border-radius:20px;
-background-color: rgb(115, 121, 212);</string>
+background-color: rgb(10, 137, 103);</string>
     </property>
     <property name="text">
      <string>BOTON 1</string>
@@ -182,7 +189,7 @@ background-color: rgb(115, 121, 212);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">border-radius:20px;
-background-color: rgb(115, 121, 212);</string>
+background-color: rgb(10, 137, 103);</string>
     </property>
     <property name="text">
      <string>BOTON 1</string>
@@ -199,10 +206,16 @@ background-color: rgb(115, 121, 212);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">border-radius:20px;
-background-color: rgb(115, 121, 212);</string>
+background-color: rgb(10, 137, 103);
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;
+</string>
     </property>
     <property name="text">
      <string>PROGRAMAR TAREA</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../../../Downloads/icons8-horas-extras-50.png</normaloff>../../../Downloads/icons8-horas-extras-50.png</iconset>
     </property>
    </widget>
    <widget class="QWidget" name="verticalWidget_3" native="true">
@@ -215,7 +228,7 @@ background-color: rgb(115, 121, 212);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);</string>
+     <string notr="true">background-color: rgb(12, 81, 73);</string>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_6"/>
    </widget>
@@ -229,12 +242,18 @@ background-color: rgb(115, 121, 212);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-radius:5px;
-font: 10pt &quot;MS Shell Dlg 2&quot;;
-background-color: rgb(115, 121, 212);</string>
+     <string notr="true">font: 10pt &quot;MS Shell Dlg 2&quot;;
+background-color: rgb(10, 137, 103);
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;
+
+</string>
     </property>
     <property name="text">
      <string>Salir</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../../../Downloads/feather/log-out.svg</normaloff>../../../Downloads/feather/log-out.svg</iconset>
     </property>
    </widget>
    <widget class="QScrollArea" name="scrollArea">
@@ -259,7 +278,7 @@ background-color: rgb(115, 121, 212);</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>0</y>
+       <y>-160</y>
        <width>402</width>
        <height>675</height>
       </rect>
@@ -277,6 +296,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         <property name="text">
          <string>18</string>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+        </property>
        </widget>
       </item>
       <item row="2" column="3">
@@ -290,6 +313,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="text">
          <string>11</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -305,6 +332,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         <property name="text">
          <string>24</string>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+        </property>
        </widget>
       </item>
       <item row="4" column="0">
@@ -319,6 +350,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         <property name="text">
          <string>17</string>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+        </property>
        </widget>
       </item>
       <item row="4" column="3">
@@ -332,6 +367,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="text">
          <string>19</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -361,6 +400,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         <property name="text">
          <string>10</string>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+        </property>
        </widget>
       </item>
       <item row="4" column="4">
@@ -374,6 +417,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="text">
          <string>20</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -403,6 +450,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         <property name="text">
          <string>12</string>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+        </property>
        </widget>
       </item>
       <item row="1" column="3">
@@ -417,6 +468,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         <property name="text">
          <string>7</string>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+        </property>
        </widget>
       </item>
       <item row="5" column="3">
@@ -430,6 +485,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="text">
          <string>23</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -473,6 +532,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         <property name="text">
          <string>8</string>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+        </property>
        </widget>
       </item>
       <item row="0" column="3">
@@ -486,6 +549,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="text">
          <string>3</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -501,6 +568,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         <property name="text">
          <string>14</string>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+        </property>
        </widget>
       </item>
       <item row="0" column="2">
@@ -514,6 +585,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="text">
          <string>2</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -529,6 +604,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         <property name="text">
          <string>4</string>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+        </property>
        </widget>
       </item>
       <item row="1" column="0">
@@ -542,6 +621,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="text">
          <string>5</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -557,6 +640,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         <property name="text">
          <string>6</string>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+        </property>
        </widget>
       </item>
       <item row="3" column="3">
@@ -570,6 +657,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="text">
          <string>15</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -585,6 +676,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         <property name="text">
          <string>16</string>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+        </property>
        </widget>
       </item>
       <item row="0" column="0">
@@ -598,6 +693,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="text">
          <string>1</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -613,6 +712,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         <property name="text">
          <string>21</string>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+        </property>
        </widget>
       </item>
       <item row="3" column="0">
@@ -626,6 +729,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="text">
          <string>13</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -641,6 +748,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         <property name="text">
          <string>22</string>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+        </property>
        </widget>
       </item>
       <item row="2" column="0">
@@ -654,6 +765,10 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="text">
          <string>9</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -1234,6 +1349,22 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
 border-radius:10px;</string>
     </property>
    </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>10</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../../supralogo1.png</pixmap>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menuBar">
@@ -1247,6 +1378,8 @@ border-radius:10px;</string>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../nnn.qrc"/>
+ </resources>
  <connections/>
 </ui>

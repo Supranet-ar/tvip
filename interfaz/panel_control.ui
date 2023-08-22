@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>192</width>
-    <height>220</height>
+    <height>222</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(77, 62, 127);</string>
+   <string notr="true">background-color: rgb(13, 25, 43);</string>
   </property>
   <widget class="QPushButton" name="btn_salir">
    <property name="geometry">
@@ -26,8 +26,9 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(115, 121, 212);
-border-radius:10px;</string>
+    <string notr="true">background-color: rgb(10, 137, 103);
+border-radius:10px;
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
    </property>
    <property name="text">
     <string>VOLVER</string>
@@ -43,8 +44,8 @@ border-radius:10px;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(115, 121, 212);
-</string>
+    <string notr="true">background-color: rgb(10, 137, 103);
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
    </property>
    <property name="text">
     <string>CAMBIAR IDIOMA</string>
@@ -60,8 +61,8 @@ border-radius:10px;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(115, 121, 212);
-</string>
+    <string notr="true">background-color: rgb(10, 137, 103);
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
    </property>
    <property name="text">
     <string>HABILITAR PREMIUN</string>
@@ -77,8 +78,8 @@ border-radius:10px;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(115, 121, 212);
-</string>
+    <string notr="true">background-color: rgb(10, 137, 103);
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
    </property>
    <property name="text">
     <string>CONTROL AVANZADO</string>
@@ -94,7 +95,8 @@ border-radius:10px;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(115, 121, 212);
+    <string notr="true">background-color: rgb(10, 137, 103);
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;
 </string>
    </property>
    <property name="text">

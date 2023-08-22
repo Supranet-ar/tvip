@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(77, 62, 127);</string>
+   <string notr="true">background-color: rgb(13, 25, 43);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label">
@@ -30,10 +30,10 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;AGREGAR IP&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 75 14pt &quot;Yu Gothic&quot;;</string>
+     <string notr="true">font: 75 30pt &quot;Bahnschrift Condensed&quot;;</string>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:36pt; font-weight:600; color:#7379d4;&quot;&gt;AGREGAR&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:36pt; font-weight:400; color:#09c184;&quot;&gt;AGREGAR&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit">
@@ -59,8 +59,9 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);
-border-radius:10px;</string>
+     <string notr="true">background-color: rgb(10, 137, 103);
+border-radius:10px;
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
     </property>
     <property name="text">
      <string>AGREGAR</string>
@@ -76,8 +77,9 @@ border-radius:10px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);
-border-radius:10px;</string>
+     <string notr="true">background-color: rgb(10, 137, 103);
+border-radius:10px;
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
     </property>
     <property name="text">
      <string>LIMPIAR</string>
@@ -93,7 +95,7 @@ border-radius:10px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);</string>
+     <string notr="true">background-color: rgb(12, 81, 73);</string>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -111,7 +113,7 @@ border-radius:10px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);</string>
+     <string notr="true">background-color: rgb(12, 81, 73);</string>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout"/>
    </widget>
@@ -125,7 +127,7 @@ border-radius:10px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);</string>
+     <string notr="true">background-color: rgb(12, 81, 73);</string>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_2"/>
    </widget>
@@ -139,7 +141,7 @@ border-radius:10px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);</string>
+     <string notr="true">background-color: rgb(12, 81, 73);</string>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_3"/>
    </widget>
@@ -153,8 +155,9 @@ border-radius:10px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);
-border-radius:20px;</string>
+     <string notr="true">background-color: rgb(10, 137, 103);
+border-radius:20px;
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
     </property>
     <property name="text">
      <string>REGRESAR</string>
@@ -243,8 +246,9 @@ border-radius:20px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(115, 121, 212);
-border-radius:10px;</string>
+     <string notr="true">background-color: rgb(10, 137, 103);
+border-radius:10px;
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
     </property>
     <property name="text">
      <string>GUARDAR CAMBIOS</string>
