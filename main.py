@@ -97,7 +97,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.actualizarReloj)
         self.timer.start(1000)
 
-# Llamada al panel para agregar una nueva pantalla
+        self.timer_estado_menus = QtCore.QTimer(self)
+        self.timer_estado_menus.timeout.connect(self.actualizar_estado_menus)
+        self.timer_estado_menus.start(1000)  # Actualizar cada 5000 ms (5 segundos)
+
+        self.cargar_datos_habitaciones()
+        self.ping_and_verify()
+        self.actualizar_estados_botones()  # Agrega esta línea para actualizar los botones al iniciar
+
+    # Llamada al panel para agregar una nueva pantalla
     def ejecutarip(self):
         subprocess.Popen(['python', 'ip.py'])
 
@@ -251,6 +259,35 @@ class MainWindow(QtWidgets.QMainWindow):
         except requests.exceptions.RequestException as e:
             print(f'Error al obtener el menú actual de la habitación {ip}: {str(e)}')
             return None
+
+    def actualizar_estado_menus(self):
+        ip_activas = []
+
+        for ip in self.ip_list:
+            if self.ping(ip):
+                current_menu = self.obtener_menu_actual(ip)
+                if current_menu:
+                    print(f"El usuario en la habitación {ip} está en el menú: {current_menu}")
+                else:
+                    print(f"No se encontró la IP para la habitación {ip}")
+                ip_activas.append(ip)
+
+        #self.enviar_publicidad_a_habitaciones(ip_activas)
+        self.actualizar_estados_botones()  # Llama a la función para actualizar los botones
+
+    def actualizar_estados_botones(self):
+        for ip, button in zip(self.ip_list, self.buttons):
+            if self.ping(ip):
+                current_menu = self.obtener_menu_actual(ip)
+                if current_menu:
+                    button.setStyleSheet("background-color: green")
+                    button.setText(f"{ip}\nEstado: {current_menu}")
+                else:
+                    button.setStyleSheet("background-color: green")  # Si no hay menú, sigue mostrando fondo verde
+                    button.setText(ip)
+            else:
+                button.setStyleSheet("background-color: red")
+                button.setText(ip)
 
 
 if __name__ == "__main__":
