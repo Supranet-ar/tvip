@@ -62,6 +62,8 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
     def actualizarHora(self):
         hora_actual = QtCore.QDateTime.currentDateTime()
         self.dateTimeEdit.setDateTime(hora_actual)
+
+
 # Clase principal
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -185,10 +187,13 @@ class MainWindow(QtWidgets.QMainWindow):
         data = self.obtener_datos_habitaciones()
         self.ip_list = [ip for ip, _ in data]
         self.buttons = [getattr(self, f"btn{i+1}") for i in range(len(data))]
+        self.ip_number_mapping = {ip: numero for ip, numero in data}
 
         # Muestra solo los botones con IPs válidas
         for btn in self.buttons:
             btn.show()
+
+
 
 
     def ping(self, ip, timeout=1):
@@ -281,13 +286,14 @@ class MainWindow(QtWidgets.QMainWindow):
                 current_menu = self.obtener_menu_actual(ip)
                 if current_menu:
                     button.setStyleSheet("background-color: green")
-                    button.setText(f"{ip}\nEstado: {current_menu}")
+                    numero_habitacion = self.ip_number_mapping.get(ip, "")
+                    button.setText(f"Habitación {numero_habitacion}\nEstado: {current_menu}")
                 else:
-                    button.setStyleSheet("background-color: green")  # Si no hay menú, sigue mostrando fondo verde
-                    button.setText(ip)
+                    button.setStyleSheet("background-color: green")
+                    button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}")
             else:
                 button.setStyleSheet("background-color: red")
-                button.setText(ip)
+                button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}")
 
 
 if __name__ == "__main__":
