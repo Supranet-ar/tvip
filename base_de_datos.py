@@ -1,12 +1,12 @@
 import mysql.connector
 
 class BaseDeDatos:
-    def __init__(self):
+    def __init__(self, host='localhost', user='root', password='1234', database='tvip'):
         self.connection = None
-        self.DB_HOST = 'localhost'
-        self.DB_USER = 'root'
-        self.DB_PASSWORD = '1234'
-        self.DB_DATABASE = 'tvip'
+        self.DB_HOST = host
+        self.DB_USER = user
+        self.DB_PASSWORD = password
+        self.DB_DATABASE = database
         self.conexion_db = self.conectar_db()
 
     def conectar_db(self):

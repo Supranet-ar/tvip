@@ -219,7 +219,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     button.setStyleSheet("background-color: red")
                     print(f'La IP {ip} no está activa.')
 
-        #self.enviar_publicidad_a_habitaciones(ip_activas)
+        #aself.enviar_publicidad_a_habitaciones(ip_activas)
 
     def enviar_publicidad_a_habitaciones(self, ip_activas):
         mensaje_publicidad = "¡Descuento especial por tiempo limitado! Visita nuestro sitio web."
