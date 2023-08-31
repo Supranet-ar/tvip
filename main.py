@@ -101,7 +101,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.timer_estado_menus = QtCore.QTimer(self)
         self.timer_estado_menus.timeout.connect(self.actualizar_estado_menus)
-        self.timer_estado_menus.start(1000)  # Actualizar cada 5000 ms (5 segundos)
+        self.timer_estado_menus.start(3000)  # Actualizar cada 5000 ms (5 segundos)
 
         self.cargar_datos_habitaciones()
         self.ping_and_verify()
@@ -295,9 +295,16 @@ class MainWindow(QtWidgets.QMainWindow):
                 button.setStyleSheet("background-color: red")
                 button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}")
 
+    def iniciar_actualizacion_estado_menus(self):
+        print("Iniciando actualización de estados de menús en segundo plano...")
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            executor.submit(self.actualizar_estado_menus)
+        print("Actualización de estados de menús en segundo plano iniciada.")
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
     ventana = MainWindow()
+    ventana.iniciar_actualizacion_estado_menus()  # Lanza la actualización de menús en segundo plano
     ventana.show()
     sys.exit(app.exec_())
