@@ -1,7 +1,9 @@
 import sys
+import threading
 import webbrowser
 import subprocess
 import concurrent.futures
+import time
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.uic import loadUi
 import requests
@@ -78,7 +80,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # se inicializa funciones para obtener los datos de las pantallas
         self.obtener_datos_habitaciones()
         self.cargar_datos_habitaciones()
-        self.ping_and_verify()
+
 
         # CONEXION DE SEÑALES EN LA VENTANA PRINCIPAL
         for button in self.scrollAreaWidgetContents.findChildren(QtWidgets.QPushButton):
@@ -99,9 +101,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.actualizarReloj)
         self.timer.start(1000)
 
-        self.timer_estado_menus = QtCore.QTimer(self)
-        self.timer_estado_menus.timeout.connect(self.actualizar_estado_menus)
-        self.timer_estado_menus.start(3000)  # Actualizar cada 5000 ms (5 segundos)
+        #self.timer_estado_menus = QtCore.QTimer(self)
+        #self.timer_estado_menus.timeout.connect(self.actualizar_estado_menus)
+        #self.timer_estado_menus.start(1000)  # Actualizar cada 5000 ms (5 segundos)
+
+        # Inicializa tus atributos y propiedades aquí
+        self.ip_list = []
+        self.buttons = []
+        self.ip_number_mapping = {}
+
+        # Inicia el hilo de actualización
+        self.actualizacion_hilo = threading.Thread(target=self.actualizar_estados_botones_thread)
+        self.actualizacion_hilo.daemon = True  # Hilo como demonio para que termine cuando el programa principal termine
+        self.actualizacion_hilo.start()
 
         self.cargar_datos_habitaciones()
         self.ping_and_verify()
@@ -265,20 +277,7 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f'Error al obtener el menú actual de la habitación {ip}: {str(e)}')
             return None
 
-    def actualizar_estado_menus(self):
-        ip_activas = []
 
-        for ip in self.ip_list:
-            if self.ping(ip):
-                current_menu = self.obtener_menu_actual(ip)
-                if current_menu:
-                    print(f"El usuario en la habitación {ip} está en el menú: {current_menu}")
-                else:
-                    print(f"No se encontró la IP para la habitación {ip}")
-                ip_activas.append(ip)
-
-        #self.enviar_publicidad_a_habitaciones(ip_activas)
-        self.actualizar_estados_botones()  # Llama a la función para actualizar los botones
 
     def actualizar_estados_botones(self):
         for ip, button in zip(self.ip_list, self.buttons):
@@ -294,17 +293,15 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 button.setStyleSheet("background-color: red")
                 button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}")
-
-    def iniciar_actualizacion_estado_menus(self):
-        print("Iniciando actualización de estados de menús en segundo plano...")
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.submit(self.actualizar_estado_menus)
-        print("Actualización de estados de menús en segundo plano iniciada.")
+            pass
+    def actualizar_estados_botones_thread(self):
+        while True:
+            self.actualizar_estados_botones()
+            time.sleep(5)  # Espera 5 segundos antes de la próxima ejecución
 
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
     ventana = MainWindow()
-    ventana.iniciar_actualizacion_estado_menus()  # Lanza la actualización de menús en segundo plano
     ventana.show()
     sys.exit(app.exec_())
