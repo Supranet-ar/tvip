@@ -7,6 +7,8 @@ from PyQt5.uic import loadUi
 import requests
 import mysql.connector
 from base_de_datos import BaseDeDatos
+import threading
+import datetime
 
 # Panel de control avanzado
 class PanelControl(QtWidgets.QDialog):
@@ -52,17 +54,31 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
     # Función para guardar la tarea
     def guardarDatos(self):
         texto = self.comboBox.currentText()
-        fecha = self.dateTimeEdit.dateTime().toString("dd/MM/yyyy hh:mm:ss")
-        datos = f"Tarea: {texto}, Fecha: {fecha}"
-        self.guardarDatosSignal.emit(datos)
+        fecha = self.dateTimeEdit.dateTime().toPyDateTime()
+        hora = fecha.hour
+        minutos = fecha.minute
+        segundos = fecha.second
+        self.datos = f"Tarea: {texto}, Hora: {hora:02d}:{minutos:02d}:{segundos:02d}"
+        self.guardarDatosSignal.emit(self.datos)
+        self.ventanaPrincipal.base_datos.insertar_tarea(self.datos)
         self.close()
         self.ventanaPrincipal.show()
+
+        # Programa la llamada a enviar_publicidad_a_habitaciones en el horario especificado
+        tiempo_restante = fecha - datetime.datetime.now()
+        if tiempo_restante.total_seconds() > 0:
+            threading.Timer(tiempo_restante.total_seconds(), self.programar_publicidad).start()
+
+            # Función para programar el envío de publicidad
+    def programar_publicidad(self):
+        self.ventanaPrincipal.enviar_publicidad_a_habitaciones(self.ventanaPrincipal.ip_activas, self.ventanaPrincipal.addon_id)
+        self.ventanaPrincipal.removerElemento(self.datos)
 
     # función para actualizar la hora en el QDateTimeEdit
     def actualizarHora(self):
         hora_actual = QtCore.QDateTime.currentDateTime()
         self.dateTimeEdit.setDateTime(hora_actual)
-
+        self.timer.timeout.disconnect(self.actualizarHora)
 
 # Clase principal
 class MainWindow(QtWidgets.QMainWindow):
@@ -75,10 +91,16 @@ class MainWindow(QtWidgets.QMainWindow):
         # se crea una instancia de la clase BaseDeDatos
         self.base_datos = BaseDeDatos()
 
+        # Almacena las IP activas
+        self.ip_activas = []
+        self.addon_id = "script.hello.world"
+
+
         # se inicializa funciones para obtener los datos de las pantallas
         self.obtener_datos_habitaciones()
         self.cargar_datos_habitaciones()
         self.ping_and_verify()
+        self.cargar_tareas_desde_bd()
 
         # CONEXION DE SEÑALES EN LA VENTANA PRINCIPAL
         for button in self.scrollAreaWidgetContents.findChildren(QtWidgets.QPushButton):
@@ -94,14 +116,20 @@ class MainWindow(QtWidgets.QMainWindow):
         font = QtGui.QFont("Arial", 25, QtGui.QFont.Bold)
         self.relojLabel.setFont(font)
         self.relojLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.relojLabel.setStyleSheet("background-color: #0d192b; color: white;")
 
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.actualizarReloj)
         self.timer.start(1000)
 
-        self.timer_estado_menus = QtCore.QTimer(self)
-        self.timer_estado_menus.timeout.connect(self.actualizar_estado_menus)
-        self.timer_estado_menus.start(1000)  # Actualizar cada 5000 ms (5 segundos)
+        #self.timer_estado_menus = QtCore.QTimer(self) hasta solucionar ejec segundo plano
+        #self.timer_estado_menus.timeout.connect(self.actualizar_estado_menus) hasta solucionar ejec segundo plano
+        #self.timer_estado_menus.start(1000)  # Actualizar cada 5000 ms (5 segundos) hasta solucionar ejec segundo plano
+
+        # Cada minuto, verifica las tareas programadas
+        #self.timer_tareas = QtCore.QTimer(self)
+        #self.timer_tareas.timeout.connect(self.verificar_tareas_programadas)
+        #self.timer_tareas.start(10 * 1000)  # 60 * 1000 ms = 1 minuto
 
         self.cargar_datos_habitaciones()
         self.ping_and_verify()
@@ -117,8 +145,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.segundaVentana.guardarDatosSignal.connect(self.agregarElemento)
         self.segundaVentana.show()
 
+    def cargar_tareas_desde_bd(self):
+        tareas = self.base_datos.obtener_tareas()
+        for tarea in tareas:
+            self.listWidget.addItem(tarea)
+
     def agregarElemento(self, texto):
         self.listWidget.addItem(texto)
+
+    def removerElemento(self, tarea):
+        self.base_datos.eliminar_tarea(tarea)
+        for index in range(self.listWidget.count()):
+            item = self.listWidget.item(index)
+            if item.text() == tarea:
+                self.listWidget.takeItem(index)
+                break
 
     def cerrarVentana(self):
         self.close()
@@ -205,32 +246,32 @@ class MainWindow(QtWidgets.QMainWindow):
             return False
 
     def ping_and_verify(self):
-        ip_activas = []
+        self.ip_activas = []
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
             results = executor.map(self.ping, self.ip_list)
 
             for ip, button, result in zip(self.ip_list, self.buttons, results):
                 if result:
-                    ip_activas.append(ip)
+                    self.ip_activas.append(ip)
                     button.setStyleSheet("background-color: green")
                     print(f'La IP {ip} está activa.')
                 else:
                     button.setStyleSheet("background-color: red")
                     print(f'La IP {ip} no está activa.')
 
+        return self.ip_activas
+
         #aself.enviar_publicidad_a_habitaciones(ip_activas)
 
-    def enviar_publicidad_a_habitaciones(self, ip_activas):
-        mensaje_publicidad = "¡Descuento especial por tiempo limitado! Visita nuestro sitio web."
+    def enviar_publicidad_a_habitaciones(self, ip_activas, addon_id):
         for ip in ip_activas:
             url = f'http://{ip}:8080/jsonrpc'
             payload = {
                 "jsonrpc": "2.0",
-                "method": "GUI.ShowNotification",
+                "method": "Addons.ExecuteAddon",
                 "params": {
-                    "title": "Publicidad",
-                    "message": mensaje_publicidad
+                    "addonid": addon_id
                 },
                 "id": 1
             }
@@ -238,9 +279,11 @@ class MainWindow(QtWidgets.QMainWindow):
             try:
                 response = requests.post(url, json=payload)
                 response.raise_for_status()
-                print(f'Mensaje de publicidad enviado a la habitación {ip}')
+                if response.status_code != 200:
+                    print("Error en la respuesta:", response.text)
+                print(f'Addon {addon_id} ejecutado en la habitación {ip}')
             except requests.exceptions.RequestException as e:
-                print(f'Error al enviar el mensaje de publicidad a la habitación {ip}: {str(e)}')
+                print(f'Error al ejecutar el addon en la habitación {ip}: {str(e)}')
 
 
     #funcion para obtener el menu actual del usuario
@@ -294,6 +337,42 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 button.setStyleSheet("background-color: red")
                 button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}")
+
+    def ejecutar_addon(self, ip, addon_id):
+        url = f"http://{ip}:8080/jsonrpc"
+        payload = {
+            "jsonrpc": "2.0",
+            "method": "Addons.ExecuteAddon",
+            "params": {
+                "addonid": addon_id
+            },
+            "id": 1
+        }
+
+        try:
+            response = requests.post(url, json=payload)
+            response.raise_for_status()
+            print(f'Addon {addon_id} ejecutado en la habitación {ip}')
+        except requests.exceptions.RequestException as e:
+            print(f'Error al ejecutar el addon en la habitación {ip}: {str(e)}')
+
+    def verificar_tareas_programadas(self):
+        try:
+            cursor = self.base_datos.conexion_db.cursor()
+
+            # Suponiendo que tienes una tabla llamada 'tareas_programadas' con las columnas 'addon_id' y 'hora_ejecucion'
+            cursor.execute("SELECT addon_id FROM tareas_programadas WHERE hora_ejecucion = NOW()")
+            tareas = cursor.fetchall()
+
+            for addon_id, in tareas:
+                for ip in self.ip_activas:
+                    self.ejecutar_addon(ip, addon_id)
+
+        except mysql.connector.Error as error:
+            QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectarse a la base de datos:\n{error}")
+
+        finally:
+            cursor.close()
 
 
 if __name__ == "__main__":

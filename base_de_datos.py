@@ -1,12 +1,14 @@
 import mysql.connector
 
+
+# Base de datos local
 class BaseDeDatos:
-    def __init__(self, host='localhost', user='root', password='1234', database='tvip'):
+    def __init__(self):
         self.connection = None
-        self.DB_HOST = host
-        self.DB_USER = user
-        self.DB_PASSWORD = password
-        self.DB_DATABASE = database
+        self.DB_HOST = 'localhost'
+        self.DB_USER = 'root'
+        self.DB_PASSWORD = '1234'
+        self.DB_DATABASE = 'tvip'
         self.conexion_db = self.conectar_db()
 
     def conectar_db(self):
@@ -73,3 +75,44 @@ class BaseDeDatos:
         except mysql.connector.Error as error:
             print(f"Error al actualizar en la base de datos: {error}")
             return False
+
+    def insertar_tarea(self, tarea):
+        try:
+            cursor = self.conexion_db.cursor()
+
+            insert_query = "INSERT INTO tareas (descripcion) VALUES (%s)"
+            cursor.execute(insert_query, (tarea,))
+            self.conexion_db.commit()
+            print("Tarea guardada en la base de datos")
+            return True
+        except mysql.connector.Error as error:
+            print(f"Error al insertar tarea en la base de datos: {error}")
+            return False
+
+    def eliminar_tarea(self, tarea):
+        try:
+            cursor = self.conexion_db.cursor()
+
+            delete_query = "DELETE FROM tareas WHERE descripcion = %s"
+            cursor.execute(delete_query, (tarea,))
+            self.conexion_db.commit()
+            print("Tarea eliminada en la base de datos")
+            return True
+        except mysql.connector.Error as error:
+            print(f"Error al eliminar tarea de la base de datos: {error}")
+        finally:
+            return False
+
+    def obtener_tareas(self):
+        try:
+            cursor = self.conexion_db.cursor()
+
+            select_query = "SELECT descripcion FROM tareas"
+            cursor.execute(select_query)
+            tareas = [row[0] for row in cursor.fetchall()]
+            print("Tareas recuperadas con exito")
+            return tareas
+
+        except mysql.connector.Error as error:
+            print(f"Error al obtener tareas de la base de datos: {error}")
+            return None
