@@ -95,11 +95,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ip_activas = []
         self.addon_id = "script.hello.world"
 
-
         # se inicializa funciones para obtener los datos de las pantallas
         self.obtener_datos_habitaciones()
         self.cargar_datos_habitaciones()
-        self.ping_and_verify()
         self.cargar_tareas_desde_bd()
 
         # CONEXION DE SEÑALES EN LA VENTANA PRINCIPAL
