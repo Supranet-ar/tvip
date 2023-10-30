@@ -137,7 +137,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # Llamada al panel para agregar una nueva pantalla
     def ejecutarip(self):
-        subprocess.Popen(['python', 'ip.py'])
+        ventana.close()
+        subprocess.run(['python', 'ip.py'])
 
 # Llamada al panel de tareas
     def abrirSegundaVentana(self):

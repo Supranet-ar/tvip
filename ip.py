@@ -11,7 +11,7 @@ def regresar():
     window.close()
 
     # Ejecuta el archivo Python deseado
-    subprocess.run(["python", "habitaciones.py"])
+    subprocess.run(["python", "main.py"])
 
 def insertar_ip():
     # Obtiene la IP ingresada en el QLineEdit
