@@ -372,9 +372,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def obtener_datos_habitaciones(self):
         try:
             connection = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                password="1234",
+                host="192.168.100.90",
+                port="3306",
+                user="tvip",
+                password="3434",
                 database="tvip"
             )
             cursor = connection.cursor()
