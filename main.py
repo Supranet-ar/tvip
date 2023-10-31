@@ -1,14 +1,99 @@
+import json
 import sys
-import webbrowser
+import time
+import datetime
+import threading
 import subprocess
 import concurrent.futures
+import mysql.connector
+import requests
+import webbrowser
+from PyQt5.QtCore import QtMsgType, qInstallMessageHandler
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.uic import loadUi
-import requests
-import mysql.connector
 from base_de_datos import BaseDeDatos
-import threading
-import datetime
+
+#Funcion para capturar errores
+def log_handler(mode, context, message):
+    sys.stderr.write("%s: %s\n" % (mode, message))
+
+qInstallMessageHandler(log_handler)
+
+
+class VentanaIdiomas(QtWidgets.QDialog):
+    idioma_seleccionado = QtCore.pyqtSignal(str)
+    headers = {
+        'Content-Type': 'application/json',
+        'User-Agent': 'KodiJsonClient'
+    }
+
+    LANGUAGE_MAP = {
+        "INGLES": "resource.language.en_gb",
+        "ESPAÑOL": "resource.language.es_es",
+        "FRANCES": "resource.language.fr_fr",
+        "ALEMAN": "resource.language.de_de",
+        "CHINO": "resource.language.zh_cn",
+    }
+    def __init__(self, ip, parent=None):
+        super(VentanaIdiomas, self).__init__(parent)
+        loadUi("interfaz/idiomas.ui", self)  # Asegúrate de usar la ruta correcta al archivo .ui
+        self.ip = ip
+
+        # Conectar el botón btn_ok a su slot correspondiente
+        self.btn_ok.clicked.connect(self.guardar_seleccion)
+        self.VentanaIdiomas = None
+
+    def guardar_seleccion(self):
+        try:
+            if self.radio_ing.isChecked():
+                seleccion = "INGLES"
+            elif self.radio_esp.isChecked():
+                seleccion = "ESPAÑOL"
+            elif self.radio_fran.isChecked():
+                seleccion = "FRANCES"
+            elif self.radio_alem.isChecked():
+                seleccion = "ALEMAN"
+            elif self.radio_chin.isChecked():
+                seleccion = "CHINO"
+            else:
+                print("No se ha seleccionado ningún idioma.")
+                return
+
+            # Cambiar el idioma en Kodi
+            self.change_language(seleccion)
+
+            # Cerrar la ventana después de guardar la selección
+            self.close()
+
+        except Exception as e:
+            print(f"Error en guardar_seleccion: {e}")
+
+    def change_language(self, language):
+        if language not in self.LANGUAGE_MAP:
+            print(f"Error: '{language}' no está soportado.")
+            return
+
+        kodi_url = f'http://{self.ip}:8080/jsonrpc'
+
+        data = {
+            "jsonrpc": "2.0",
+            "method": "Settings.SetSettingValue",
+            "params": {
+                "setting": "locale.language",
+                "value": self.LANGUAGE_MAP[language]
+            },
+            "id": 1
+        }
+
+        time.sleep(0.5)
+        response = requests.post(kodi_url, headers=self.headers, data=json.dumps(data))
+        response_json = response.json()
+
+        if 'result' in response_json and response_json['result'] == True:
+            print(f"Idioma cambiado a {language} exitosamente!")
+        else:
+            print(f"Error cambiando el idioma a {language}:", response_json)
+
 
 # Panel de control avanzado
 class PanelControl(QtWidgets.QDialog):
@@ -19,24 +104,107 @@ class PanelControl(QtWidgets.QDialog):
         self.setWindowTitle(f"Habitación {numero_habitacion}")
         self.btn_abrir_kodi.clicked.connect(self.abrir_interfaz_kodi)
         self.btn_estado.clicked.connect(self.mostrar_menu_actual)
+        self.btn_idioma.clicked.connect(self.mostrar_ventana_idioma)
+        self.perfil_actual = "normal"
+        self.btn_perfil.clicked.connect(self.cargar_perfil_action)
+        self.perfil_actual = self.obtener_perfil_actual()
 
-    def mostrar_menu_actual(self): #metodo para mostrar menu actual del usuario
-            current_menu = self.parent().obtener_menu_actual(self.ip)
-            if current_menu:
-                QtWidgets.QMessageBox.information(self, "Informacion",
-                                                  f"El usuario esta en el menu: {current_menu}")
-            else:
-                QtWidgets.QMessageBox.warning(self, "Advertencia",
-                                              f"No se encontro la IP para la habitacion {self.ip}")
-    # Interfaz web de Kodi
+    def mostrar_ventana_idioma(self):
+        try:
+            self.VentanaIdiomas = VentanaIdiomas(self.ip, self)  # Aquí pasamos la dirección IP
+            self.VentanaIdiomas.show()
+        except Exception as e:
+            print(f"Error al inicializar o mostrar VentanaIdiomas: {e}")
+
+    def mostrar_menu_actual(self):
+        current_menu = self.parent().obtener_menu_actual(self.ip)
+        if current_menu:
+            QtWidgets.QMessageBox.information(self, "Informacion",
+                                              f"El usuario está en el menú: {current_menu}")
+        else:
+            QtWidgets.QMessageBox.warning(self, "Advertencia",
+                                          f"No se encontró la IP para la habitación {self.ip}")
+
+
     def abrir_interfaz_kodi(self):
         url = f"http://{self.ip}:8080"
         webbrowser.open(url)
 
+
+
+    def cambiar_idioma(self, idioma):
+        self.change_language(idioma)
+
+    def cargar_perfil_action(self):
+        if self.perfil_actual == "normal":
+            self.cargar_perfil("premium")
+            self.perfil_actual = "premium"
+            self.btn_perfil.setText("Cambiar a perfil normal")  # Cambia el texto del botón
+        else:
+            self.cargar_perfil("normal")
+            self.perfil_actual = "normal"
+            self.btn_perfil.setText("Cambiar a perfil premium")
+
+    def cargar_perfil(self, profile_name, prompt=False):
+        url = f"http://{self.ip}:8080/jsonrpc"
+
+        headers = {
+            'Content-Type': 'application/json',
+            'User-Agent': 'KodiJsonClient'
+        }
+
+        data = {
+            "jsonrpc": "2.0",
+            "method": "Profiles.LoadProfile",
+            "params": {
+                "profile": profile_name,
+                "prompt": prompt
+            },
+            "id": 1
+        }
+
+        try:
+            response = requests.post(url, headers=headers, json=data)
+            response_json = response.json()
+
+            if 'result' in response_json and response_json['result'] == "OK":
+                print(f"Perfil {profile_name} cargado exitosamente en Kodi!")
+            else:
+                print(f"Error al cargar el perfil {profile_name} en Kodi:", response_json)
+        except Exception as e:
+            print(f"Error al intentar cargar el perfil en Kodi: {e}")
+
+    def obtener_perfil_actual(self):
+        url = f"http://{self.ip}:8080/jsonrpc"
+
+        headers = {
+            'Content-Type': 'application/json',
+            'User-Agent': 'KodiJsonClient'
+        }
+
+        data = {
+            "jsonrpc": "2.0",
+            "method": "Profiles.GetCurrentProfile",
+            "id": 1
+        }
+
+        try:
+            response = requests.post(url, headers=headers, json=data)
+            response_json = response.json()
+
+            if 'result' in response_json:
+                return response_json['result']['label']
+            else:
+                print(f"Error al obtener el perfil actual en Kodi:", response_json)
+                return None
+        except Exception as e:
+            print(f"Error al intentar obtener el perfil actual en Kodi: {e}")
+            return None
+
+
 # Ventana de tareas
 class VentanaSecundaria(QtWidgets.QMainWindow):
-    guardarDatosSignal = QtCore.pyqtSignal(str)
-
+    guardarDatosSignal = QtCore.pyqtSignal(str)  # Definición de la señal
     def __init__(self, ventanaPrincipal):
         super().__init__()
         self.setWindowTitle("Segunda Ventana")
@@ -51,7 +219,6 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.actualizarHora)
         self.timer.start(1000)  # Actualizar cada 1000 ms (1 segundo)
 
-    # Función para guardar la tarea
     def guardarDatos(self):
         texto = self.comboBox.currentText()
         fecha = self.dateTimeEdit.dateTime().toPyDateTime()
@@ -69,19 +236,19 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
         if tiempo_restante.total_seconds() > 0:
             threading.Timer(tiempo_restante.total_seconds(), self.programar_publicidad).start()
 
-            # Función para programar el envío de publicidad
     def programar_publicidad(self):
-        self.ventanaPrincipal.enviar_publicidad_a_habitaciones(self.ventanaPrincipal.ip_activas, self.ventanaPrincipal.addon_id)
+        self.ventanaPrincipal.enviar_publicidad_a_habitaciones(self.ventanaPrincipal.ip_activas,self.ventanaPrincipal.addon_id)
         self.ventanaPrincipal.removerElemento(self.datos)
 
-    # función para actualizar la hora en el QDateTimeEdit
     def actualizarHora(self):
         hora_actual = QtCore.QDateTime.currentDateTime()
         self.dateTimeEdit.setDateTime(hora_actual)
         self.timer.timeout.disconnect(self.actualizarHora)
 
+
 # Clase principal
 class MainWindow(QtWidgets.QMainWindow):
+
     def __init__(self):
         super().__init__()
         loadUi("interfaz/ventana_habitaciones.ui", self)
@@ -99,7 +266,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # se inicializa funciones para obtener los datos de las pantallas
         self.obtener_datos_habitaciones()
         self.cargar_datos_habitaciones()
-        self.ping_and_verify()
         self.cargar_tareas_desde_bd()
 
         # CONEXION DE SEÑALES EN LA VENTANA PRINCIPAL
@@ -122,28 +288,26 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.actualizarReloj)
         self.timer.start(1000)
 
-        #self.timer_estado_menus = QtCore.QTimer(self) hasta solucionar ejec segundo plano
-        #self.timer_estado_menus.timeout.connect(self.actualizar_estado_menus) hasta solucionar ejec segundo plano
-        #self.timer_estado_menus.start(1000)  # Actualizar cada 5000 ms (5 segundos) hasta solucionar ejec segundo plano
+        self.ip_list = []
+        self.buttons = []
+        self.ip_number_mapping = {}
 
-        # Cada minuto, verifica las tareas programadas
-        #self.timer_tareas = QtCore.QTimer(self)
-        #self.timer_tareas.timeout.connect(self.verificar_tareas_programadas)
-        #self.timer_tareas.start(10 * 1000)  # 60 * 1000 ms = 1 minuto
+        # Inicia el hilo de actualización
+        self.actualizacion_hilo = threading.Thread(target=self.actualizar_estados_botones_thread)
+        self.actualizacion_hilo.daemon = True  # Hilo como demonio para que termine cuando el programa principal termine
+        self.actualizacion_hilo.start()
 
         self.cargar_datos_habitaciones()
         self.ping_and_verify()
         self.actualizar_estados_botones()  # Agrega esta línea para actualizar los botones al iniciar
 
-    # Llamada al panel para agregar una nueva pantalla
     def ejecutarip(self):
         subprocess.Popen(['python', 'ip.py'])
 
-# Llamada al panel de tareas
     def abrirSegundaVentana(self):
-        self.segundaVentana = VentanaSecundaria(self)
-        self.segundaVentana.guardarDatosSignal.connect(self.agregarElemento)
-        self.segundaVentana.show()
+            self.segundaVentana = VentanaSecundaria(self)
+            self.segundaVentana.guardarDatosSignal.connect(self.agregarElemento)
+            self.segundaVentana.show()
 
     def cargar_tareas_desde_bd(self):
         tareas = self.base_datos.obtener_tareas()
@@ -170,27 +334,40 @@ class MainWindow(QtWidgets.QMainWindow):
         self.relojLabel.setText(tiempo_formateado)
 
     def abrir_panel_control(self, numero_habitacion):
+        cursor = None
         try:
+            print("Intentando conectar a la base de datos...")
             cursor = self.base_datos.conexion_db.cursor()
+            print("Conexión establecida. Ejecutando consulta...")
 
             cursor.execute("SELECT Ip FROM habitaciones WHERE Numero=%s", (numero_habitacion,))
             ip = cursor.fetchone()
 
             if ip:
-                self.panel_control = PanelControl(ip[0], numero_habitacion, self)
-                self.panel_control.show()
+                print(f"IP encontrada para la habitación {numero_habitacion}: {ip[0]}")
+                try:
+                    self.panel_control = PanelControl(ip[0], numero_habitacion, self)
+                    self.panel_control.show()
+                except Exception as e:
+                    print("Error al inicializar o mostrar PanelControl:", str(e))
 
-                self.enviar_publicidad_a_habitaciones([ip[0]])
+                #self.enviar_publicidad_a_habitaciones([ip[0]], self.addon_id)
+
 
             else:
+                print(f"No se encontró IP para la habitación {numero_habitacion}")
                 QtWidgets.QMessageBox.warning(self, "Advertencia",
                                               f"No se encontró la IP para la habitación {numero_habitacion}")
 
         except mysql.connector.Error as error:
+            print(f"Error al conectarse a la base de datos: {error}")
             QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectarse a la base de datos:\n{error}")
 
         finally:
-            cursor.close()
+            print("Cerrando cursor...")
+            if cursor:
+                cursor.close()
+            print("Cursor cerrado.")
 
     def obtener_datos_habitaciones(self):
         try:
@@ -217,29 +394,26 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return []
 
-
     def cargar_datos_habitaciones(self):
         # Inicializa todos los botones como ocultos
-        for i in range(1, 101):  #Rango de botones,asumiendo que tenemos 100 botones como máximo
+        for i in range(1, 101):  # Rango de botones,asumiendo que tenemos 100 botones como máximo
             btn = getattr(self, f"btn{i}", None)
             if btn:
                 btn.hide()
 
         data = self.obtener_datos_habitaciones()
         self.ip_list = [ip for ip, _ in data]
-        self.buttons = [getattr(self, f"btn{i+1}") for i in range(len(data))]
+        self.buttons = [getattr(self, f"btn{i + 1}") for i in range(len(data))]
         self.ip_number_mapping = {ip: numero for ip, numero in data}
 
         # Muestra solo los botones con IPs válidas
         for btn in self.buttons:
             btn.show()
 
-
-
-
     def ping(self, ip, timeout=1):
         try:
             url = f'http://{ip}:8080/'
+            time.sleep(0.5)
             response = requests.get(url, timeout=timeout)
             return response.status_code == 200
         except requests.exceptions.RequestException:
@@ -262,8 +436,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return self.ip_activas
 
-        #aself.enviar_publicidad_a_habitaciones(ip_activas)
-
     def enviar_publicidad_a_habitaciones(self, ip_activas, addon_id):
         for ip in ip_activas:
             url = f'http://{ip}:8080/jsonrpc'
@@ -277,6 +449,7 @@ class MainWindow(QtWidgets.QMainWindow):
             }
 
             try:
+                time.sleep(0.5)
                 response = requests.post(url, json=payload)
                 response.raise_for_status()
                 if response.status_code != 200:
@@ -285,8 +458,6 @@ class MainWindow(QtWidgets.QMainWindow):
             except requests.exceptions.RequestException as e:
                 print(f'Error al ejecutar el addon en la habitación {ip}: {str(e)}')
 
-
-    #funcion para obtener el menu actual del usuario
     def obtener_menu_actual(self, ip):
         url = f"http://{ip}:8080/jsonrpc"
         payload = {
@@ -299,6 +470,7 @@ class MainWindow(QtWidgets.QMainWindow):
         }
 
         try:
+            time.sleep(0.5)
             response = requests.post(url, json=payload)
             response.raise_for_status()
             data = response.json()
@@ -307,21 +479,6 @@ class MainWindow(QtWidgets.QMainWindow):
         except requests.exceptions.RequestException as e:
             print(f'Error al obtener el menú actual de la habitación {ip}: {str(e)}')
             return None
-
-    def actualizar_estado_menus(self):
-        ip_activas = []
-
-        for ip in self.ip_list:
-            if self.ping(ip):
-                current_menu = self.obtener_menu_actual(ip)
-                if current_menu:
-                    print(f"El usuario en la habitación {ip} está en el menú: {current_menu}")
-                else:
-                    print(f"No se encontró la IP para la habitación {ip}")
-                ip_activas.append(ip)
-
-        #self.enviar_publicidad_a_habitaciones(ip_activas)
-        self.actualizar_estados_botones()  # Llama a la función para actualizar los botones
 
     def actualizar_estados_botones(self):
         for ip, button in zip(self.ip_list, self.buttons):
@@ -337,6 +494,18 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 button.setStyleSheet("background-color: red")
                 button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}")
+                pass
+
+    def actualizar_estados_botones_thread(self):
+        while True:
+            self.actualizar_estados_botones()
+            time.sleep(5)  # Espera 5 segundos antes de la próxima ejecución
+
+    def iniciar_actualizacion_estado_menus(self):
+        print("Iniciando actualización de estados de menús en segundo plano...")
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            executor.submit(self.actualizar_estado_menus)
+        print("Actualización de estados de menús en segundo plano iniciada.")
 
     def ejecutar_addon(self, ip, addon_id):
         url = f"http://{ip}:8080/jsonrpc"
@@ -350,6 +519,7 @@ class MainWindow(QtWidgets.QMainWindow):
         }
 
         try:
+            time.sleep(0.5)
             response = requests.post(url, json=payload)
             response.raise_for_status()
             print(f'Addon {addon_id} ejecutado en la habitación {ip}')
