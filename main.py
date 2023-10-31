@@ -68,14 +68,23 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
 
 # Clase principal
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self):
+    def __init__(self) -> object:
         super().__init__()
         loadUi("interfaz/ventana_habitaciones.ui", self)
         self.setWindowTitle("Panel de control")
         self.setFixedSize(793, 543)
 
+        # Configura los valores de la base de datos
+        host = "192.168.100.126"  # Reemplaza con la dirección de tu servidor de base de datos
+        user = "root"  # Reemplaza con el nombre de usuario de tu base de datos
+        password = "1234"  # Reemplaza con la contraseña de tu base de datos
+        database = "tvip"  # Reemplaza con el nombre de tu base de datos
+
+        # Crea una instancia de la clase BaseDeDatos con los valores proporcionados
+        self.base_datos = BaseDeDatos(host, user, password, database)
+
         # se crea una instancia de la clase BaseDeDatos
-        self.base_datos = BaseDeDatos()
+        self.base_datos = BaseDeDatos(host,user,password,database)
 
         # se inicializa funciones para obtener los datos de las pantallas
         self.obtener_datos_habitaciones()
@@ -208,7 +217,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 
-    def ping(self, ip, timeout=1):
+    def ping(self, ip, timeout=5):
         try:
             url = f'http://{ip}:8080/'
             response = requests.get(url, timeout=timeout)
