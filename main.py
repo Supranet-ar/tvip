@@ -19,6 +19,8 @@ def log_handler(mode, context, message):
 
 qInstallMessageHandler(log_handler)
 
+KODI_USERNAME = "Supra"
+KODI_PASSWORD = "3434"
 
 class VentanaIdiomas(QtWidgets.QDialog):
     idioma_seleccionado = QtCore.pyqtSignal(str)
@@ -86,7 +88,7 @@ class VentanaIdiomas(QtWidgets.QDialog):
         }
 
         time.sleep(0.5)
-        response = requests.post(kodi_url, headers=self.headers, data=json.dumps(data))
+        response = requests.post(kodi_url, headers=self.headers, data=json.dumps(data), auth=(KODI_USERNAME, KODI_PASSWORD))
         response_json = response.json()
 
         if 'result' in response_json and response_json['result'] == True:
@@ -164,7 +166,7 @@ class PanelControl(QtWidgets.QDialog):
         }
 
         try:
-            response = requests.post(url, headers=headers, json=data)
+            response = requests.post(url, headers=headers, json=data, auth=(KODI_USERNAME, KODI_PASSWORD))
             response_json = response.json()
 
             if 'result' in response_json and response_json['result'] == "OK":
@@ -189,7 +191,7 @@ class PanelControl(QtWidgets.QDialog):
         }
 
         try:
-            response = requests.post(url, headers=headers, json=data)
+            response = requests.post(url, headers=headers, json=data,auth=(KODI_USERNAME, KODI_PASSWORD))
             response_json = response.json()
 
             if 'result' in response_json:
@@ -415,7 +417,7 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             url = f'http://{ip}:8080/'
             time.sleep(0.5)
-            response = requests.get(url, timeout=timeout)
+            response = requests.get(url, timeout=timeout, auth=(KODI_USERNAME, KODI_PASSWORD))
             return response.status_code == 200
         except requests.exceptions.RequestException:
             return False
@@ -451,7 +453,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
             try:
                 time.sleep(0.5)
-                response = requests.post(url, json=payload)
+                response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
                 response.raise_for_status()
                 if response.status_code != 200:
                     print("Error en la respuesta:", response.text)
@@ -472,7 +474,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         try:
             time.sleep(0.5)
-            response = requests.post(url, json=payload)
+            response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
             response.raise_for_status()
             data = response.json()
             current_window = data["result"]["currentwindow"]["label"]
@@ -521,7 +523,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         try:
             time.sleep(0.5)
-            response = requests.post(url, json=payload)
+            response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
             response.raise_for_status()
             print(f'Addon {addon_id} ejecutado en la habitación {ip}')
         except requests.exceptions.RequestException as e:
