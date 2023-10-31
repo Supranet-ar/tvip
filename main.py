@@ -262,7 +262,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ip_activas = []
         self.addon_id = "script.hello.world"
 
-
         # se inicializa funciones para obtener los datos de las pantallas
         self.obtener_datos_habitaciones()
         self.cargar_datos_habitaciones()
@@ -302,7 +301,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actualizar_estados_botones()  # Agrega esta línea para actualizar los botones al iniciar
 
     def ejecutarip(self):
-        subprocess.Popen(['python', 'ip.py'])
+        ventana.close()
+        subprocess.run(['python', 'ip.py'])
 
     def abrirSegundaVentana(self):
             self.segundaVentana = VentanaSecundaria(self)
