@@ -141,7 +141,7 @@ font: 75 11pt &quot;Bahnschrift Condensed&quot;;
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../../../Downloads/feather/database.svg</normaloff>../../../Downloads/feather/database.svg</iconset>
+      <normaloff>../../../../Downloads/feather/database.svg</normaloff>../../../../Downloads/feather/database.svg</iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_2">
@@ -178,7 +178,7 @@ background-color: rgb(10, 137, 103);</string>
      <string>BOTON 1</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_5">
+   <widget class="QPushButton" name="boton_puerto">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -189,10 +189,11 @@ background-color: rgb(10, 137, 103);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">border-radius:20px;
-background-color: rgb(10, 137, 103);</string>
+background-color: rgb(10, 137, 103);
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
     </property>
     <property name="text">
-     <string>BOTON 1</string>
+     <string>CAMBIAR PUERTO</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btn_programar">
@@ -215,7 +216,7 @@ font: 75 11pt &quot;Bahnschrift Condensed&quot;;
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../../../Downloads/icons8-horas-extras-50.png</normaloff>../../../Downloads/icons8-horas-extras-50.png</iconset>
+      <normaloff>../../../../Downloads/icons8-horas-extras-50.png</normaloff>../../../../Downloads/icons8-horas-extras-50.png</iconset>
     </property>
    </widget>
    <widget class="QWidget" name="verticalWidget_3" native="true">
@@ -253,7 +254,7 @@ font: 75 11pt &quot;Bahnschrift Condensed&quot;;
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../../../Downloads/feather/log-out.svg</normaloff>../../../Downloads/feather/log-out.svg</iconset>
+      <normaloff>../../../../Downloads/feather/log-out.svg</normaloff>../../../../Downloads/feather/log-out.svg</iconset>
     </property>
    </widget>
    <widget class="QScrollArea" name="scrollArea">
@@ -278,7 +279,7 @@ font: 75 11pt &quot;Bahnschrift Condensed&quot;;
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>-160</y>
+       <y>0</y>
        <width>402</width>
        <height>675</height>
       </rect>
@@ -298,7 +299,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -316,7 +317,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -334,7 +335,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -352,7 +353,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -370,7 +371,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -402,7 +403,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -420,7 +421,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -452,7 +453,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -470,7 +471,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -488,7 +489,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -534,7 +535,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -552,7 +553,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -570,7 +571,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -588,7 +589,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -606,7 +607,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -624,7 +625,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -642,7 +643,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -660,7 +661,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -678,7 +679,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -696,7 +697,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -714,7 +715,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -732,7 +733,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -750,7 +751,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -768,7 +769,7 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/icons8-cama-50.png</normaloff>../../../Downloads/icons8-cama-50.png</iconset>
+          <normaloff>../../../../Downloads/icons8-cama-50.png</normaloff>../../../../Downloads/icons8-cama-50.png</iconset>
         </property>
        </widget>
       </item>
@@ -1362,7 +1363,7 @@ border-radius:10px;</string>
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../../supralogo1.png</pixmap>
+     <pixmap>../../../supralogo1.png</pixmap>
     </property>
    </widget>
   </widget>

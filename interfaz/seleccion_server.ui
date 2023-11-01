@@ -111,8 +111,6 @@ font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources>
-  <include location="../../nnn.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

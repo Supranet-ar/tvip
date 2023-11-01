@@ -9,7 +9,7 @@ import mysql.connector
 import requests
 import webbrowser
 from PyQt5.QtCore import QtMsgType, qInstallMessageHandler
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from PyQt5.uic import loadUi
 from base_de_datos import BaseDeDatos
 
@@ -21,6 +21,34 @@ qInstallMessageHandler(log_handler)
 
 KODI_USERNAME = "Supra"
 KODI_PASSWORD = "3434"
+
+# Variable global para almacenar el puerto configurado
+puerto_configurado = 8080  # Puerto predeterminado
+class PanelPuerto(QtWidgets.QDialog):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi("interfaz/panel_puerto.ui", self)
+        self.setWindowTitle("Configurar Puerto")
+
+        # Conecta el botón "btnEjecutarPuerto" a la función cambiar_puerto
+        self.btnEjecutarPuerto.clicked.connect(self.cambiar_puerto)
+
+        # Muestra el puerto existente en el QLabel
+        self.labelPuertoExistente.setText(f"Puerto Existente: {puerto_configurado}")
+
+    def cambiar_puerto(self):
+        global puerto_configurado  # Accede a la variable global puerto_configurado
+        nuevo_puerto = self.lineEditPuerto.text()
+
+        try:
+            nuevo_puerto = int(nuevo_puerto)  # Convierte el valor a un número entero
+            if 1024 <= nuevo_puerto <= 65535:
+                puerto_configurado = nuevo_puerto
+                print(f"Nuevo puerto configurado: {puerto_configurado}")
+            else:
+                QtWidgets.QMessageBox.warning(self, "Advertencia", "El puerto debe estar en el rango 1024-65535.")
+        except ValueError:
+            QtWidgets.QMessageBox.warning(self, "Advertencia", "Ingrese un número de puerto válido.")
 
 class VentanaIdiomas(QtWidgets.QDialog):
     idioma_seleccionado = QtCore.pyqtSignal(str)
@@ -127,12 +155,10 @@ class PanelControl(QtWidgets.QDialog):
             QtWidgets.QMessageBox.warning(self, "Advertencia",
                                           f"No se encontró la IP para la habitación {self.ip}")
 
-
     def abrir_interfaz_kodi(self):
-        url = f"http://{self.ip}:8080"
+        global puerto_configurado  # Accede a la variable global puerto_configurado
+        url = f"http://{self.ip}:{puerto_configurado}"  # Utiliza el puerto configurado
         webbrowser.open(url)
-
-
 
     def cambiar_idioma(self, idioma):
         self.change_language(idioma)
@@ -278,6 +304,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.btn_programar.clicked.connect(self.abrirSegundaVentana)
         self.salirButton.clicked.connect(self.cerrarVentana)
 
+        # Conecta el botón "boton_puerto" a la función abrir_panel_puerto
+        self.boton_puerto.clicked.connect(self.abrir_panel_puerto)
+
         self.relojLabel = QtWidgets.QLabel(self)
         self.relojLabel.setGeometry(10, 10, 150, 30)
         font = QtGui.QFont("Arial", 25, QtGui.QFont.Bold)
@@ -329,6 +358,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def cerrarVentana(self):
         self.close()
+
+    def abrir_panel_puerto(self):
+        panel_puerto_window = PanelPuerto()
+        panel_puerto_window.exec_()
 
     def actualizarReloj(self):
         tiempo_actual = QtCore.QTime.currentTime()
