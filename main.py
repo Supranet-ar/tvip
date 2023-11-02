@@ -406,22 +406,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def obtener_datos_habitaciones(self):
         try:
-            connection = mysql.connector.connect(
-                host="192.168.100.90",
-                port="3306",
-                user="tvip",
-                password="3434",
-                database="tvip"
-            )
-            cursor = connection.cursor()
+            cursor = self.base_datos.conexion_db.cursor()
 
             # Asegurarse de que solo se obtengan habitaciones con IPs válidas
             query = "SELECT ip, numero FROM habitaciones WHERE ip IS NOT NULL AND ip <> ''"
             cursor.execute(query)
             data = cursor.fetchall()
-
             cursor.close()
-            connection.close()
 
             return data
 
