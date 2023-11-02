@@ -399,10 +399,7 @@ class MainWindow(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectarse a la base de datos:\n{error}")
 
         finally:
-            print("Cerrando cursor...")
-            if cursor:
-                cursor.close()
-            print("Cursor cerrado.")
+            cursor.close()
 
     def obtener_datos_habitaciones(self):
         try:
