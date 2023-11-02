@@ -13,9 +13,23 @@ def regresar():
     # Ejecuta el archivo Python deseado
     subprocess.run(["python", "main.py"])
 
+# Variable para almacenar IPs
+ips_set = set()
+
 def insertar_ip():
     # Obtiene la IP ingresada en el QLineEdit
     ip = ui.lineEdit.text()
+    habitacion = ui.lineEdit_2.text()
+
+    # Verificacion de IP y Nº de habitacion
+    if ip in ips_set:
+        QMessageBox.warning(window, "Error", "La IP ya ha sido ingresada.")
+        return
+    for row in range(ui.tableWidget.rowCount()):
+        habitacion_actual = ui.tableWidget.item(row, 1).text()
+        if habitacion_actual == habitacion:
+            QMessageBox.warning(window, "Error", "El número de habitación ya está asignado.")
+            return
 
     # Verifica que la IP tenga 4 octetos separados por puntos
     octetos = ip.split('.')
@@ -38,6 +52,9 @@ def insertar_ip():
 
     # Crear una instancia de la clase BaseDeDatos
     base_datos = BaseDeDatos()
+
+    # Agrega las IP nuevas a la base de datos
+    ips_set.add(ip)
 
     # Inserta la IP y el número de habitación en la base de datos
     if base_datos.insertar_ip(ip, habitacion):
