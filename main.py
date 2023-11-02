@@ -399,8 +399,8 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f"Error al conectarse a la base de datos: {error}")
             QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectarse a la base de datos:\n{error}")
 
-        finally:
-            cursor.close()
+        #finally:
+            #cursor.close()
 
     def obtener_datos_habitaciones(self):
         try:
@@ -417,7 +417,7 @@ class MainWindow(QtWidgets.QMainWindow):
         except mysql.connector.Error as error:
             QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectar con la base de datos: {error}")
 
-        return []
+        return None
 
     def cargar_datos_habitaciones(self):
         # Inicializa todos los botones como ocultos
