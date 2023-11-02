@@ -386,7 +386,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 except Exception as e:
                     print("Error al inicializar o mostrar PanelControl:", str(e))
 
-                #self.enviar_publicidad_a_habitaciones([ip[0]], self.addon_id)
+                # Envio de publicidad desactivado, solo se utiliza para tests.
+                #self.enviar_publicidad_a_habitaciones([ip[0]])
 
 
             else:
@@ -460,27 +461,26 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return self.ip_activas
 
-    def enviar_publicidad_a_habitaciones(self, ip_activas, addon_id):
+    def enviar_publicidad_a_habitaciones(self, ip_activas):
+        mensaje_publicidad = "¡Descuento especial por tiempo limitado! Visita nuestro sitio web."
         for ip in ip_activas:
             url = f'http://{ip}:8080/jsonrpc'
             payload = {
                 "jsonrpc": "2.0",
-                "method": "Addons.ExecuteAddon",
+                "method": "GUI.ShowNotification",
                 "params": {
-                    "addonid": addon_id
+                    "title": "Publicidad",
+                    "message": mensaje_publicidad
                 },
                 "id": 1
             }
 
             try:
-                time.sleep(0.5)
-                response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
+                response = requests.post(url, json=payload)
                 response.raise_for_status()
-                if response.status_code != 200:
-                    print("Error en la respuesta:", response.text)
-                print(f'Addon {addon_id} ejecutado en la habitación {ip}')
+                print(f'Mensaje de publicidad enviado a la habitación {ip}')
             except requests.exceptions.RequestException as e:
-                print(f'Error al ejecutar el addon en la habitación {ip}: {str(e)}')
+                print(f'Error al enviar el mensaje de publicidad a la habitación {ip}: {str(e)}')
 
     def obtener_menu_actual(self, ip):
         url = f"http://{ip}:8080/jsonrpc"
