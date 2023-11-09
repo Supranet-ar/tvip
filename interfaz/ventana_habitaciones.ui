@@ -32,46 +32,46 @@
     <property name="styleSheet">
      <string notr="true">QWidget#fondo 
 {
-    background-image: url(D:/qt_images/Fondo.png);
+    background-image: url(assets/Fondo.png);
     background-repeat: no-repeat;
 }
 
 
 QWidget#logo{
-background-image: url(D:/qt_images/logo.png);
+background-image: url(assets/logo.png);
 background-repeat: no-repeat;
 margin-left:10px
 }
 
-QPushButton#Button_1
+QPushButton#btn_programar
 {
 background-color: transparent;
-background-image: url(D:\qt_images/actividades.png);
+background-image: url(assets/actividades.png);
 background-repeat: no-repeat;
 }
 
 QPushButton#Button_2
 {
 background-color: transparent;
-background-image: url(D:\qt_images/habitaciones.png);
+background-image: url(assets/habitaciones.png);
 background-repeat: no-repeat;
 }
 
 QPushButton#Button_3
 {
 background-color: transparent;
-background-image: url(D:\qt_images/info room.png);
+background-image: url(assets/info room.png);
 background-repeat: no-repeat;
 }
 
 QPushButton#Button_4
 {
 background-color: transparent;
-background-image: url(D:\qt_images/configuracion.png);
+background-image: url(assets/configuracion.png);
 background-repeat: no-repeat;
 }
 
-QPushButton#Button_1:hover
+QPushButton#btn_programar:hover
 {
 border-radius:5px;
 background-color: transparent;
@@ -97,7 +97,7 @@ background-color: transparent;
 
 QFrame#timer
 {
- background-image: url(D:\qt_images/timer.png);
+ background-image: url(assets/timer.png);
 background-repeat: no-repeat;
 }
 
@@ -125,7 +125,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QPushButton" name="Button_1">
+    <widget class="QPushButton" name="btn_programar">
      <property name="geometry">
       <rect>
        <x>50</x>
@@ -138,7 +138,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
       <string/>
      </property>
     </widget>
-    <widget class="QPushButton" name="Button_2">
+    <widget class="QPushButton" name="btn_agregar">
      <property name="geometry">
       <rect>
        <x>50</x>
@@ -203,7 +203,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-image: url(D:\qt_images/top bar habitaciones.png);
+      <string notr="true">background-image: url(assets/top bar habitaciones.png);
 background-repeat: no-repeat;</string>
      </property>
      <property name="frameShape">
@@ -223,7 +223,7 @@ background-repeat: no-repeat;</string>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-image: url(D:\qt_images/topbar tareas.png);
+      <string notr="true">background-image: url(assets/topbar tareas.png);
 background-repeat: no-repeat;</string>
      </property>
      <property name="frameShape">
@@ -287,7 +287,7 @@ min-height:91px;
 QPushButton#btn1
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 
@@ -296,7 +296,7 @@ max-width:121;
 QPushButton#btn2
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 
@@ -305,7 +305,7 @@ max-width:121;
 QPushButton#btn3
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 
@@ -314,7 +314,7 @@ max-width:121;
 QPushButton#btn4
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 
@@ -323,7 +323,7 @@ max-width:121;
 QPushButton#btn5
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -331,7 +331,7 @@ max-width:121;
 QPushButton#btn6
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -339,7 +339,7 @@ max-width:121;
 QPushButton#btn7
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -347,7 +347,7 @@ max-width:121;
 QPushButton#btn8
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -355,7 +355,7 @@ max-width:121;
 QPushButton#btn9
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -363,7 +363,7 @@ max-width:121;
 QPushButton#btn10
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -371,7 +371,7 @@ max-width:121;
 QPushButton#btn11
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -379,7 +379,7 @@ max-width:121;
 QPushButton#btn12
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -387,7 +387,7 @@ max-width:121;
 QPushButton#btn13
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -395,7 +395,7 @@ max-width:121;
 QPushButton#btn14
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -403,7 +403,7 @@ max-width:121;
 QPushButton#btn15
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -411,7 +411,7 @@ max-width:121;
 QPushButton#btn16
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -419,7 +419,7 @@ max-width:121;
 QPushButton#btn17
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -427,7 +427,7 @@ max-width:121;
 QPushButton#btn18
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -435,7 +435,7 @@ max-width:121;
 QPushButton#btn19
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -443,7 +443,7 @@ max-width:121;
 QPushButton#btn20
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -451,7 +451,7 @@ max-width:121;
 QPushButton#btn21
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -459,7 +459,7 @@ max-width:121;
 QPushButton#btn22
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -467,7 +467,7 @@ max-width:121;
 QPushButton#btn23
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -475,7 +475,7 @@ max-width:121;
 QPushButton#btn24
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -483,7 +483,7 @@ max-width:121;
 QPushButton#btn25
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -491,7 +491,7 @@ max-width:121;
 QPushButton#btn26
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -499,7 +499,7 @@ max-width:121;
 QPushButton#btn27
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -507,7 +507,7 @@ max-width:121;
 QPushButton#btn28
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -515,7 +515,7 @@ max-width:121;
 QPushButton#btn29
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -523,7 +523,7 @@ max-width:121;
 QPushButton#btn30
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -531,7 +531,7 @@ max-width:121;
 QPushButton#btn31
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -539,7 +539,7 @@ max-width:121;
 QPushButton#btn32
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -547,7 +547,7 @@ max-width:121;
 QPushButton#btn33
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -555,7 +555,7 @@ max-width:121;
 QPushButton#btn34
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -563,7 +563,7 @@ max-width:121;
 QPushButton#btn35
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -571,7 +571,7 @@ max-width:121;
 QPushButton#btn36
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -579,7 +579,7 @@ max-width:121;
 QPushButton#btn37
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -587,7 +587,7 @@ max-width:121;
 QPushButton#btn38
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -595,7 +595,7 @@ max-width:121;
 QPushButton#btn39
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -603,7 +603,7 @@ max-width:121;
 QPushButton#btn40
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -611,7 +611,7 @@ max-width:121;
 QPushButton#btn41
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -619,7 +619,7 @@ max-width:121;
 QPushButton#btn42
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -627,7 +627,7 @@ max-width:121;
 QPushButton#btn43
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -635,7 +635,7 @@ max-width:121;
 QPushButton#btn44
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -643,7 +643,7 @@ max-width:121;
 QPushButton#btn45
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -651,7 +651,7 @@ max-width:121;
 QPushButton#btn46
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -659,7 +659,7 @@ max-width:121;
 QPushButton#btn47
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -667,7 +667,7 @@ max-width:121;
 QPushButton#btn48
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -675,7 +675,7 @@ max-width:121;
 QPushButton#btn49
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -683,7 +683,7 @@ max-width:121;
 QPushButton#btn50
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -691,7 +691,7 @@ max-width:121;
 QPushButton#btn51
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -699,7 +699,7 @@ max-width:121;
 QPushButton#btn52
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -707,7 +707,7 @@ max-width:121;
 QPushButton#btn53
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -715,7 +715,7 @@ max-width:121;
 QPushButton#btn54
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -723,7 +723,7 @@ max-width:121;
 QPushButton#btn55
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -731,7 +731,7 @@ max-width:121;
 QPushButton#btn56
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -739,7 +739,7 @@ max-width:121;
 QPushButton#btn57
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -747,7 +747,7 @@ max-width:121;
 QPushButton#btn58
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -755,7 +755,7 @@ max-width:121;
 QPushButton#btn59
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -763,7 +763,7 @@ max-width:121;
 QPushButton#btn60
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -771,7 +771,7 @@ max-width:121;
 QPushButton#btn61
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -779,7 +779,7 @@ max-width:121;
 QPushButton#btn62
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -787,7 +787,7 @@ max-width:121;
 QPushButton#btn63
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -795,7 +795,7 @@ max-width:121;
 QPushButton#btn64
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -803,7 +803,7 @@ max-width:121;
 QPushButton#btn65
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -811,7 +811,7 @@ max-width:121;
 QPushButton#btn66
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -819,7 +819,7 @@ max-width:121;
 QPushButton#btn67
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -827,7 +827,7 @@ max-width:121;
 QPushButton#btn68
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -835,7 +835,7 @@ max-width:121;
 QPushButton#btn69
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -843,7 +843,7 @@ max-width:121;
 QPushButton#btn70
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -851,7 +851,7 @@ max-width:121;
 QPushButton#btn71
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -859,7 +859,7 @@ max-width:121;
 QPushButton#btn72
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -867,7 +867,7 @@ max-width:121;
 QPushButton#btn73
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -875,7 +875,7 @@ max-width:121;
 QPushButton#btn74
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -883,7 +883,7 @@ max-width:121;
 QPushButton#btn75
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -891,7 +891,7 @@ max-width:121;
 QPushButton#btn76
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -899,7 +899,7 @@ max-width:121;
 QPushButton#btn77
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -907,7 +907,7 @@ max-width:121;
 QPushButton#btn78
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -915,7 +915,7 @@ max-width:121;
 QPushButton#btn79
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -923,7 +923,7 @@ max-width:121;
 QPushButton#btn80
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -931,7 +931,7 @@ max-width:121;
 QPushButton#btn81
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -939,7 +939,7 @@ max-width:121;
 QPushButton#btn82
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -947,7 +947,7 @@ max-width:121;
 QPushButton#btn83
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -955,7 +955,7 @@ max-width:121;
 QPushButton#btn84
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
@@ -963,7 +963,7 @@ max-width:121;
 QPushButton#btn85
 {
 background-color: transparent;
-background-image: url(D:\qt_images/boton off.png);
+background-image: url(assets/boton off.png);
 background-repeat: no-repeat;
 max-width:121;
 }
