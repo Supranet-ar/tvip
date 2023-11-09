@@ -13,7 +13,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from PyQt5.uic import loadUi
 from base_de_datos import BaseDeDatos
 
-#Funcion para capturar errores
+# hola
 def log_handler(mode, context, message):
     sys.stderr.write("%s: %s\n" % (mode, message))
 
