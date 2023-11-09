@@ -6,213 +6,180 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>562</height>
+    <width>488</width>
+    <height>766</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(13, 25, 43);</string>
+   <string notr="true">QWidget#centralwidget
+{
+background-image: url(D:\qt_images/Fondo-Login.png);
+background-repeat:no-repeat;
+}
+
+QFrame#Logologin
+{
+background-image: url(D:\qt_images/Logo-Login.png);
+background-repeat:no-repeat;
+}
+
+QPushButton#Enviar
+{
+background-image: url(D:\qt_images/btn-Login.png);
+background-repeat:no-repeat;
+background-color: transparent;
+font-size:14pt; 
+font-weight:550;
+}
+
+QPushButton#Enviar:hover
+{
+border-radius:3px;
+background-color: transparent;
+}
+
+QCheckBox
+{
+image: url(D:\qt_images/toggleoff.png)
+}
+
+QCheckBox#checkBox:indicator
+{
+width:120px;
+height:100px;
+image: none;
+
+}
+QCheckBox:checked
+{
+image: url(D:\qt_images/toggleon.png);
+}
+
+QCheckBox:disabled
+{
+image: url(D:\qt_images/toggleoff.png);
+}
+
+
+QLineEdit
+{
+background-color: rgb(212, 212, 212);
+border-radius:13px;
+font-size:14pt;
+padding-left:20px;
+padding-rigth:10px;
+}
+
+QLabel
+{
+color: rgb(0, 0, 0);
+	background-color: qlineargradient(spread:pad, x1:0.192, y1:0.528818, x2:0.699, y2:0.551136, stop:0.474576 rgba(218, 217, 216, 255), stop:1 rgba(234, 234, 234, 255));
+border-radius:7px;
+
+}</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label">
+   <widget class="QFrame" name="Logologin">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>20</y>
-      <width>431</width>
+      <x>140</x>
+      <y>60</y>
+      <width>191</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Enviar">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>520</y>
+      <width>221</width>
       <height>61</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 75 30pt &quot;Bahnschrift Condensed&quot;;
-</string>
+     <string notr="true"/>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#09c184;&quot;&gt;TVO CATAMARCA&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>Enviar</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLineEdit" name="Username2">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>100</y>
-      <width>321</width>
-      <height>51</height>
+      <x>110</x>
+      <y>280</y>
+      <width>261</width>
+      <height>35</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">font: 75 16pt &quot;Bahnschrift Condensed&quot;;
-</string>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#09c184;&quot;&gt;Ingrese su usuario, por favor.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
    </widget>
-   <widget class="QLabel" name="label_3">
+   <widget class="QLineEdit" name="Pasword">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>160</y>
-      <width>131</width>
-      <height>51</height>
+      <x>110</x>
+      <y>410</y>
+      <width>261</width>
+      <height>35</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">font: 75 30pt &quot;Bahnschrift Condensed&quot;;
-</string>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:20pt; color:#09c184;&quot;&gt;Usuario:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
    </widget>
-   <widget class="QLabel" name="label_4">
+   <widget class="QLabel" name="Username">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>240</y>
+      <x>160</x>
+      <y>229</y>
+      <width>151</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Username&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Pasword2">
+    <property name="geometry">
+     <rect>
+      <x>146</x>
+      <y>349</y>
       <width>171</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 75 30pt &quot;Bahnschrift Condensed&quot;;
-
-</string>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:20pt; color:#09c184;&quot;&gt;Contraseña:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="usuarioLineEdit">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>170</y>
-      <width>321</width>
       <height>31</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(12, 81, 73);
-border-radius:10px;</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="contrasenaLineEdit">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>250</y>
-      <width>321</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(12, 81, 73);
-border-radius:10px;</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="iniciarSesionButton">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>340</y>
-      <width>191</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border-radius:20px;
-font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-background-color: rgb(10, 137, 103);</string>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>Ingresar</string>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>../../../Downloads/feather/log-in.svg</normaloff>../../../Downloads/feather/log-in.svg</iconset>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Pasword&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="salirButton">
+   <widget class="QCheckBox" name="checkBox">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>470</y>
-      <width>161</width>
-      <height>20</height>
+      <x>160</x>
+      <y>660</y>
+      <width>151</width>
+      <height>61</height>
      </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border-radius:5px;
-font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-background-color: rgb(10, 137, 103);
-</string>
     </property>
     <property name="text">
-     <string>Salir</string>
+     <string/>
     </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>../../../Downloads/feather/log-out.svg</normaloff>../../../Downloads/feather/log-out.svg</iconset>
-    </property>
-   </widget>
-   <widget class="QWidget" name="verticalWidget" native="true">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>90</y>
-      <width>781</width>
-      <height>5</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(12, 81, 73);</string>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout"/>
-   </widget>
-   <widget class="QWidget" name="verticalWidget_2" native="true">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>781</width>
-      <height>5</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(12, 81, 73);</string>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_2"/>
-   </widget>
-   <widget class="QWidget" name="verticalWidget_3" native="true">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>500</y>
-      <width>781</width>
-      <height>5</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(12, 81, 73);</string>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_3"/>
    </widget>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
