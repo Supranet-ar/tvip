@@ -8,8 +8,10 @@ import concurrent.futures
 import mysql.connector
 import requests
 import webbrowser
-from PyQt5.QtCore import QtMsgType, qInstallMessageHandler
+from PyQt5.QtCore import QtMsgType, qInstallMessageHandler, QUrl, Qt
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QWidget
 from PyQt5.uic import loadUi
 from base_de_datos import BaseDeDatos
 
@@ -307,6 +309,11 @@ class MainWindow(QtWidgets.QMainWindow):
         # Conecta el botón "boton_puerto" a la función abrir_panel_puerto
         self.boton_puerto.clicked.connect(self.abrir_panel_puerto)
 
+        # conectar el boton con la funcion mostrar_webview
+        self.Button_3.clicked.connect(self.mostrar_webview)
+
+        self.webview = None  # Inicialmente, no hay WebView
+
         self.relojLabel = QtWidgets.QLabel(self)
         self.relojLabel.setGeometry(10, 10, 150, 30)
         font = QtGui.QFont("Arial", 25, QtGui.QFont.Bold)
@@ -362,6 +369,41 @@ class MainWindow(QtWidgets.QMainWindow):
     def abrir_panel_puerto(self):
         panel_puerto_window = PanelPuerto()
         panel_puerto_window.exec_()
+
+    def mostrar_webview(self):
+        self.webview = QWebEngineView(self)
+
+        self.webview.load(QUrl("https://www.google.com"))
+
+        # Crear un botón de "Volver"
+        self.btnVolver = QPushButton("Cerrar", self)
+        self.btnVolver.clicked.connect(self.volver_a_principal)
+        self.btnVolver.setStyleSheet("background-color: red")
+        # Establecer un tamaño más pequeño para el botón
+        self.btnVolver.setFixedSize(50, 30)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.btnVolver)
+        layout.addWidget(self.webview)
+        widget = QWidget()
+        widget.setLayout(layout)
+
+        self.setCentralWidget(widget)
+
+        # Alinear el botón "Cerrar" a la derecha
+        layout.setAlignment(self.btnVolver, Qt.AlignRight)
+
+
+
+    def volver_a_principal(self):
+
+        if self.webview:
+                self.webview.deleteLater()  # Liberar recursos del WebView
+                self.webview = None  # Restablecer a None
+                self.hide()  # Ocultar la ventana actual
+                # Abrir la ventana principal
+                ventana_principal = MainWindow()
+                ventana_principal.show()
 
     def actualizarReloj(self):
         tiempo_actual = QtCore.QTime.currentTime()
