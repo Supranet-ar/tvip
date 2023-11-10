@@ -281,7 +281,7 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__()
         loadUi("interfaz/ventana_habitaciones.ui", self)
         self.setWindowTitle("Panel de control")
-        self.setFixedSize(793, 543)
+        self.setFixedSize(1360, 768)
 
         # se crea una instancia de la clase BaseDeDatos
         self.base_datos = BaseDeDatos()
@@ -549,6 +549,8 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f'Addon {addon_id} ejecutado en la habitación {ip}')
         except requests.exceptions.RequestException as e:
             print(f'Error al ejecutar el addon en la habitación {ip}: {str(e)}')
+
+
 
     def verificar_tareas_programadas(self):
         try:
