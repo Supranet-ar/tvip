@@ -313,11 +313,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.webview = None  # Inicialmente, no hay WebView
 
         self.relojLabel = QtWidgets.QLabel(self)
-        self.relojLabel.setGeometry(10, 10, 150, 30)
+        self.relojLabel.setGeometry(1130, 90, 150, 30)
         font = QtGui.QFont("Arial", 25, QtGui.QFont.Bold)
         self.relojLabel.setFont(font)
         self.relojLabel.setAlignment(QtCore.Qt.AlignCenter)
-        self.relojLabel.setStyleSheet("background-color: #0d192b; color: white;")
+        self.relojLabel.setStyleSheet("background-color: #00000000; color: white;")
 
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.actualizarReloj)
