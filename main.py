@@ -334,9 +334,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actualizacion_hilo.daemon = True  # Hilo como demonio para que termine cuando el programa principal termine
         self.actualizacion_hilo.start()
 
-        self.cargar_datos_habitaciones()
-        self.ping_and_verify()
-        self.actualizar_estados_botones()  # Agrega esta línea para actualizar los botones al iniciar
+        #self.cargar_datos_habitaciones()
+        #self.ping_and_verify()
+        #self.actualizar_estados_botones()  # Agrega esta línea para actualizar los botones al iniciar
 
     def ejecutarip(self):
         ventana.close()
@@ -550,20 +550,28 @@ class MainWindow(QtWidgets.QMainWindow):
         for ip, button in zip(self.ip_list, self.buttons):
             if self.ping(ip):
                 current_menu = self.obtener_menu_actual(ip)
-                if current_menu:
+                if ip in self.ip_activas:
+                    # La IP estaba activa y sigue activa
                     button.setStyleSheet("background-color: green")
                     numero_habitacion = self.ip_number_mapping.get(ip, "")
                     button.setText(f"Habitación {numero_habitacion}\nEstado: {current_menu}")
                 else:
+                    # La IP estaba inactiva y ahora está activa
+                    self.ip_activas.append(ip)
                     button.setStyleSheet("background-color: green")
-                    button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}")
+                    numero_habitacion = self.ip_number_mapping.get(ip, "")
+                    button.setText(f"Habitación {numero_habitacion}\nEstado: {current_menu}")
             else:
-                button.setStyleSheet("background-color: red")
+                # La IP estaba activa y ahora está inactiva
+                if ip in self.ip_activas:
+                    self.ip_activas.remove(ip)
+                #button.setStyleSheet("background-color: red")
                 button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}")
-                pass
+
 
     def actualizar_estados_botones_thread(self):
         while True:
+            self.ping_and_verify()
             self.actualizar_estados_botones()
             time.sleep(5)  # Espera 5 segundos antes de la próxima ejecución
 
@@ -617,4 +625,6 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication([])
     ventana = MainWindow()
     ventana.show()
+    ventana.cargar_datos_habitaciones()
+    ventana.ping_and_verify()
     sys.exit(app.exec_())
