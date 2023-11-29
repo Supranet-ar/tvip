@@ -280,60 +280,63 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
 class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
-        super().__init__()
-        loadUi("interfaz/ventana_habitaciones.ui", self)
-        self.setWindowTitle("Panel de control")
-        self.setFixedSize(1360, 768)
+        try:
+            super().__init__()
+            loadUi("interfaz/ventana_habitaciones.ui", self)
+            self.setWindowTitle("Panel de control")
+            self.setFixedSize(1360, 768)
 
-        # se crea una instancia de la clase BaseDeDatos
-        self.base_datos = BaseDeDatos()
+            # se crea una instancia de la clase BaseDeDatos
+            self.base_datos = BaseDeDatos()
 
-        # Almacena las IP activas
-        self.ip_activas = []
-        self.addon_id = "script.hello.world"
+            # Almacena las IP activas
+            self.ip_activas = []
+            self.addon_id = "script.hello.world"
 
-        # se inicializa funciones para obtener los datos de las pantallas
-        self.obtener_datos_habitaciones()
-        self.cargar_datos_habitaciones()
-        self.cargar_tareas_desde_bd()
+            # se inicializa funciones para obtener los datos de las pantallas
+            self.obtener_datos_habitaciones()
+            self.cargar_datos_habitaciones()
+            self.cargar_tareas_desde_bd()
 
-        # CONEXION DE SEÑALES EN LA VENTANA PRINCIPAL
-        for button in self.scrollAreaWidgetContents.findChildren(QtWidgets.QPushButton):
-            numero_habitacion = button.text()
-            button.clicked.connect(lambda _, num=numero_habitacion: self.abrir_panel_control(num))
+            # CONEXION DE SEÑALES EN LA VENTANA PRINCIPAL
+            for button in self.scrollAreaWidgetContents.findChildren(QtWidgets.QPushButton):
+                numero_habitacion = button.text()
+                button.clicked.connect(lambda _, num=numero_habitacion: self.abrir_panel_control(num))
 
-        self.btn_agregar.clicked.connect(self.ejecutarip)
-        self.btn_programar.clicked.connect(self.abrirSegundaVentana)
-        self.salirButton.clicked.connect(self.cerrarVentana)
+            self.btn_agregar.clicked.connect(self.ejecutarip)
+            self.btn_programar.clicked.connect(self.abrirSegundaVentana)
+            self.salirButton.clicked.connect(self.cerrarVentana)
 
-        # Conecta el botón "boton_puerto" a la función abrir_panel_puerto
-        self.boton_puerto.clicked.connect(self.abrir_panel_puerto)
+            # Conecta el botón "boton_puerto" a la función abrir_panel_puerto
+            self.boton_puerto.clicked.connect(self.abrir_panel_puerto)
 
-        # conectar el boton con la funcion mostrar_webview
-        self.Button_3.clicked.connect(self.mostrar_webview)
+            # conectar el boton con la funcion mostrar_webview
+            self.Button_3.clicked.connect(self.mostrar_webview)
 
-        self.webview = None  # Inicialmente, no hay WebView
+            self.webview = None  # Inicialmente, no hay WebView
 
-        self.relojLabel = QtWidgets.QLabel(self)
-        self.relojLabel.setGeometry(1130, 90, 150, 30)
-        font = QtGui.QFont("Arial", 25, QtGui.QFont.Bold)
-        self.relojLabel.setFont(font)
-        self.relojLabel.setAlignment(QtCore.Qt.AlignCenter)
-        self.relojLabel.setStyleSheet("background-color: #00000000; color: white;")
+            self.relojLabel = QtWidgets.QLabel(self)
+            self.relojLabel.setGeometry(1130, 90, 150, 30)
+            font = QtGui.QFont("Arial", 25, QtGui.QFont.Bold)
+            self.relojLabel.setFont(font)
+            self.relojLabel.setAlignment(QtCore.Qt.AlignCenter)
+            self.relojLabel.setStyleSheet("background-color: #00000000; color: white;")
 
-        self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(self.actualizarReloj)
-        self.timer.start(1000)
+            self.timer = QtCore.QTimer(self)
+            self.timer.timeout.connect(self.actualizarReloj)
+            self.timer.start(1000)
 
-        self.ip_list = []
-        self.buttons = []
-        self.ip_number_mapping = {}
+            self.ip_list = []
+            self.buttons = []
+            self.ip_number_mapping = {}
 
-        # Inicia el hilo de actualización
-        self.actualizacion_hilo = threading.Thread(target=self.actualizar_estados_botones_thread)
-        self.actualizacion_hilo.daemon = True  # Hilo como demonio para que termine cuando el programa principal termine
-        self.actualizacion_hilo.start()
-
+            # Inicia el hilo de actualización
+            self.actualizacion_hilo = threading.Thread(target=self.actualizar_estados_botones_thread)
+            self.actualizacion_hilo.daemon = True  # Hilo como demonio para que termine cuando el programa principal termine
+            self.actualizacion_hilo.start()
+        except Exception as e:
+            print(f"Error en la conexión a la base de datos: {e}")
+            # Puedes manejar el error de la forma que desees, por ejemplo, mostrar un mensaje al usuario.
         #self.cargar_datos_habitaciones()
         #self.ping_and_verify()
         #self.actualizar_estados_botones()  # Agrega esta línea para actualizar los botones al iniciar
@@ -348,20 +351,36 @@ class MainWindow(QtWidgets.QMainWindow):
             self.segundaVentana.show()
 
     def cargar_tareas_desde_bd(self):
-        tareas = self.base_datos.obtener_tareas()
-        for tarea in tareas:
-            self.listWidget.addItem(tarea)
+        try:
+            tareas = self.base_datos.obtener_tareas()
+            for tarea in tareas:
+                self.listWidget.addItem(tarea)
+
+        except Exception as e:
+            print(f"Error al cargar tareas desde la base de datos: {e}")
+
 
     def agregarElemento(self, texto):
-        self.listWidget.addItem(texto)
+        try:
+            self.listWidget.addItem(texto)
+
+        except Exception as e:
+            print(f"Error al agregar elemento a la lista: {e}")
+
 
     def removerElemento(self, tarea):
-        self.base_datos.eliminar_tarea(tarea)
-        for index in range(self.listWidget.count()):
-            item = self.listWidget.item(index)
-            if item.text() == tarea:
-                self.listWidget.takeItem(index)
-                break
+        try:
+            self.base_datos.eliminar_tarea(tarea)
+
+            # Buscar y eliminar la tarea de la lista
+            for index in range(self.listWidget.count()):
+                item = self.listWidget.item(index)
+                if item.text() == tarea:
+                    self.listWidget.takeItem(index)
+                    break
+
+        except Exception as e:
+            print(f"Error al remover elemento: {e}")
 
     def cerrarVentana(self):
         self.close()
@@ -457,25 +476,37 @@ class MainWindow(QtWidgets.QMainWindow):
             return data
 
         except mysql.connector.Error as error:
+            print(f"Error al conectar con la base de datos: {error}")
             QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectar con la base de datos: {error}")
+
+        except Exception as e:
+            print(f"Error inesperado al obtener datos de habitaciones: {e}")
+
 
         return None
 
     def cargar_datos_habitaciones(self):
-        # Inicializa todos los botones como ocultos
-        for i in range(1, 101):  # Rango de botones,asumiendo que tenemos 100 botones como máximo
-            btn = getattr(self, f"btn{i}", None)
-            if btn:
-                btn.hide()
+        try:
+            # Inicializa todos los botones como ocultos
+            for i in range(1, 101):  # Rango de botones, asumiendo que tenemos 100 botones como máximo
+                btn = getattr(self, f"btn{i}", None)
+                if btn:
+                    btn.hide()
 
-        data = self.obtener_datos_habitaciones()
-        self.ip_list = [ip for ip, _ in data]
-        self.buttons = [getattr(self, f"btn{i + 1}") for i in range(len(data))]
-        self.ip_number_mapping = {ip: numero for ip, numero in data}
+            data = self.obtener_datos_habitaciones()
 
-        # Muestra solo los botones con IPs válidas
-        for btn in self.buttons:
-            btn.show()
+            if data:
+                self.ip_list = [ip for ip, _ in data]
+                self.buttons = [getattr(self, f"btn{i + 1}") for i in range(len(data))]
+                self.ip_number_mapping = {ip: numero for ip, numero in data}
+
+                # Muestra solo los botones con IPs válidas
+                for btn in self.buttons:
+                    btn.show()
+
+        except Exception as e:
+            print(f"Error al cargar datos de habitaciones: {e}")
+
 
     def ping(self, ip, timeout=1):
         try:
@@ -487,24 +518,31 @@ class MainWindow(QtWidgets.QMainWindow):
             return False
 
     def ping_and_verify(self):
-        self.ip_activas = []
+        try:
+            self.ip_activas = []
 
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            results = executor.map(self.ping, self.ip_list)
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                results = executor.map(self.ping, self.ip_list)
 
-            for ip, button, result in zip(self.ip_list, self.buttons, results):
-                if result:
-                    self.ip_activas.append(ip)
-                    button.setStyleSheet("background-color: green")
-                    print(f'La IP {ip} está activa.')
-                else:
-                    button.setStyleSheet("background-color: red")
-                    print(f'La IP {ip} no está activa.')
+                for ip, button, result in zip(self.ip_list, self.buttons, results):
+                    if result:
+                        self.ip_activas.append(ip)
+                        button.setStyleSheet("background-color: green")
+                        print(f'La IP {ip} está activa.')
+                    else:
+                        button.setStyleSheet("background-color: red")
+                        print(f'La IP {ip} no está activa.')
 
-        return self.ip_activas
+            return self.ip_activas
+
+        except Exception as e:
+            print(f"Error al realizar ping y verificar IPs: {e}")
+
+            return []
 
     def enviar_publicidad_a_habitaciones(self, ip_activas):
         mensaje_publicidad = "¡Descuento especial por tiempo limitado! Visita nuestro sitio web."
+
         for ip in ip_activas:
             url = f'http://{ip}:8080/jsonrpc'
             payload = {
@@ -521,8 +559,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 response = requests.post(url, json=payload)
                 response.raise_for_status()
                 print(f'Mensaje de publicidad enviado a la habitación {ip}')
+
             except requests.exceptions.RequestException as e:
                 print(f'Error al enviar el mensaje de publicidad a la habitación {ip}: {str(e)}')
+
+            except Exception as e:
+                print(f'Error inesperado al enviar el mensaje de publicidad a la habitación {ip}: {str(e)}')
 
     def obtener_menu_actual(self, ip):
         url = f"http://{ip}:8080/jsonrpc"
@@ -542,44 +584,65 @@ class MainWindow(QtWidgets.QMainWindow):
             data = response.json()
             current_window = data["result"]["currentwindow"]["label"]
             return current_window
+
         except requests.exceptions.RequestException as e:
             print(f'Error al obtener el menú actual de la habitación {ip}: {str(e)}')
+
+            return None
+
+        except Exception as e:
+            print(f'Error inesperado al obtener el menú actual de la habitación {ip}: {str(e)}')
+
             return None
 
     def actualizar_estados_botones(self):
-        for ip, button in zip(self.ip_list, self.buttons):
-            if self.ping(ip):
-                current_menu = self.obtener_menu_actual(ip)
-                if ip in self.ip_activas:
-                    # La IP estaba activa y sigue activa
-                    button.setStyleSheet("background-color: green")
-                    numero_habitacion = self.ip_number_mapping.get(ip, "")
-                    button.setText(f"Habitación {numero_habitacion}\nEstado: {current_menu}")
+        try:
+            for ip, button in zip(self.ip_list, self.buttons):
+                if self.ping(ip):
+                    current_menu = self.obtener_menu_actual(ip)
+                    if ip in self.ip_activas:
+                        # La IP estaba activa y sigue activa
+                        button.setStyleSheet("background-color: green")
+                        numero_habitacion = self.ip_number_mapping.get(ip, "")
+                        button.setText(f"Habitación {numero_habitacion}\nEstado: {current_menu}")
+                    else:
+                        # La IP estaba inactiva y ahora está activa
+                        self.ip_activas.append(ip)
+                        button.setStyleSheet("background-color: green")
+                        numero_habitacion = self.ip_number_mapping.get(ip, "")
+                        button.setText(f"Habitación {numero_habitacion}\nEstado: {current_menu}")
                 else:
-                    # La IP estaba inactiva y ahora está activa
-                    self.ip_activas.append(ip)
-                    button.setStyleSheet("background-color: green")
-                    numero_habitacion = self.ip_number_mapping.get(ip, "")
-                    button.setText(f"Habitación {numero_habitacion}\nEstado: {current_menu}")
-            else:
-                # La IP estaba activa y ahora está inactiva
-                if ip in self.ip_activas:
-                    self.ip_activas.remove(ip)
-                #button.setStyleSheet("background-color: red")
-                button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}")
+                    # La IP estaba activa y ahora está inactiva
+                    if ip in self.ip_activas:
+                        self.ip_activas.remove(ip)
+                    # button.setStyleSheet("background-color: red")
+                    button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}")
+
+        except Exception as e:
+            print(f"Error al actualizar estados de botones: {e}")
 
 
     def actualizar_estados_botones_thread(self):
-        while True:
-            self.ping_and_verify()
-            self.actualizar_estados_botones()
-            time.sleep(5)  # Espera 5 segundos antes de la próxima ejecución
+        try:
+            while True:
+                self.ping_and_verify()
+                self.actualizar_estados_botones()
+                time.sleep(5)  # Espera 5 segundos antes de la próxima ejecución
+
+        except Exception as e:
+            print(f"Error en el hilo de actualización de estados de botones: {e}")
+
 
     def iniciar_actualizacion_estado_menus(self):
-        print("Iniciando actualización de estados de menús en segundo plano...")
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.submit(self.actualizar_estado_menus)
-        print("Actualización de estados de menús en segundo plano iniciada.")
+        try:
+            print("Iniciando actualización de estados de menús en segundo plano...")
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                executor.submit(self.actualizar_estado_menus)
+            print("Actualización de estados de menús en segundo plano iniciada.")
+
+        except Exception as e:
+            print(f"Error al iniciar la actualización de estados de menús en segundo plano: {e}")
+
 
     def ejecutar_addon(self, ip, addon_id):
         url = f"http://{ip}:8080/jsonrpc"
@@ -597,9 +660,12 @@ class MainWindow(QtWidgets.QMainWindow):
             response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
             response.raise_for_status()
             print(f'Addon {addon_id} ejecutado en la habitación {ip}')
+
         except requests.exceptions.RequestException as e:
             print(f'Error al ejecutar el addon en la habitación {ip}: {str(e)}')
 
+        except Exception as e:
+            print(f'Error inesperado al ejecutar el addon en la habitación {ip}: {str(e)}')
 
 
     def verificar_tareas_programadas(self):
@@ -615,10 +681,16 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.ejecutar_addon(ip, addon_id)
 
         except mysql.connector.Error as error:
+            print(f"Error al conectarse a la base de datos: {error}")
             QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectarse a la base de datos:\n{error}")
 
+        except Exception as e:
+            print(f"Error inesperado al verificar tareas programadas: {e}")
+
+
         finally:
-            cursor.close()
+            if cursor:
+                cursor.close()
 
 
 if __name__ == "__main__":
