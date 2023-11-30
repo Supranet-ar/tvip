@@ -101,7 +101,7 @@ border-radius:7px;
      <enum>QFrame::Raised</enum>
     </property>
    </widget>
-   <widget class="QPushButton" name="iniciarSesionButton">
+   <widget class="QPushButton" name="Enviar">
     <property name="geometry">
      <rect>
       <x>130</x>
