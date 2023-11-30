@@ -286,14 +286,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setFixedSize(1360, 768)
 
         # se crea una instancia de la clase BaseDeDatos
-        self.base_datos = None
+        self.base_datos = BaseDeDatos()
 
         # Almacena las IP activas
         self.ip_activas = []
         self.addon_id = "script.hello.world"
 
-
-
+        # se inicializa funciones para obtener los datos de las pantallas
+        self.obtener_datos_habitaciones()
+        self.cargar_datos_habitaciones()
+        self.cargar_tareas_desde_bd()
 
         # CONEXION DE SEÑALES EN LA VENTANA PRINCIPAL
         for button in self.scrollAreaWidgetContents.findChildren(QtWidgets.QPushButton):
@@ -336,25 +338,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ping_and_verify()
         self.actualizar_estados_botones()  # Agrega esta línea para actualizar los botones al iniciar
 
-    def establecer_conexion_db(self):
-        try:
-            if not self.base_datos:
-                print("Intentando conectar a la base de datos...")
-                self.base_datos = BaseDeDatos()
-                print("Conexión establecida correctamente.")
-        except mysql.connector.Error as error:
-            print(f"Error al conectarse a la base de datos: {error}")
-            self.base_datos = None
-            print("No se pudo conectar a la base de datos. Algunas funciones pueden no estar disponibles.")
-        except Exception as e:
-            print(f"Error desconocido al establecer la conexión a la base de datos: {e}")
-            self.base_datos = None
-
-
-        self.obtener_datos_habitaciones()
-        self.cargar_datos_habitaciones()
-        self.cargar_tareas_desde_bd()
-
     def ejecutarip(self):
         ventana.close()
         subprocess.run(['python', 'ip.py'])
@@ -365,48 +348,20 @@ class MainWindow(QtWidgets.QMainWindow):
             self.segundaVentana.show()
 
     def cargar_tareas_desde_bd(self):
-        try:
-            if self.base_datos is None:
-                print("La conexión a la base de datos no está establecida.")
-                return
-
-            tareas = self.base_datos.obtener_tareas()
-            for tarea in tareas:
-                self.listWidget.addItem(tarea)
-        except mysql.connector.Error as error:
-            print(f"Error al cargar tareas desde la base de datos: {error}")
+        tareas = self.base_datos.obtener_tareas()
+        for tarea in tareas:
+            self.listWidget.addItem(tarea)
 
     def agregarElemento(self, texto):
-        try:
-            self.establecer_conexion_db()
-
-            if self.base_datos is None:
-                print("La conexión a la base de datos no está establecida.")
-                return
-
-            self.listWidget.addItem(texto)
-        except Exception as error:
-            print(f"Error al agregar elemento a la lista: {error}")
-            # Puedes mostrar un mensaje o realizar alguna acción de manejo de error aquí
+        self.listWidget.addItem(texto)
 
     def removerElemento(self, tarea):
-        try:
-            self.establecer_conexion_db()
-
-            if self.base_datos is None:
-                print("La conexión a la base de datos no está establecida.")
-                return
-
-            self.base_datos.eliminar_tarea(tarea)
-
-            for index in range(self.listWidget.count()):
-                item = self.listWidget.item(index)
-                if item.text() == tarea:
-                    self.listWidget.takeItem(index)
-                    break
-        except Exception as error:
-            print(f"Error al remover elemento de la lista: {error}")
-            # Puedes mostrar un mensaje o realizar alguna acción de manejo de error aquí
+        self.base_datos.eliminar_tarea(tarea)
+        for index in range(self.listWidget.count()):
+            item = self.listWidget.item(index)
+            if item.text() == tarea:
+                self.listWidget.takeItem(index)
+                break
 
     def cerrarVentana(self):
         self.close()
@@ -456,54 +411,41 @@ class MainWindow(QtWidgets.QMainWindow):
         self.relojLabel.setText(tiempo_formateado)
 
     def abrir_panel_control(self, numero_habitacion):
+        cursor = None
         try:
-            self.establecer_conexion_db()
+            print("Intentando conectar a la base de datos...")
+            cursor = self.base_datos.conexion_db.cursor()
+            print("Conexión establecida. Ejecutando consulta...")
 
-            if self.base_datos is None:
-                print("La conexión a la base de datos no está establecida.")
-                return
+            cursor.execute("SELECT Ip FROM habitaciones WHERE Numero=%s", (numero_habitacion,))
+            ip = cursor.fetchone()
 
-            cursor = None
-            try:
-                print("Intentando conectar a la base de datos...")
-                cursor = self.base_datos.conexion_db.cursor()
-                print("Conexión establecida. Ejecutando consulta...")
+            if ip:
+                print(f"IP encontrada para la habitación {numero_habitacion}: {ip[0]}")
+                try:
+                    self.panel_control = PanelControl(ip[0], numero_habitacion, self)
+                    self.panel_control.show()
+                except Exception as e:
+                    print("Error al inicializar o mostrar PanelControl:", str(e))
 
-                cursor.execute("SELECT Ip FROM habitaciones WHERE Numero=%s", (numero_habitacion,))
-                ip = cursor.fetchone()
+                # Envio de publicidad desactivado, solo se utiliza para tests.
+                #self.enviar_publicidad_a_habitaciones([ip[0]])
 
-                if ip:
-                    print(f"IP encontrada para la habitación {numero_habitacion}: {ip[0]}")
-                    try:
-                        self.panel_control = PanelControl(ip[0], numero_habitacion, self)
-                        self.panel_control.show()
-                    except Exception as e:
-                        print("Error al inicializar o mostrar PanelControl:", str(e))
 
-                    # Envío de publicidad desactivado, solo se utiliza para pruebas.
-                    # self.enviar_publicidad_a_habitaciones([ip[0]])
+            else:
+                print(f"No se encontró IP para la habitación {numero_habitacion}")
+                QtWidgets.QMessageBox.warning(self, "Advertencia",
+                                              f"No se encontró la IP para la habitación {numero_habitacion}")
 
-                else:
-                    print(f"No se encontró IP para la habitación {numero_habitacion}")
-                    QtWidgets.QMessageBox.warning(self, "Advertencia",
-                                                  f"No se encontró la IP para la habitación {numero_habitacion}")
+        except mysql.connector.Error as error:
+            print(f"Error al conectarse a la base de datos: {error}")
+            QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectarse a la base de datos:\n{error}")
 
-            except mysql.connector.Error as error:
-                print(f"Error al conectarse a la base de datos: {error}")
-                QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectarse a la base de datos:\n{error}")
-
-        finally:
-            if cursor:
-                cursor.close()
+        #finally:
+            #cursor.close()
 
     def obtener_datos_habitaciones(self):
         try:
-            self.establecer_conexion_db()
-
-            if self.base_datos is None:
-                print("La conexión a la base de datos no está establecida.")
-                return None
-
             cursor = self.base_datos.conexion_db.cursor()
 
             # Asegurarse de que solo se obtengan habitaciones con IPs válidas
@@ -515,39 +457,25 @@ class MainWindow(QtWidgets.QMainWindow):
             return data
 
         except mysql.connector.Error as error:
-            print(f"Error al conectar con la base de datos: {error}")
-            # Puedes mostrar un mensaje o realizar alguna acción de manejo de error aquí
+            QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectar con la base de datos: {error}")
 
         return None
 
     def cargar_datos_habitaciones(self):
-        try:
-            self.establecer_conexion_db()
+        # Inicializa todos los botones como ocultos
+        for i in range(1, 101):  # Rango de botones,asumiendo que tenemos 100 botones como máximo
+            btn = getattr(self, f"btn{i}", None)
+            if btn:
+                btn.hide()
 
-            if self.base_datos is None:
-                print("La conexión a la base de datos no está establecida.")
-                return
+        data = self.obtener_datos_habitaciones()
+        self.ip_list = [ip for ip, _ in data]
+        self.buttons = [getattr(self, f"btn{i + 1}") for i in range(len(data))]
+        self.ip_number_mapping = {ip: numero for ip, numero in data}
 
-            # Inicializa todos los botones como ocultos
-            for i in range(1, 101):  # Rango de botones, asumiendo que tenemos 100 botones como máximo
-                btn = getattr(self, f"btn{i}", None)
-                if btn:
-                    btn.hide()
-
-            data = self.obtener_datos_habitaciones()
-
-            if data is not None:
-                self.ip_list = [ip for ip, _ in data]
-                self.buttons = [getattr(self, f"btn{i + 1}") for i in range(len(data))]
-                self.ip_number_mapping = {ip: numero for ip, numero in data}
-
-                # Muestra solo los botones con IPs válidas
-                for btn in self.buttons:
-                    btn.show()
-
-        except Exception as error:
-            print(f"Error al cargar datos de habitaciones: {error}")
-            # Puedes mostrar un mensaje o realizar alguna acción de manejo de error aquí
+        # Muestra solo los botones con IPs válidas
+        for btn in self.buttons:
+            btn.show()
 
     def ping(self, ip, timeout=1):
         try:
@@ -559,197 +487,115 @@ class MainWindow(QtWidgets.QMainWindow):
             return False
 
     def ping_and_verify(self):
-        try:
-            self.establecer_conexion_db()
+        self.ip_activas = []
 
-            if self.base_datos is None:
-                print("La conexión a la base de datos no está establecida.")
-                return None
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            results = executor.map(self.ping, self.ip_list)
 
-            self.ip_activas = []
+            for ip, button, result in zip(self.ip_list, self.buttons, results):
+                if result:
+                    self.ip_activas.append(ip)
+                    button.setStyleSheet("background-color: green")
+                    print(f'La IP {ip} está activa.')
+                else:
+                    button.setStyleSheet("background-color: red")
+                    print(f'La IP {ip} no está activa.')
 
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                results = executor.map(self.ping, self.ip_list)
-
-                for ip, button, result in zip(self.ip_list, self.buttons, results):
-                    if result:
-                        self.ip_activas.append(ip)
-                        button.setStyleSheet("background-color: green")
-                        print(f'La IP {ip} está activa.')
-                    else:
-                        button.setStyleSheet("background-color: red")
-                        print(f'La IP {ip} no está activa.')
-
-            return self.ip_activas
-
-        except Exception as error:
-            print(f"Error al realizar el ping y verificar las IP: {error}")
-            # Puedes mostrar un mensaje o realizar alguna acción de manejo de error aquí
-            return None
+        return self.ip_activas
 
     def enviar_publicidad_a_habitaciones(self, ip_activas):
-        try:
-            self.establecer_conexion_db()
-
-            if self.base_datos is None:
-                print("La conexión a la base de datos no está establecida.")
-                return
-
-            mensaje_publicidad = "¡Descuento especial por tiempo limitado! Visita nuestro sitio web."
-            for ip in ip_activas:
-                url = f'http://{ip}:8080/jsonrpc'
-                payload = {
-                    "jsonrpc": "2.0",
-                    "method": "GUI.ShowNotification",
-                    "params": {
-                        "title": "Publicidad",
-                        "message": mensaje_publicidad
-                    },
-                    "id": 1
-                }
-
-                try:
-                    response = requests.post(url, json=payload)
-                    response.raise_for_status()
-                    print(f'Mensaje de publicidad enviado a la habitación {ip}')
-                except requests.exceptions.RequestException as e:
-                    print(f'Error al enviar el mensaje de publicidad a la habitación {ip}: {str(e)}')
-
-        except Exception as error:
-            print(f"Error al enviar publicidad a habitaciones: {error}")
-            # Puedes mostrar un mensaje o realizar alguna acción de manejo de error aquí
-
-    def obtener_menu_actual(self, ip):
-        try:
-            self.establecer_conexion_db()
-
-            if self.base_datos is None:
-                print("La conexión a la base de datos no está establecida.")
-                return None
-
-            url = f"http://{ip}:8080/jsonrpc"
+        mensaje_publicidad = "¡Descuento especial por tiempo limitado! Visita nuestro sitio web."
+        for ip in ip_activas:
+            url = f'http://{ip}:8080/jsonrpc'
             payload = {
                 "jsonrpc": "2.0",
-                "method": "GUI.GetProperties",
+                "method": "GUI.ShowNotification",
                 "params": {
-                    "properties": ["currentwindow"]
+                    "title": "Publicidad",
+                    "message": mensaje_publicidad
                 },
                 "id": 1
             }
 
             try:
-                time.sleep(0.5)
-                response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
+                response = requests.post(url, json=payload)
                 response.raise_for_status()
-                data = response.json()
-                current_window = data["result"]["currentwindow"]["label"]
-                return current_window
+                print(f'Mensaje de publicidad enviado a la habitación {ip}')
             except requests.exceptions.RequestException as e:
-                print(f'Error al obtener el menú actual de la habitación {ip}: {str(e)}')
-                return None
+                print(f'Error al enviar el mensaje de publicidad a la habitación {ip}: {str(e)}')
 
-        except Exception as error:
-            print(f"Error al obtener el menú actual: {error}")
-            # Puedes mostrar un mensaje o realizar alguna acción de manejo de error aquí
+    def obtener_menu_actual(self, ip):
+        url = f"http://{ip}:8080/jsonrpc"
+        payload = {
+            "jsonrpc": "2.0",
+            "method": "GUI.GetProperties",
+            "params": {
+                "properties": ["currentwindow"]
+            },
+            "id": 1
+        }
+
+        try:
+            time.sleep(0.5)
+            response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
+            response.raise_for_status()
+            data = response.json()
+            current_window = data["result"]["currentwindow"]["label"]
+            return current_window
+        except requests.exceptions.RequestException as e:
+            print(f'Error al obtener el menú actual de la habitación {ip}: {str(e)}')
             return None
 
     def actualizar_estados_botones(self):
-        try:
-            self.establecer_conexion_db()
-
-            if self.base_datos is None:
-                print("La conexión a la base de datos no está establecida.")
-                return
-
-            for ip, button in zip(self.ip_list, self.buttons):
-                if self.ping(ip):
-                    current_menu = self.obtener_menu_actual(ip)
-                    if current_menu:
-                        button.setStyleSheet("background-color: green")
-                        numero_habitacion = self.ip_number_mapping.get(ip, "")
-                        button.setText(f"Habitación {numero_habitacion}\nEstado: {current_menu}")
-                    else:
-                        button.setStyleSheet("background-color: green")
-                        button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}")
+        for ip, button in zip(self.ip_list, self.buttons):
+            if self.ping(ip):
+                current_menu = self.obtener_menu_actual(ip)
+                if current_menu:
+                    button.setStyleSheet("background-color: green")
+                    numero_habitacion = self.ip_number_mapping.get(ip, "")
+                    button.setText(f"Habitación {numero_habitacion}\nEstado: {current_menu}")
                 else:
-                    button.setStyleSheet("background-color: red")
+                    button.setStyleSheet("background-color: green")
                     button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}")
-
-        except Exception as error:
-            print(f"Error al actualizar estados de botones: {error}")
-            # Puedes mostrar un mensaje o realizar alguna acción de manejo de error aquí
+            else:
+                button.setStyleSheet("background-color: red")
+                button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}")
+                pass
 
     def actualizar_estados_botones_thread(self):
-        try:
-            self.establecer_conexion_db()
-
-            if self.base_datos is None:
-                print("La conexión a la base de datos no está establecida.")
-                return
-
-            while True:
-                self.actualizar_estados_botones()
-                time.sleep(5)  # Espera 5 segundos antes de la próxima ejecución
-
-        except Exception as error:
-            print(f"Error en el hilo de actualización de estados de botones: {error}")
-            # Puedes mostrar un mensaje o realizar alguna acción de manejo de error aquí
+        while True:
+            self.actualizar_estados_botones()
+            time.sleep(5)  # Espera 5 segundos antes de la próxima ejecución
 
     def iniciar_actualizacion_estado_menus(self):
-        try:
-            self.establecer_conexion_db()
-
-            if self.base_datos is None:
-                print("La conexión a la base de datos no está establecida.")
-                return
-
-            print("Iniciando actualización de estados de menús en segundo plano...")
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                executor.submit(self.actualizar_estado_menus)
-            print("Actualización de estados de menús en segundo plano iniciada.")
-
-        except Exception as error:
-            print(f"Error al iniciar la actualización de estados de menús: {error}")
-            # Puedes mostrar un mensaje o realizar alguna acción de manejo de error aquí
+        print("Iniciando actualización de estados de menús en segundo plano...")
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            executor.submit(self.actualizar_estado_menus)
+        print("Actualización de estados de menús en segundo plano iniciada.")
 
     def ejecutar_addon(self, ip, addon_id):
+        url = f"http://{ip}:8080/jsonrpc"
+        payload = {
+            "jsonrpc": "2.0",
+            "method": "Addons.ExecuteAddon",
+            "params": {
+                "addonid": addon_id
+            },
+            "id": 1
+        }
+
         try:
-            self.establecer_conexion_db()
+            time.sleep(0.5)
+            response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
+            response.raise_for_status()
+            print(f'Addon {addon_id} ejecutado en la habitación {ip}')
+        except requests.exceptions.RequestException as e:
+            print(f'Error al ejecutar el addon en la habitación {ip}: {str(e)}')
 
-            if self.base_datos is None:
-                print("La conexión a la base de datos no está establecida.")
-                return
 
-            url = f"http://{ip}:8080/jsonrpc"
-            payload = {
-                "jsonrpc": "2.0",
-                "method": "Addons.ExecuteAddon",
-                "params": {
-                    "addonid": addon_id
-                },
-                "id": 1
-            }
-
-            try:
-                time.sleep(0.5)
-                response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
-                response.raise_for_status()
-                print(f'Addon {addon_id} ejecutado en la habitación {ip}')
-            except requests.exceptions.RequestException as e:
-                print(f'Error al ejecutar el addon en la habitación {ip}: {str(e)}')
-
-        except Exception as error:
-            print(f"Error al ejecutar el addon: {error}")
-            # Puedes mostrar un mensaje o realizar alguna acción de manejo de error aquí
 
     def verificar_tareas_programadas(self):
         try:
-            self.establecer_conexion_db()
-
-            if self.base_datos is None:
-                print("La conexión a la base de datos no está establecida.")
-                return
-
             cursor = self.base_datos.conexion_db.cursor()
 
             # Suponiendo que tienes una tabla llamada 'tareas_programadas' con las columnas 'addon_id' y 'hora_ejecucion'
@@ -762,10 +608,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         except mysql.connector.Error as error:
             QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectarse a la base de datos:\n{error}")
-
-        except Exception as error:
-            print(f"Error al verificar tareas programadas: {error}")
-            # Puedes mostrar un mensaje o realizar alguna acción de manejo de error aquí
 
         finally:
             cursor.close()
