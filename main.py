@@ -10,6 +10,7 @@ import requests
 import webbrowser
 from PyQt5.QtCore import QtMsgType, qInstallMessageHandler, QUrl, Qt
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QWidget
 from PyQt5.uic import loadUi
@@ -299,8 +300,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # CONEXION DE SEÑALES EN LA VENTANA PRINCIPAL
         for button in self.scrollAreaWidgetContents.findChildren(QtWidgets.QPushButton):
-            numero_habitacion = button.text()
-            button.clicked.connect(lambda _, num=numero_habitacion: self.abrir_panel_control(num))
+            button.setStyleSheet("color: white;")
 
         self.btn_agregar.clicked.connect(self.ejecutarip)
         self.btn_programar.clicked.connect(self.abrirSegundaVentana)
@@ -411,27 +411,26 @@ class MainWindow(QtWidgets.QMainWindow):
         self.relojLabel.setText(tiempo_formateado)
 
     def abrir_panel_control(self, numero_habitacion):
-        cursor = None
-        try:
-            print("Intentando conectar a la base de datos...")
-            cursor = self.base_datos.conexion_db.cursor()
-            print("Conexión establecida. Ejecutando consulta...")
+        print(f"Clic en el botón de la habitación {numero_habitacion}")
 
+        try:
+            cursor = self.base_datos.conexion_db.cursor()
             cursor.execute("SELECT Ip FROM habitaciones WHERE Numero=%s", (numero_habitacion,))
             ip = cursor.fetchone()
 
             if ip:
-                print(f"IP encontrada para la habitación {numero_habitacion}: {ip[0]}")
-                try:
-                    self.panel_control = PanelControl(ip[0], numero_habitacion, self)
-                    self.panel_control.show()
-                except Exception as e:
-                    print("Error al inicializar o mostrar PanelControl:", str(e))
+                ip = ip[0]
+                print(f"IP encontrada para la habitación {numero_habitacion}: {ip}")
 
-                # Envio de publicidad desactivado, solo se utiliza para tests.
-                #self.enviar_publicidad_a_habitaciones([ip[0]])
-
-
+                if ip in self.ip_activas:
+                    try:
+                        self.panel_control = PanelControl(ip, numero_habitacion, self)
+                        self.panel_control.show()
+                    except Exception as e:
+                        print("Error al inicializar o mostrar PanelControl:", str(e))
+                else:
+                    QtWidgets.QMessageBox.warning(self, "Advertencia",
+                                                  f"La habitación {numero_habitacion} está inactiva.")
             else:
                 print(f"No se encontró IP para la habitación {numero_habitacion}")
                 QtWidgets.QMessageBox.warning(self, "Advertencia",
@@ -441,8 +440,8 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f"Error al conectarse a la base de datos: {error}")
             QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectarse a la base de datos:\n{error}")
 
-        #finally:
-            #cursor.close()
+        finally:
+            cursor.close()
 
     def obtener_datos_habitaciones(self):
         try:
@@ -463,10 +462,16 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def cargar_datos_habitaciones(self):
         # Inicializa todos los botones como ocultos
-        for i in range(1, 101):  # Rango de botones,asumiendo que tenemos 100 botones como máximo
+        for i in range(1, 101):  # Rango de botones, asumiendo que tenemos 100 botones como máximo
             btn = getattr(self, f"btn{i}", None)
             if btn:
                 btn.hide()
+                try:
+                    # Intenta desconectar cualquier conexión previa
+                    btn.clicked.disconnect()
+                except TypeError:
+                    pass  # Ignora la excepción si no hay conexión previa
+                btn.clicked.connect(lambda checked=False, num=i: self.abrir_panel_control(num))
 
         data = self.obtener_datos_habitaciones()
         self.ip_list = [ip for ip, _ in data]
@@ -495,10 +500,10 @@ class MainWindow(QtWidgets.QMainWindow):
             for ip, button, result in zip(self.ip_list, self.buttons, results):
                 if result:
                     self.ip_activas.append(ip)
-                    button.setStyleSheet("background-color: green")
+                    button.setIcon(QIcon('boton ok.png'))  # Establecer ícono para IP activa
                     print(f'La IP {ip} está activa.')
                 else:
-                    button.setStyleSheet("background-color: red")
+                    button.setIcon(QIcon('boton off.png'))  # Establecer ícono para IP inactiva
                     print(f'La IP {ip} no está activa.')
 
         return self.ip_activas
@@ -552,22 +557,23 @@ class MainWindow(QtWidgets.QMainWindow):
                 current_menu = self.obtener_menu_actual(ip)
                 if ip in self.ip_activas:
                     # La IP estaba activa y sigue activa
-                    button.setStyleSheet("background-color: green")
+                    button.setIcon(QIcon('boton ok.png'))  # Establecer ícono para IP activa
                     numero_habitacion = self.ip_number_mapping.get(ip, "")
                     button.setText(f"Habitación {numero_habitacion}\nEstado: {current_menu}")
                 else:
                     # La IP estaba inactiva y ahora está activa
                     self.ip_activas.append(ip)
-                    button.setStyleSheet("background-color: green")
+                    button.setIcon(QIcon('boton ok.png'))  # Establecer ícono para IP activa
                     numero_habitacion = self.ip_number_mapping.get(ip, "")
                     button.setText(f"Habitación {numero_habitacion}\nEstado: {current_menu}")
             else:
                 # La IP estaba activa y ahora está inactiva
                 if ip in self.ip_activas:
                     self.ip_activas.remove(ip)
-                #button.setStyleSheet("background-color: red")
-                button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}")
-
+                # button.setStyleSheet("background-color: red")
+                button.setIcon(QIcon('boton off.png'))  # Establecer ícono para IP inactiva
+                numero_habitacion = self.ip_number_mapping.get(ip, "")
+                button.setText(f"Habitación {numero_habitacion}")
 
     def actualizar_estados_botones_thread(self):
         while True:
