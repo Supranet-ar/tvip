@@ -12,7 +12,7 @@ from PyQt5.QtCore import QtMsgType, qInstallMessageHandler, QUrl, Qt
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QWidget, QMainWindow
 from PyQt5.uic import loadUi
 from base_de_datos import BaseDeDatos
 
@@ -52,6 +52,26 @@ class PanelPuerto(QtWidgets.QDialog):
                 QtWidgets.QMessageBox.warning(self, "Advertencia", "El puerto debe estar en el rango 1024-65535.")
         except ValueError:
             QtWidgets.QMessageBox.warning(self, "Advertencia", "Ingrese un número de puerto válido.")
+
+
+
+class WebViewWindow(QMainWindow):
+    def __init__(self, parent=None):
+        super(WebViewWindow, self).__init__(parent)
+        self.webview = QWebEngineView(self)
+        self.webview.load(QUrl("https://www.google.com"))
+        layout = QVBoxLayout()
+        layout.addWidget(self.webview)
+        widget = QWidget()
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
+
+        # Establecer el tamaño de la ventana del WebView
+        self.resize(1359, 770)  # Puedes ajustar estos valores según tus preferencias
+
+    def close_webview(self):
+        self.close()
+
 
 class VentanaIdiomas(QtWidgets.QDialog):
     idioma_seleccionado = QtCore.pyqtSignal(str)
@@ -371,39 +391,18 @@ class MainWindow(QtWidgets.QMainWindow):
         panel_puerto_window.exec_()
 
     def mostrar_webview(self):
-        self.webview = QWebEngineView(self)
-
-        self.webview.load(QUrl("https://www.google.com"))
-
-        # Crear un botón de "Volver"
-        self.btnVolver = QPushButton("Cerrar", self)
-        self.btnVolver.clicked.connect(self.volver_a_principal)
-        self.btnVolver.setStyleSheet("background-color: red")
-        # Establecer un tamaño más pequeño para el botón
-        self.btnVolver.setFixedSize(50, 30)
-
-        layout = QVBoxLayout()
-        layout.addWidget(self.btnVolver)
-        layout.addWidget(self.webview)
-        widget = QWidget()
-        widget.setLayout(layout)
-
-        self.setCentralWidget(widget)
-
-        # Alinear el botón "Cerrar" a la derecha
-        layout.setAlignment(self.btnVolver, Qt.AlignRight)
-
-
+        webview_window = WebViewWindow(self)
+        webview_window.show()
 
     def volver_a_principal(self):
 
         if self.webview:
-                self.webview.deleteLater()  # Liberar recursos del WebView
-                self.webview = None  # Restablecer a None
-                self.hide()  # Ocultar la ventana actual
-                # Abrir la ventana principal
-                ventana_principal = MainWindow()
-                ventana_principal.show()
+            self.webview.deleteLater()  # Liberar recursos del WebView
+            self.webview = None  # Restablecer a None
+            self.hide()  # Ocultar la ventana actual
+            # Abrir la ventana principal
+            ventana_principal = MainWindow()
+            ventana_principal.show()
 
     def actualizarReloj(self):
         tiempo_actual = QtCore.QTime.currentTime()
