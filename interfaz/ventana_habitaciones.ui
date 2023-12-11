@@ -299,7 +299,7 @@ min-height:91px;
 QPushButton#btn1
 {
 background-color: transparent;
-background-image: url(c:/tvip/assets/boton off.png);
+&quot;background-image: url(c:/tvip/assets/boton off.png);&quot;
 background-repeat: no-repeat;
 max-width:121;
 
@@ -988,7 +988,7 @@ max-width:121;
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>-998</y>
+           <y>0</y>
            <width>670</width>
            <height>1695</height>
           </rect>

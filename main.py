@@ -8,13 +8,14 @@ import concurrent.futures
 import mysql.connector
 import requests
 import webbrowser
-from PyQt5.QtCore import QtMsgType, qInstallMessageHandler, QUrl, Qt
+from PyQt5.QtCore import QtMsgType, qInstallMessageHandler, QUrl, Qt, QSize
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QWidget
 from PyQt5.uic import loadUi
 from base_de_datos import BaseDeDatos
+
 
 #Funcion para capturar errores
 def log_handler(mode, context, message):
@@ -69,7 +70,7 @@ class VentanaIdiomas(QtWidgets.QDialog):
     }
     def __init__(self, ip, parent=None):
         super(VentanaIdiomas, self).__init__(parent)
-        loadUi("interfaz/idiomas.ui", self)  # Asegúrate de usar la ruta correcta al archivo .ui
+        loadUi("interfaz/idiomas.ui", self)
         self.ip = ip
 
         # Conectar el botón btn_ok a su slot correspondiente
@@ -491,6 +492,10 @@ class MainWindow(QtWidgets.QMainWindow):
         except requests.exceptions.RequestException:
             return False
 
+    def cargar_imagen(self, filename, width=117, height=88):
+        pixmap = QPixmap(filename)
+        return QIcon(pixmap.scaled(width, height, aspectRatioMode=Qt.KeepAspectRatio))
+
     def ping_and_verify(self):
         self.ip_activas = []
 
@@ -500,10 +505,16 @@ class MainWindow(QtWidgets.QMainWindow):
             for ip, button, result in zip(self.ip_list, self.buttons, results):
                 if result:
                     self.ip_activas.append(ip)
-                    button.setIcon(QIcon('boton ok.png'))  # Establecer ícono para IP activa
+                    pixmap = self.cargar_imagen('assets/boton on.png').pixmap(QSize(117, 88))
+                    button.setIcon(QIcon(pixmap))
+                    button.setIconSize(pixmap.size())
                     print(f'La IP {ip} está activa.')
                 else:
-                    button.setIcon(QIcon('boton off.png'))  # Establecer ícono para IP inactiva
+                    if ip in self.ip_activas:
+                        self.ip_activas.remove(ip)
+                    pixmap = self.cargar_imagen('assets/boton off.png').pixmap(QSize(117, 88))
+                    button.setIcon(QIcon(pixmap))
+                    button.setIconSize(pixmap.size())
                     print(f'La IP {ip} no está activa.')
 
         return self.ip_activas
@@ -553,27 +564,34 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def actualizar_estados_botones(self):
         for ip, button in zip(self.ip_list, self.buttons):
+            current_menu = self.obtener_menu_actual(ip)
+
             if self.ping(ip):
-                current_menu = self.obtener_menu_actual(ip)
                 if ip in self.ip_activas:
-                    # La IP estaba activa y sigue activa
-                    button.setIcon(QIcon('boton ok.png'))  # Establecer ícono para IP activa
-                    numero_habitacion = self.ip_number_mapping.get(ip, "")
-                    button.setText(f"Habitación {numero_habitacion}\nEstado: {current_menu}")
+                    pixmap = self.cargar_imagen('assets/boton on.png').pixmap(QSize(123, 93))
+                    button.setIcon(QIcon(pixmap))
+                    button.setIconSize(pixmap.size())
                 else:
-                    # La IP estaba inactiva y ahora está activa
                     self.ip_activas.append(ip)
-                    button.setIcon(QIcon('boton ok.png'))  # Establecer ícono para IP activa
-                    numero_habitacion = self.ip_number_mapping.get(ip, "")
-                    button.setText(f"Habitación {numero_habitacion}\nEstado: {current_menu}")
+                    pixmap = self.cargar_imagen('assets/boton on.png').pixmap(QSize(123, 93))
+                    button.setIcon(QIcon(pixmap))
+                    button.setIconSize(pixmap.size())
+
+                # Establecer el texto después de configurar el icono y su tamaño
+                button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: {current_menu}")
             else:
-                # La IP estaba activa y ahora está inactiva
                 if ip in self.ip_activas:
                     self.ip_activas.remove(ip)
-                # button.setStyleSheet("background-color: red")
-                button.setIcon(QIcon('boton off.png'))  # Establecer ícono para IP inactiva
-                numero_habitacion = self.ip_number_mapping.get(ip, "")
-                button.setText(f"Habitación {numero_habitacion}")
+
+                pixmap = self.cargar_imagen('assets/boton off.png').pixmap(QSize(123, 93))
+                button.setIcon(QIcon(pixmap))
+                button.setIconSize(pixmap.size())
+
+                # Establecer el texto después de configurar el icono y su tamaño
+                button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: Sin conexión")
+
+            # Forzar una actualización del diseño
+            button.updateGeometry()
 
     def actualizar_estados_botones_thread(self):
         while True:
