@@ -577,7 +577,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     button.setIconSize(pixmap.size())
 
                 # Establecer el texto después de configurar el icono y su tamaño
-                button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: {current_menu}")
+                # button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: {current_menu}")
             else:
                 if ip in self.ip_activas:
                     self.ip_activas.remove(ip)
@@ -587,7 +587,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 button.setIconSize(pixmap.size())
 
                 # Establecer el texto después de configurar el icono y su tamaño
-                button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: Sin conexión")
+                #button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: Sin conexión")
 
             # Forzar una actualización del diseño
             button.updateGeometry()
