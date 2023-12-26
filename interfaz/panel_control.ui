@@ -6,15 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>192</width>
-    <height>222</height>
+    <width>186</width>
+    <height>277</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(13, 25, 43);</string>
+   <string notr="true">QWidget#centralwidget{
+background-image: url(c:/tvip/assets/Fondo-Login.png);
+ background-repeat: no-repeat;
+}</string>
   </property>
   <property name="modal">
    <bool>false</bool>

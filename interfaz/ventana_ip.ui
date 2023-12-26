@@ -7,14 +7,17 @@
     <x>0</x>
     <y>0</y>
     <width>827</width>
-    <height>577</height>
+    <height>431</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(13, 25, 43);</string>
+   <string notr="true">QWidget#centralwidget{
+background-image: url(c:/tvip/assets/Fondo-Login.png);
+ background-repeat: no-repeat;
+}</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label">
