@@ -16,19 +16,19 @@
   <property name="styleSheet">
    <string notr="true">QWidget#centralwidget
 {
-background-image: url(D:\qt_images/Fondo-Login.png);
+background-image: url(C:/tvip/assets/Fondo-Login.png);
 background-repeat:no-repeat;
 }
 
 QFrame#Logologin
 {
-background-image: url(D:\qt_images/Logo-Login.png);
+background-image: url(C:/tvip/assets/Logo-Login.png);
 background-repeat:no-repeat;
 }
 
 QPushButton#Enviar
 {
-background-image: url(D:\qt_images/btn-Login.png);
+background-image: url(C:/tvip/assets/btn-Login.png);
 background-repeat:no-repeat;
 background-color: transparent;
 font-size:14pt; 
@@ -43,7 +43,7 @@ background-color: transparent;
 
 QCheckBox
 {
-image: url(D:\qt_images/toggleoff.png)
+image: url(C:/tvip/assets/toggleoff.png);
 }
 
 QCheckBox#checkBox:indicator
@@ -55,12 +55,12 @@ image: none;
 }
 QCheckBox:checked
 {
-image: url(D:\qt_images/toggleon.png);
+image: url(C:/tvip/assets/toggleon.png);
 }
 
 QCheckBox:disabled
 {
-image: url(D:\qt_images/toggleoff.png);
+image: url(C:/tvip/assets/toggleoff.png);
 }
 
 
@@ -104,17 +104,19 @@ border-radius:7px;
    <widget class="QPushButton" name="iniciarSesionButton">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>520</y>
-      <width>221</width>
-      <height>61</height>
+      <x>160</x>
+      <y>530</y>
+      <width>171</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">border-radius:8px;
+background-color: rgb(195, 195, 195);
+font: 75 15pt &quot;Bahnschrift Condensed&quot;;</string>
     </property>
     <property name="text">
-     <string>Enviar</string>
+     <string>Ingresar TVIP</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="Username2">
@@ -166,17 +168,30 @@ border-radius:7px;
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Pasword&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox">
+   <widget class="QPushButton" name="config">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>660</y>
-      <width>151</width>
-      <height>61</height>
+      <x>10</x>
+      <y>700</y>
+      <width>71</width>
+      <height>51</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: transparent;</string>
     </property>
     <property name="text">
      <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../../Users/supra/Downloads/pngwing.com.png</normaloff>../../Users/supra/Downloads/pngwing.com.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>50</width>
+      <height>50</height>
+     </size>
     </property>
    </widget>
   </widget>
