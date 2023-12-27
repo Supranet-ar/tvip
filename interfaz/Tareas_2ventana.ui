@@ -14,8 +14,10 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(216, 216, 203);
-background-color: rgb(77, 62, 127);</string>
+   <string notr="true">QWidget#centralwidget{
+background-image: url(c:/tvip/assets/Fondo-Login.png);
+ background-repeat: no-repeat;
+}</string>
   </property>
   <widget class="QPushButton" name="botonGuardar">
    <property name="geometry">
@@ -27,8 +29,9 @@ background-color: rgb(77, 62, 127);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(115, 121, 212);
-border-radius:10px;</string>
+    <string notr="true">background-color: rgb(10, 137, 103);
+border-radius:10px;
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
    </property>
    <property name="text">
     <string>Guardar</string>
@@ -44,8 +47,9 @@ border-radius:10px;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(115, 121, 212);
-border-radius:10px;</string>
+    <string notr="true">background-color: rgb(10, 137, 103);
+border-radius:10px;
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
    </property>
    <property name="text">
     <string>CANCELAR</string>

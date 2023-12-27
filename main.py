@@ -12,7 +12,8 @@ from PyQt5.QtCore import QtMsgType, qInstallMessageHandler, QUrl, Qt, QSize, pyq
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from PyQt5.QtGui import QIcon, QPixmap, QPainter, QFont, QColor
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QWidget, QMainWindow, QLayout
+from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QWidget, QMainWindow, QInputDialog, QLineEdit, QDialog, QLabel, \
+    QFormLayout, QDialogButtonBox
 from PyQt5.uic import loadUi
 from base_de_datos import BaseDeDatos
 
@@ -28,6 +29,54 @@ KODI_PASSWORD = "3434"
 
 # Variable global para almacenar el puerto configurado
 puerto_configurado = 8080  # Puerto predeterminado
+
+"""class ConfigurarConexionDialog(QDialog):
+    def __init__(self, parent=None):
+        super(ConfigurarConexionDialog, self).__init__(parent)
+        self.setWindowTitle("Configurar Conexión")
+
+        # Crear widgets para ingresar los datos de conexión
+        self.host_edit = QLineEdit(self)
+        self.user_edit = QLineEdit(self)
+        self.password_edit = QLineEdit(self)
+        self.database_edit = QLineEdit(self)
+
+        # Establecer las etiquetas para los campos
+        host_label = QLabel("Host:")
+        user_label = QLabel("Usuario:")
+        password_label = QLabel("Contraseña:")
+        database_label = QLabel("Base de Datos:")
+
+        # Crear el diseño del formulario
+        layout = QFormLayout()
+        layout.addRow(host_label, self.host_edit)
+        layout.addRow(user_label, self.user_edit)
+        layout.addRow(password_label, self.password_edit)
+        layout.addRow(database_label, self.database_edit)
+
+        # Botones Aceptar/Cancelar
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+
+        # Crear el diseño principal
+        main_layout = QVBoxLayout()
+        main_layout.addLayout(layout)
+        main_layout.addWidget(buttons)
+
+        self.setLayout(main_layout)
+
+    def obtener_datos_conexion(self):
+        host = self.host_edit.text()
+        user = self.user_edit.text()
+        password = self.password_edit.text()
+        database = self.database_edit.text()
+
+        return host, user, password, database"""
+
+
+
+
 class PanelPuerto(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()
@@ -307,8 +356,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("Panel de control")
         self.setFixedSize(1360, 768)
 
-        # se crea una instancia de la clase BaseDeDatos
-        self.base_datos = BaseDeDatos()
+        self.ventana_bd = BaseDeDatos()
+        self.ventana_bd.close_connection()
+
 
         # Almacena las IP activas
         self.ip_activas = []
@@ -321,7 +371,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # CONEXION DE SEÑALES EN LA VENTANA PRINCIPAL
         for button in self.scrollAreaWidgetContents.findChildren(QtWidgets.QPushButton):
-            button.setStyleSheet("color: red;")
+            button.setStyleSheet("color: white;")
 
         self.btn_agregar.clicked.connect(self.ejecutarip)
         self.btn_programar.clicked.connect(self.abrirSegundaVentana)
@@ -355,13 +405,31 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actualizacion_hilo.daemon = True  # Hilo como demonio para que termine cuando el programa principal termine
         self.actualizacion_hilo.start()
 
+        # Conectar el botón "btnConfigurarConexion" a la función configurar_conexion
+        #self.btnConfigurarConexion.clicked.connect(self.configurar_conexion)
+
         #self.cargar_datos_habitaciones()
         #self.ping_and_verify()
         #self.actualizar_estados_botones()  # Agrega esta línea para actualizar los botones al iniciar
 
     def ejecutarip(self):
-        ventana.close()
+       # ventana.close()
         subprocess.run(['python', 'ip.py'])
+
+    """def configurar_conexion(self):
+        dialog = ConfigurarConexionDialog(self)
+        if dialog.exec_() == QDialog.Accepted:
+            host, user, password, database = dialog.obtener_datos_conexion()
+
+            # Guardar los nuevos datos en el archivo de configuración
+            config_data = {
+                "DB_HOST": host,
+                "DB_USER": user,
+                "DB_PASSWORD": password,
+                "DB_DATABASE": database
+            }
+            with open("config.json", "w") as file:
+                json.dump(config_data, file)"""
 
     def abrirSegundaVentana(self):
             self.segundaVentana = VentanaSecundaria(self)
@@ -369,9 +437,17 @@ class MainWindow(QtWidgets.QMainWindow):
             self.segundaVentana.show()
 
     def cargar_tareas_desde_bd(self):
-        tareas = self.base_datos.obtener_tareas()
-        for tarea in tareas:
-            self.listWidget.addItem(tarea)
+        try:
+            tareas = self.ventana_bd.obtener_tareas()
+
+            if tareas is not None:  # Asegúrate de que tareas no sea None
+                for tarea in tareas:
+                    self.listWidget.addItem(tarea)
+            else:
+                print("No se pudieron obtener tareas desde la base de datos.")
+
+        except mysql.connector.Error as error:
+            print(f"Error al cargar tareas desde la base de datos: {error}")
 
     def agregarElemento(self, texto):
         self.listWidget.addItem(texto)
@@ -460,8 +536,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return None
 
-
-
     def cargar_datos_habitaciones(self):
         # Elimina cualquier diseño existente de scrollAreaWidgetContents
         for layout in self.scrollAreaWidgetContents.findChildren(QLayout):
@@ -525,7 +599,6 @@ class MainWindow(QtWidgets.QMainWindow):
                     button.setIconSize(pixmap.size())
                     print(f'La IP {ip} no está activa.')
 
-
         return self.ip_activas
 
     def enviar_publicidad_a_habitaciones(self, ip_activas):
@@ -570,7 +643,6 @@ class MainWindow(QtWidgets.QMainWindow):
         except requests.exceptions.RequestException as e:
             print(f'Error al obtener el menú actual de la habitación {ip}: {str(e)}')
             return None
-
 
     def actualizar_estados_botones(self):
         for ip, button in zip(self.ip_list, self.buttons):

@@ -1,34 +1,50 @@
+import json
+
 import mysql.connector
 
 
 # Base de datos local
+import mysql.connector
+
 class BaseDeDatos:
-    def __init__(self):
+    def __init__(self, config_file="config.json"):
         self.connection = None
-        self.DB_HOST = '192.168.100.117'
-        self.DB_USER = 'tvip'
-        self.DB_PASSWORD = '3434'
-        self.DB_DATABASE = 'tvip'
+        self.config_file = config_file
+        self.load_config()
         self.conexion_db = self.conectar_db()
+
+    def load_config(self):
+        try:
+            with open(self.config_file, "r") as file:
+                config_data = json.load(file)
+                self.DB_HOST = config_data.get("DB_HOST", "")
+                self.DB_USER = config_data.get("DB_USER", "")
+                self.DB_PASSWORD = config_data.get("DB_PASSWORD", "")
+                self.DB_DATABASE = config_data.get("DB_DATABASE", "")
+        except FileNotFoundError:
+            print(f"Archivo de configuración '{self.config_file}' no encontrado.")
+        except json.JSONDecodeError as e:
+            print(f"Error al decodificar el archivo de configuración '{self.config_file}': {e}")
 
     def conectar_db(self):
         try:
-            conn = mysql.connector.connect(
+            conexion_db = mysql.connector.connect(
                 host=self.DB_HOST,
                 user=self.DB_USER,
                 password=self.DB_PASSWORD,
                 database=self.DB_DATABASE
             )
-            print("Conexión a la base de datos establecida.")
-            return conn
-        except mysql.connector.Error as err:
-            print(f"Error al conectar a la base de datos: {err}")
+            print("Conexión a la base de datos exitosa.")
+            return conexion_db
+        except mysql.connector.Error as error:
+            print(f"Error al conectar con la base de datos: {error}")
             return None
 
     def close_connection(self):
-        if self.connection is not None and self.connection.is_connected():
+        if self.connection:
             self.connection.close()
             print("Conexión cerrada.")
+
 
     def obtener_datos(self):
         if self.conexion_db:
@@ -106,13 +122,11 @@ class BaseDeDatos:
     def obtener_tareas(self):
         try:
             cursor = self.conexion_db.cursor()
-
-            select_query = "SELECT descripcion FROM tareas"
-            cursor.execute(select_query)
-            tareas = [row[0] for row in cursor.fetchall()]
-            print("Tareas recuperadas con exito")
+            cursor.execute("SELECT * FROM tu_tabla_de_tareas")
+            tareas = cursor.fetchall()
+            cursor.close()
             return tareas
 
         except mysql.connector.Error as error:
-            print(f"Error al obtener tareas de la base de datos: {error}")
-            return None
+            print(f"Error al obtener tareas desde la base de datos: {error}")
+            return []  # Devuelve una lista vacía en caso de error
