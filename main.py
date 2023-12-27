@@ -1,4 +1,3 @@
-import configparser
 import json
 import sys
 import time
@@ -9,12 +8,12 @@ import concurrent.futures
 import mysql.connector
 import requests
 import webbrowser
-from PyQt5.QtCore import QtMsgType, qInstallMessageHandler, QUrl, Qt, QSize
+from PyQt5.QtCore import QtMsgType, qInstallMessageHandler, QUrl, Qt, QSize, pyqtSlot
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtGui import QIcon, QPixmap, QPainter, QFont, QColor
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QWidget, QMainWindow, QInputDialog, QLineEdit, QDialog, QLabel, \
-    QFormLayout, QDialogButtonBox
+    QFormLayout, QDialogButtonBox, QLayout
 from PyQt5.uic import loadUi
 from base_de_datos import BaseDeDatos
 
@@ -491,7 +490,7 @@ class MainWindow(QtWidgets.QMainWindow):
         print(f"Clic en el botón de la habitación {numero_habitacion}")
 
         try:
-            cursor = self.ventana_bd .conexion_db.cursor()
+            cursor = self.base_datos.conexion_db.cursor()
             cursor.execute("SELECT Ip FROM habitaciones WHERE Numero=%s", (numero_habitacion,))
             ip = cursor.fetchone()
 
@@ -522,7 +521,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def obtener_datos_habitaciones(self):
         try:
-            cursor = self.ventana_bd .conexion_db.cursor()
+            cursor = self.ventana_bd.conexion_db.cursor()
 
             # Asegurarse de que solo se obtengan habitaciones con IPs válidas
             query = "SELECT ip, numero FROM habitaciones WHERE ip IS NOT NULL AND ip <> ''"
@@ -536,7 +535,13 @@ class MainWindow(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectar con la base de datos: {error}")
 
         return None
+
     def cargar_datos_habitaciones(self):
+        # Elimina cualquier diseño existente de scrollAreaWidgetContents
+        for layout in self.scrollAreaWidgetContents.findChildren(QLayout):
+            layout.deleteLater()
+        # Inicializa el diseño vertical para los botones
+        layout = QVBoxLayout(self.scrollAreaWidgetContents)
         # Inicializa todos los botones como ocultos
         for i in range(1, 101):  # Rango de botones, asumiendo que tenemos 100 botones como máximo
             btn = getattr(self, f"btn{i}", None)
@@ -548,6 +553,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 except TypeError:
                     pass  # Ignora la excepción si no hay conexión previa
                 btn.clicked.connect(lambda checked=False, num=i: self.abrir_panel_control(num))
+                layout.addWidget(btn)
+                layout.setAlignment(Qt.AlignTop)
 
         data = self.obtener_datos_habitaciones()
         self.ip_list = [ip for ip, _ in data]
@@ -652,8 +659,22 @@ class MainWindow(QtWidgets.QMainWindow):
                     button.setIcon(QIcon(pixmap))
                     button.setIconSize(pixmap.size())
 
-                # Establecer el texto después de configurar el icono y su tamaño
-                # button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: {current_menu}")
+                # Crear un objeto QPixmap para el pintado
+                painted_pixmap = QPixmap(pixmap)
+
+                # Dibujar texto sobre la imagen
+                painter = QPainter(painted_pixmap)
+                painter.setFont(QFont("Arial", 8))
+                painter.setPen(QColor("white"))  # Configurar el color de la fuente
+                # Centrar el texto
+                text_rect = painted_pixmap.rect()
+                painter.drawText(text_rect, Qt.AlignCenter,
+                                 f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: {current_menu}")
+                painter.end()
+
+                # Establecer la imagen pintada como icono del botón
+                button.setIcon(QIcon(painted_pixmap))
+
             else:
                 if ip in self.ip_activas:
                     self.ip_activas.remove(ip)
@@ -662,15 +683,28 @@ class MainWindow(QtWidgets.QMainWindow):
                 button.setIcon(QIcon(pixmap))
                 button.setIconSize(pixmap.size())
 
-                # Establecer el texto después de configurar el icono y su tamaño
-                #button.setText(f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: Sin conexión")
+                # Crear un objeto QPixmap para el pintado
+                painted_pixmap = QPixmap(pixmap)
+
+                # Dibujar texto sobre la imagen
+                painter = QPainter(painted_pixmap)
+                painter.setFont(QFont("Arial", 8))
+                painter.setPen(QColor("white"))  # Configurar el color de la fuente
+                # Centrar el texto
+                text_rect = painted_pixmap.rect()
+                painter.drawText(text_rect, Qt.AlignCenter,
+                                 f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: Sin conexión")
+                painter.end()
+
+                # Establecer la imagen pintada como icono del botón
+                button.setIcon(QIcon(painted_pixmap))
 
             # Forzar una actualización del diseño
             button.updateGeometry()
 
     def actualizar_estados_botones_thread(self):
         while True:
-            self.ping_and_verify()
+            #self.ping_and_verify()
             self.actualizar_estados_botones()
             time.sleep(5)  # Espera 5 segundos antes de la próxima ejecución
 
@@ -727,4 +761,3 @@ if __name__ == "__main__":
     ventana.cargar_datos_habitaciones()
     ventana.ping_and_verify()
     sys.exit(app.exec_())
-
