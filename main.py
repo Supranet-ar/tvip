@@ -13,7 +13,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from PyQt5.QtGui import QIcon, QPixmap, QPainter, QFont, QColor
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QWidget, QMainWindow, QInputDialog, QLineEdit, QDialog, QLabel, \
-    QFormLayout, QDialogButtonBox
+    QFormLayout, QDialogButtonBox, QLayout
 from PyQt5.uic import loadUi
 from base_de_datos import BaseDeDatos
 
@@ -521,7 +521,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def obtener_datos_habitaciones(self):
         try:
-            cursor = self.base_datos.conexion_db.cursor()
+            cursor = self.ventana_bd.conexion_db.cursor()
 
             # Asegurarse de que solo se obtengan habitaciones con IPs válidas
             query = "SELECT ip, numero FROM habitaciones WHERE ip IS NOT NULL AND ip <> ''"
