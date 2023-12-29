@@ -5,6 +5,8 @@ import datetime
 import threading
 import subprocess
 import concurrent.futures
+from concurrent.futures import ThreadPoolExecutor
+
 import mysql.connector
 import requests
 import webbrowser
@@ -15,6 +17,8 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QWidget, QMainWindow, QInputDialog, QLineEdit, QDialog, QLabel, \
     QFormLayout, QDialogButtonBox, QLayout
 from PyQt5.uic import loadUi
+from PyQt5.QtCore import pyqtSignal
+
 from base_de_datos import BaseDeDatos
 
 
@@ -349,6 +353,7 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
 
 # Clase principal
 class MainWindow(QtWidgets.QMainWindow):
+    estadoActualizadoSignal = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -404,6 +409,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actualizacion_hilo = threading.Thread(target=self.actualizar_estados_botones_thread)
         self.actualizacion_hilo.daemon = True  # Hilo como demonio para que termine cuando el programa principal termine
         self.actualizacion_hilo.start()
+
+        # Conectar la señal a la función de actualización de la interfaz
+        #self.estadoActualizadoSignal.connect(self.actualizar_estado_boton)
 
         # Conectar el botón "btnConfigurarConexion" a la función configurar_conexion
         #self.btnConfigurarConexion.clicked.connect(self.configurar_conexion)
@@ -490,7 +498,7 @@ class MainWindow(QtWidgets.QMainWindow):
         print(f"Clic en el botón de la habitación {numero_habitacion}")
 
         try:
-            cursor = self.base_datos.conexion_db.cursor()
+            cursor = self.ventana_bd.conexion_db.cursor()
             cursor.execute("SELECT Ip FROM habitaciones WHERE Numero=%s", (numero_habitacion,))
             ip = cursor.fetchone()
 
@@ -634,85 +642,93 @@ class MainWindow(QtWidgets.QMainWindow):
         }
 
         try:
-            time.sleep(0.5)
             response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
             response.raise_for_status()
             data = response.json()
             current_window = data["result"]["currentwindow"]["label"]
             return current_window
+
         except requests.exceptions.RequestException as e:
-            print(f'Error al obtener el menú actual de la habitación {ip}: {str(e)}')
+           # print(f'Error al obtener el menú actual de la habitación {ip}: {str(e)}')
             return None
 
-    def actualizar_estados_botones(self):
-        for ip, button in zip(self.ip_list, self.buttons):
+        except json.JSONDecodeError as e:
+            print(f'Error al decodificar la respuesta JSON para la habitación {ip}: {str(e)}')
+            return None
+
+    def obtener_menu_actual_para_todas_las_ips(self):
+        with ThreadPoolExecutor(max_workers=len(self.ip_list)) as executor:
+            futures = {executor.submit(self.obtener_menu_actual, ip): ip for ip in self.ip_list}
+
+            for future in concurrent.futures.as_completed(futures):
+                ip = futures[future]
+                try:
+                    result = future.result()
+                    # Haz algo con el resultado, por ejemplo, almacenarlo en una estructura de datos compartida
+                    print(f'Menú actual para la habitación {ip}: {result}')
+                except Exception as e:
+                    print(f'Error al obtener el menú actual para la habitación {ip}: {str(e)}')
+
+    def actualizar_estado_boton(self, ip):
+        try:
+            print(f"Debug: Actualizando estado del botón para la IP {ip}")
+
             current_menu = self.obtener_menu_actual(ip)
+            button = self.buttons[self.ip_list.index(ip)]
 
             if self.ping(ip):
                 if ip in self.ip_activas:
                     pixmap = self.cargar_imagen('assets/boton on.png').pixmap(QSize(123, 93))
-                    button.setIcon(QIcon(pixmap))
-                    button.setIconSize(pixmap.size())
                 else:
                     self.ip_activas.append(ip)
                     pixmap = self.cargar_imagen('assets/boton on.png').pixmap(QSize(123, 93))
-                    button.setIcon(QIcon(pixmap))
-                    button.setIconSize(pixmap.size())
 
-                # Crear un objeto QPixmap para el pintado
-                painted_pixmap = QPixmap(pixmap)
-
-                # Dibujar texto sobre la imagen
-                painter = QPainter(painted_pixmap)
-                painter.setFont(QFont("Arial", 8))
-                painter.setPen(QColor("white"))  # Configurar el color de la fuente
-                # Centrar el texto
-                text_rect = painted_pixmap.rect()
-                painter.drawText(text_rect, Qt.AlignCenter,
-                                 f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: {current_menu}")
-                painter.end()
-
-                # Establecer la imagen pintada como icono del botón
-                button.setIcon(QIcon(painted_pixmap))
-
+                estado_texto = f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: {current_menu}"
             else:
                 if ip in self.ip_activas:
                     self.ip_activas.remove(ip)
-
                 pixmap = self.cargar_imagen('assets/boton off.png').pixmap(QSize(123, 93))
-                button.setIcon(QIcon(pixmap))
-                button.setIconSize(pixmap.size())
+                estado_texto = f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: Sin conexión"
 
-                # Crear un objeto QPixmap para el pintado
-                painted_pixmap = QPixmap(pixmap)
+            button.setIcon(QIcon(pixmap))
 
-                # Dibujar texto sobre la imagen
-                painter = QPainter(painted_pixmap)
-                painter.setFont(QFont("Arial", 8))
-                painter.setPen(QColor("white"))  # Configurar el color de la fuente
-                # Centrar el texto
-                text_rect = painted_pixmap.rect()
-                painter.drawText(text_rect, Qt.AlignCenter,
-                                 f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: Sin conexión")
-                painter.end()
+            # Crear un objeto QPixmap para el pintado
+            painted_pixmap = QPixmap(pixmap)
 
-                # Establecer la imagen pintada como icono del botón
-                button.setIcon(QIcon(painted_pixmap))
+            # Dibujar texto sobre la imagen
+            painter = QPainter(painted_pixmap)
+            painter.setFont(QFont("Arial", 8))
+            painter.setPen(QColor("white"))  # Configurar el color de la fuente
+            # Centrar el texto
+            text_rect = painted_pixmap.rect()
+            painter.drawText(text_rect, Qt.AlignCenter, estado_texto)
+            painter.end()
+
+            # Establecer la imagen pintada como icono del botón
+            button.setIcon(QIcon(painted_pixmap))
 
             # Forzar una actualización del diseño
             button.updateGeometry()
 
+        except Exception as e:
+            print(f"Error en la actualización del estado del botón para la IP {ip}: {e}")
+
     def actualizar_estados_botones_thread(self):
         while True:
-            #self.ping_and_verify()
-            self.actualizar_estados_botones()
-            time.sleep(5)  # Espera 5 segundos antes de la próxima ejecución
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                executor.map(lambda ip: self.actualizar_estado_boton(ip), self.ip_list)
 
-    def iniciar_actualizacion_estado_menus(self):
+            # Emitir la señal cuando la actualización esté completa
+            self.estadoActualizadoSignal.emit()
+            time.sleep(2)
+
+
+
+    """def iniciar_actualizacion_estado_menus(self):
         print("Iniciando actualización de estados de menús en segundo plano...")
         with concurrent.futures.ThreadPoolExecutor() as executor:
             executor.submit(self.actualizar_estado_menus)
-        print("Actualización de estados de menús en segundo plano iniciada.")
+        print("Actualización de estados de menús en segundo plano iniciada.")"""
 
     def ejecutar_addon(self, ip, addon_id):
         url = f"http://{ip}:8080/jsonrpc"
