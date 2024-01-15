@@ -1,11 +1,26 @@
 import json
 import subprocess
 import sys
+from multiprocessing.dummy import Process
+
 from PyQt5 import QtWidgets, uic
 import mysql.connector
-from PyQt5.QtWidgets import QMainWindow, QLineEdit, QDialog, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QLineEdit, QDialog, QMessageBox, QVBoxLayout, QLabel, QPushButton
 from mysql.connector import Error
 
+# Agregar una nueva clase para el cuadro de diálogo de confirmación
+class ConfirmacionModificacionDialog(QDialog):
+    def __init__(self, parent=None):
+        super(ConfirmacionModificacionDialog, self).__init__(parent)
+        uic.loadUi('interfaz/validar.ui', self)  # Reemplaza 'confirmacion_modificacion.ui' con el nombre de tu archivo .ui
+
+        # Conecta los botones a las funciones correspondientes
+        self.aceptar_button.clicked.connect(self.accept)
+        self.cancelar_button.clicked.connect(self.reject)
+
+    def accept_and_close(self):
+        self.accept()
+        self.close()
 class VentanaVerificarContrasena(QDialog):
     def __init__(self, parent=None):
         super(VentanaVerificarContrasena, self).__init__(parent)
@@ -54,9 +69,17 @@ class VentanaConfiguracion(QMainWindow):
             )
 
             if connection.is_connected():
-                print('Conexión exitosa a la base de datos!')
-                # Actualizar los datos en el archivo JSON
-                self.actualizar_configuracion_en_json(host, usuario, contrasena, nombre_bd)
+                # Muestra un cuadro de diálogo para confirmar la modificación en la base de datos
+                confirmacion_dialog = ConfirmacionModificacionDialog(self)
+                if confirmacion_dialog.exec_() == QDialog.Accepted:
+                    # Si el usuario acepta, continúa con la actualización de la configuración
+                    print('Conexión exitosa a la base de datos!')
+                    self.actualizar_configuracion_en_json(host, usuario, contrasena, nombre_bd)
+
+                    # Cierra la ventana de configuración
+                    self.close()
+                else:
+                    print('Modificación en la base de datos cancelada por el usuario.')
 
                 # Cierra la conexión
                 connection.close()
@@ -207,7 +230,26 @@ class VentanaLogin(QtWidgets.QWidget):
         self.ventana_error.close()
 
     def abrir_habitaciones(self):
-        subprocess.run(["python", "main.py"])
+        print("Abriendo habitaciones...")
+
+        try:
+            # Utiliza multiprocessing.Process para ejecutar main.py en segundo plano
+            main_process = Process(target=self.ejecutar_main_py)
+            main_process.start()
+
+            # Cierra la ventana actual
+            print("Cerrando la ventana actual")
+            self.window.close()
+        except Exception as e:
+            print(f"Error al abrir main.py: {e}")
+
+    def ejecutar_main_py(self):
+        try:
+            subprocess.run(["python", "main.py"])
+        except subprocess.CalledProcessError as e:
+            print(f"Error al ejecutar main.py: {e}")
+        except Exception as e:
+            print(f"Error inesperado: {e}")
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
