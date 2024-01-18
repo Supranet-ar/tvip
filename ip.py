@@ -143,6 +143,10 @@ app = QApplication(sys.argv)
 # Carga el archivo .ui
 ui = loadUi("interfaz/ventana_ip.ui")
 
+# Limpia los encabezados de las columnas del QTableWidget
+ui.tableWidget.verticalHeader().setVisible(False)
+ui.tableWidget.horizontalHeader().setVisible(True)
+
 # Conecta el botón "AGREGAR" con la función insertar_ip
 ui.btn_agregarbd.clicked.connect(insertar_ip)
 
