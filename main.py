@@ -332,7 +332,7 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
         segundos = fecha.second
         self.datos = f"Tarea: {texto}, Hora: {hora:02d}:{minutos:02d}:{segundos:02d}"
         self.guardarDatosSignal.emit(self.datos)
-        self.ventanaPrincipal.base_datos.insertar_tarea(self.datos)
+        self.ventanaPrincipal.ventana_bd.insertar_tarea(self.datos)
         self.close()
         self.ventanaPrincipal.show()
 
@@ -342,7 +342,7 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
             threading.Timer(tiempo_restante.total_seconds(), self.programar_publicidad).start()
 
     def programar_publicidad(self):
-        self.ventanaPrincipal.enviar_publicidad_a_habitaciones(self.ventanaPrincipal.ip_activas,self.ventanaPrincipal.addon_id)
+        self.ventanaPrincipal.enviar_publicidad_a_habitaciones(self.ventanaPrincipal.ip_activas)
         self.ventanaPrincipal.removerElemento(self.datos)
 
     def actualizarHora(self):
@@ -368,6 +368,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # Almacena las IP activas
         self.ip_activas = []
         self.addon_id = "script.hello.world"
+
+        # Añade el atributo video_path
+        self.video_path = '/storage/publicidad.mp4'
 
         # se inicializa funciones para obtener los datos de las pantallas
         self.obtener_datos_habitaciones()
@@ -450,7 +453,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if tareas is not None:  # Asegúrate de que tareas no sea None
                 for tarea in tareas:
-                    self.listWidget.addItem(tarea)
+                    self.listWidget.addItem(str(tarea))  # Convierte la tupla a una cadena
+
             else:
                 print("No se pudieron obtener tareas desde la base de datos.")
 
@@ -461,7 +465,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.listWidget.addItem(texto)
 
     def removerElemento(self, tarea):
-        self.base_datos.eliminar_tarea(tarea)
+        self.ventana_bd.eliminar_tarea(tarea)
         for index in range(self.listWidget.count()):
             item = self.listWidget.item(index)
             if item.text() == tarea:
@@ -495,7 +499,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.relojLabel.setText(tiempo_formateado)
 
     def abrir_panel_control(self, numero_habitacion):
-        print(f"Clic en el botón de la habitación {numero_habitacion}")
+        #print(f"Clic en el botón de la habitación {numero_habitacion}")
 
         try:
             cursor = self.ventana_bd.conexion_db.cursor()
@@ -504,7 +508,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if ip:
                 ip = ip[0]
-                print(f"IP encontrada para la habitación {numero_habitacion}: {ip}")
+                #print(f"IP encontrada para la habitación {numero_habitacion}: {ip}")
 
                 if ip in self.ip_activas:
                     try:
@@ -598,37 +602,39 @@ class MainWindow(QtWidgets.QMainWindow):
                     pixmap = self.cargar_imagen('assets/boton on.png').pixmap(QSize(117, 88))
                     button.setIcon(QIcon(pixmap))
                     button.setIconSize(pixmap.size())
-                    print(f'La IP {ip} está activa.')
+                    #print(f'La IP {ip} está activa.')
                 else:
                     if ip in self.ip_activas:
                         self.ip_activas.remove(ip)
                     pixmap = self.cargar_imagen('assets/boton off.png').pixmap(QSize(117, 88))
                     button.setIcon(QIcon(pixmap))
                     button.setIconSize(pixmap.size())
-                    print(f'La IP {ip} no está activa.')
+                    #print(f'La IP {ip} no está activa.')
 
         return self.ip_activas
 
     def enviar_publicidad_a_habitaciones(self, ip_activas):
-        mensaje_publicidad = "¡Descuento especial por tiempo limitado! Visita nuestro sitio web."
+        video_url = "smb://Server:3434@192.168.100.50/Server/publicidad3.mp4"
         for ip in ip_activas:
             url = f'http://{ip}:8080/jsonrpc'
             payload = {
                 "jsonrpc": "2.0",
-                "method": "GUI.ShowNotification",
+                "method": "Player.Open",
                 "params": {
-                    "title": "Publicidad",
-                    "message": mensaje_publicidad
+                    "item": {"file": video_url}
                 },
                 "id": 1
             }
 
             try:
-                response = requests.post(url, json=payload)
+                response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
                 response.raise_for_status()
-                print(f'Mensaje de publicidad enviado a la habitación {ip}')
+                print(f'Video reproducido en la habitación {ip}')
             except requests.exceptions.RequestException as e:
-                print(f'Error al enviar el mensaje de publicidad a la habitación {ip}: {str(e)}')
+                print(f'Error al reproducir el video en la habitación {ip}: {str(e)}')
+                if hasattr(e, 'response') and e.response is not None:
+                    print(f'Status Code: {e.response.status_code}')
+                    print(f'Response Content: {e.response.text}')
 
     def obtener_menu_actual(self, ip):
         url = f"http://{ip}:8080/jsonrpc"
@@ -671,7 +677,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def actualizar_estado_boton(self, ip):
         try:
-            print(f"Debug: Actualizando estado del botón para la IP {ip}")
+           # print(f"Debug: Actualizando estado del botón para la IP {ip}")
 
             current_menu = self.obtener_menu_actual(ip)
             button = self.buttons[self.ip_list.index(ip)]
