@@ -34,52 +34,6 @@ KODI_PASSWORD = "3434"
 # Variable global para almacenar el puerto configurado
 puerto_configurado = 8080  # Puerto predeterminado
 
-"""class ConfigurarConexionDialog(QDialog):
-    def __init__(self, parent=None):
-        super(ConfigurarConexionDialog, self).__init__(parent)
-        self.setWindowTitle("Configurar Conexión")
-
-        # Crear widgets para ingresar los datos de conexión
-        self.host_edit = QLineEdit(self)
-        self.user_edit = QLineEdit(self)
-        self.password_edit = QLineEdit(self)
-        self.database_edit = QLineEdit(self)
-
-        # Establecer las etiquetas para los campos
-        host_label = QLabel("Host:")
-        user_label = QLabel("Usuario:")
-        password_label = QLabel("Contraseña:")
-        database_label = QLabel("Base de Datos:")
-
-        # Crear el diseño del formulario
-        layout = QFormLayout()
-        layout.addRow(host_label, self.host_edit)
-        layout.addRow(user_label, self.user_edit)
-        layout.addRow(password_label, self.password_edit)
-        layout.addRow(database_label, self.database_edit)
-
-        # Botones Aceptar/Cancelar
-        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        buttons.accepted.connect(self.accept)
-        buttons.rejected.connect(self.reject)
-
-        # Crear el diseño principal
-        main_layout = QVBoxLayout()
-        main_layout.addLayout(layout)
-        main_layout.addWidget(buttons)
-
-        self.setLayout(main_layout)
-
-    def obtener_datos_conexion(self):
-        host = self.host_edit.text()
-        user = self.user_edit.text()
-        password = self.password_edit.text()
-        database = self.database_edit.text()
-
-        return host, user, password, database"""
-
-
-
 
 class PanelPuerto(QtWidgets.QDialog):
     def __init__(self):
@@ -310,16 +264,23 @@ class PanelControl(QtWidgets.QDialog):
 # Ventana de tareas
 class VentanaSecundaria(QtWidgets.QMainWindow):
     guardarDatosSignal = QtCore.pyqtSignal(str)  # Definición de la señal
+
     def __init__(self, ventanaPrincipal):
         super().__init__()
-        self.setWindowTitle("Segunda Ventana")
+        self.setWindowTitle("Programar tareas")
         self.ventanaPrincipal = ventanaPrincipal
-        loadUi("interfaz/Tareas_2ventana.ui", self)
+        uic.loadUi("interfaz/Tareas_2ventana.ui", self)
 
         # Señal para conectar el botón "Guardar" con la función para guardar los datos y volver a la primera ventana
         self.botonGuardar.clicked.connect(self.guardarDatos)
 
-        # se crea un temporizador para actualizar la hora cada segundo
+        # Conectamos la selección de la opción en el QComboBox a la función opcion_seleccionada
+        self.comboBox.currentIndexChanged.connect(self.opcion_seleccionada)
+
+        # Variable de instancia para almacenar la fecha y hora programada
+        self.fecha_hora_programada = None
+
+        # Se crea un temporizador para actualizar la hora cada segundo
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.actualizarHora)
         self.timer.start(1000)  # Actualizar cada 1000 ms (1 segundo)
@@ -330,25 +291,47 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
         hora = fecha.hour
         minutos = fecha.minute
         segundos = fecha.second
+
         self.datos = f"Tarea: {texto}, Hora: {hora:02d}:{minutos:02d}:{segundos:02d}"
+        self.fecha_hora_programada = fecha  # Almacena la fecha y hora programada
         self.guardarDatosSignal.emit(self.datos)
-        self.ventanaPrincipal.base_datos.insertar_tarea(self.datos)
+        self.ventanaPrincipal.ventana_bd.insertar_tarea(self.datos)
         self.close()
         self.ventanaPrincipal.show()
 
-        # Programa la llamada a enviar_publicidad_a_habitaciones en el horario especificado
+        # Programa la llamada a enviar_publicidad_a_habitaciones o enviar_video_a_habitaciones en el horario especificado
         tiempo_restante = fecha - datetime.datetime.now()
         if tiempo_restante.total_seconds() > 0:
-            threading.Timer(tiempo_restante.total_seconds(), self.programar_publicidad).start()
+            if self.comboBox.currentIndex() == 0:
+                threading.Timer(tiempo_restante.total_seconds(), self.programar_publicidad).start()
+            elif self.comboBox.currentIndex() == 1:
+                threading.Timer(tiempo_restante.total_seconds(), self.programar_video).start()
 
     def programar_publicidad(self):
-        self.ventanaPrincipal.enviar_publicidad_a_habitaciones(self.ventanaPrincipal.ip_activas,self.ventanaPrincipal.addon_id)
+        self.ventanaPrincipal.enviar_publicidad_a_habitaciones(self.ventanaPrincipal.ip_activas)
+        self.ventanaPrincipal.removerElemento(self.datos)
+
+    def programar_video(self):
+        self.ventanaPrincipal.enviar_video_a_habitaciones(self.ventanaPrincipal.ip_activas)
         self.ventanaPrincipal.removerElemento(self.datos)
 
     def actualizarHora(self):
         hora_actual = QtCore.QDateTime.currentDateTime()
         self.dateTimeEdit.setDateTime(hora_actual)
         self.timer.timeout.disconnect(self.actualizarHora)
+
+    def opcion_seleccionada(self, index):
+        if index == 0:  # "Enviar MSJ" seleccionado
+            print("Opción seleccionada: Enviar MSJ")
+            self.ventanaPrincipal.enviar_publicidad_a_habitaciones(self.ventanaPrincipal.ip_activas)
+        elif index == 1:  # "Enviar Video de publicidad" seleccionado
+            print("Opción seleccionada: Enviar Video de publicidad")
+            fecha_programada = self.dateTimeEdit.dateTime().toPyDateTime()
+
+            # Programar la llamada a enviar_video_a_habitaciones en el horario especificado
+            tiempo_restante = fecha_programada - datetime.datetime.now()
+            if tiempo_restante.total_seconds() > 0:
+                threading.Timer(tiempo_restante.total_seconds(), self.programar_video).start()
 
 
 # Clase principal
@@ -368,6 +351,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # Almacena las IP activas
         self.ip_activas = []
         self.addon_id = "script.hello.world"
+
+        # Añade el atributo video_path
+        self.video_path = 'smb://192.168.100.113/videos/publicidad.mp4'
 
         # se inicializa funciones para obtener los datos de las pantallas
         self.obtener_datos_habitaciones()
@@ -450,7 +436,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if tareas is not None:  # Asegúrate de que tareas no sea None
                 for tarea in tareas:
-                    self.listWidget.addItem(tarea)
+                    self.listWidget.addItem(str(tarea))  # Convierte la tupla a una cadena
+
             else:
                 print("No se pudieron obtener tareas desde la base de datos.")
 
@@ -461,7 +448,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.listWidget.addItem(texto)
 
     def removerElemento(self, tarea):
-        self.base_datos.eliminar_tarea(tarea)
+        self.ventana_bd.eliminar_tarea(tarea)
         for index in range(self.listWidget.count()):
             item = self.listWidget.item(index)
             if item.text() == tarea:
@@ -495,7 +482,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.relojLabel.setText(tiempo_formateado)
 
     def abrir_panel_control(self, numero_habitacion):
-        print(f"Clic en el botón de la habitación {numero_habitacion}")
+        #print(f"Clic en el botón de la habitación {numero_habitacion}")
 
         try:
             cursor = self.ventana_bd.conexion_db.cursor()
@@ -504,7 +491,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if ip:
                 ip = ip[0]
-                print(f"IP encontrada para la habitación {numero_habitacion}: {ip}")
+                #print(f"IP encontrada para la habitación {numero_habitacion}: {ip}")
 
                 if ip in self.ip_activas:
                     try:
@@ -598,14 +585,14 @@ class MainWindow(QtWidgets.QMainWindow):
                     pixmap = self.cargar_imagen('assets/boton on.png').pixmap(QSize(117, 88))
                     button.setIcon(QIcon(pixmap))
                     button.setIconSize(pixmap.size())
-                    print(f'La IP {ip} está activa.')
+                    #print(f'La IP {ip} está activa.')
                 else:
                     if ip in self.ip_activas:
                         self.ip_activas.remove(ip)
                     pixmap = self.cargar_imagen('assets/boton off.png').pixmap(QSize(117, 88))
                     button.setIcon(QIcon(pixmap))
                     button.setIconSize(pixmap.size())
-                    print(f'La IP {ip} no está activa.')
+                    #print(f'La IP {ip} no está activa.')
 
         return self.ip_activas
 
@@ -624,11 +611,34 @@ class MainWindow(QtWidgets.QMainWindow):
             }
 
             try:
-                response = requests.post(url, json=payload)
+                response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
                 response.raise_for_status()
                 print(f'Mensaje de publicidad enviado a la habitación {ip}')
             except requests.exceptions.RequestException as e:
                 print(f'Error al enviar el mensaje de publicidad a la habitación {ip}: {str(e)}')
+
+    def enviar_video_a_habitaciones(self, ip_activas):
+        video_url = "smb://Server:3434@192.168.100.50/Server/publicidad3.mp4"
+        for ip in ip_activas:
+            url = f'http://{ip}:8080/jsonrpc'
+            payload = {
+                "jsonrpc": "2.0",
+                "method": "Player.Open",
+                "params": {
+                    "item": {"file": video_url}
+                },
+                "id": 1
+            }
+
+            try:
+                response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
+                response.raise_for_status()
+                print(f'Video reproducido en la habitación {ip}')
+            except requests.exceptions.RequestException as e:
+                print(f'Error al reproducir el video en la habitación {ip}: {str(e)}')
+                if hasattr(e, 'response') and e.response is not None:
+                    print(f'Status Code: {e.response.status_code}')
+                    print(f'Response Content: {e.response.text}')
 
     def obtener_menu_actual(self, ip):
         url = f"http://{ip}:8080/jsonrpc"
@@ -671,7 +681,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def actualizar_estado_boton(self, ip):
         try:
-            print(f"Debug: Actualizando estado del botón para la IP {ip}")
+           # print(f"Debug: Actualizando estado del botón para la IP {ip}")
 
             current_menu = self.obtener_menu_actual(ip)
             button = self.buttons[self.ip_list.index(ip)]
@@ -722,13 +732,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.estadoActualizadoSignal.emit()
             time.sleep(2)
 
-
-
-    """def iniciar_actualizacion_estado_menus(self):
-        print("Iniciando actualización de estados de menús en segundo plano...")
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.submit(self.actualizar_estado_menus)
-        print("Actualización de estados de menús en segundo plano iniciada.")"""
 
     def ejecutar_addon(self, ip, addon_id):
         url = f"http://{ip}:8080/jsonrpc"

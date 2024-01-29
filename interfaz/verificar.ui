@@ -42,15 +42,15 @@ border-radius:10px;</string>
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>170</y>
+     <y>160</y>
      <width>151</width>
-     <height>31</height>
+     <height>41</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius:8px;
-background-color: rgb(195, 195, 195);
-font: 75 20pt &quot;Bahnschrift Condensed&quot;;</string>
+    <string notr="true">border-radius:20px;
+background-color: rgb(10, 137, 103);
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
    </property>
    <property name="text">
     <string>Cancelar</string>
@@ -60,15 +60,15 @@ font: 75 20pt &quot;Bahnschrift Condensed&quot;;</string>
    <property name="geometry">
     <rect>
      <x>230</x>
-     <y>170</y>
+     <y>160</y>
      <width>151</width>
-     <height>31</height>
+     <height>41</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius:8px;
-background-color: rgb(195, 195, 195);
-font: 75 20pt &quot;Bahnschrift Condensed&quot;;</string>
+    <string notr="true">border-radius:20px;
+background-color: rgb(10, 137, 103);
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
    </property>
    <property name="text">
     <string>Aceptar</string>

@@ -122,7 +122,7 @@ class BaseDeDatos:
     def obtener_tareas(self):
         try:
             cursor = self.conexion_db.cursor()
-            cursor.execute("SELECT * FROM tu_tabla_de_tareas")
+            cursor.execute("SELECT * FROM tareas")
             tareas = cursor.fetchall()
             cursor.close()
             return tareas

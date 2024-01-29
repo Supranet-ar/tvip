@@ -7,8 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>488</width>
-    <height>598</height>
+    <height>516</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>7</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -37,7 +42,7 @@ background-image: url(c:/tvip/assets/Fondo-Login.png);
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <pointsize>11</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -62,7 +67,7 @@ border-radius:10px;</string>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <pointsize>11</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -73,9 +78,9 @@ border-radius:10px;</string>
    <widget class="QLineEdit" name="contrasena_edit">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>130</x>
       <y>270</y>
-      <width>231</width>
+      <width>271</width>
       <height>30</height>
      </rect>
     </property>
@@ -87,7 +92,7 @@ border-radius:10px;</string>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <pointsize>11</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -98,9 +103,9 @@ border-radius:10px;</string>
    <widget class="QLineEdit" name="nombre_bd_edit">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>130</x>
       <y>330</y>
-      <width>251</width>
+      <width>271</width>
       <height>30</height>
      </rect>
     </property>
@@ -112,7 +117,7 @@ border-radius:10px;</string>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <pointsize>11</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -123,7 +128,7 @@ border-radius:10px;</string>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>60</x>
+      <x>70</x>
       <y>150</y>
       <width>61</width>
       <height>31</height>
@@ -148,7 +153,7 @@ border-radius:10px;</string>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>30</x>
       <y>270</y>
       <width>91</width>
       <height>31</height>
@@ -173,7 +178,7 @@ border-radius:10px;</string>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>60</x>
+      <x>70</x>
       <y>210</y>
       <width>61</width>
       <height>31</height>
@@ -198,7 +203,7 @@ border-radius:10px;</string>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>60</x>
+      <x>40</x>
       <y>330</y>
       <width>91</width>
       <height>31</height>
@@ -223,25 +228,25 @@ border-radius:10px;</string>
    <widget class="QPushButton" name="accept_button">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>190</x>
       <y>410</y>
       <width>151</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-radius:8px;
-background-color: rgb(195, 195, 195);
-font: 75 20pt &quot;Bahnschrift Condensed&quot;;</string>
+     <string notr="true">border-radius:20px;
+background-color: rgb(10, 137, 103);
+font: 75 11pt &quot;Bahnschrift Condensed&quot;;</string>
     </property>
     <property name="text">
-     <string>Conectar</string>
+     <string>Validar</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>180</x>
       <y>80</y>
       <width>191</width>
       <height>31</height>

@@ -10,8 +10,6 @@ def regresar():
     # Cierra la ventana actual
     window.close()
 
-    # Ejecuta el archivo Python deseado
-    subprocess.run(["python", "main.py"])
 
 # Variable para almacenar IPs
 ips_set = set()
@@ -168,9 +166,11 @@ actualizar_tablewidget(base_datos)
 
 # Establece el tamaño fijo de la ventana
 window.setFixedSize(827, 553)
+window.setWindowTitle("Agregar Habitaciones")
 
 # Muestra la ventana
 window.show()
+
 
 # Inicia el bucle de eventos de la aplicación
 sys.exit(app.exec_())
