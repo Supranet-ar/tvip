@@ -185,7 +185,7 @@ font: 75 15pt &quot;Bahnschrift Condensed&quot;;</string>
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../../Users/supra/Downloads/pngwing.com.png</normaloff>../../Users/supra/Downloads/pngwing.com.png</iconset>
+      <normaloff>../assets/pngwing.com.png</normaloff>../assets/pngwing.com.png</iconset>
     </property>
     <property name="iconSize">
      <size>

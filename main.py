@@ -299,7 +299,7 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
         self.close()
         self.ventanaPrincipal.show()
 
-        # Programa la llamada a enviar_publicidad_a_habitaciones o enviar_video_a_habitaciones en el horario especificado
+        # Programa la llamada a enviar_publicidad_a_habitaciones en el horario especificado
         tiempo_restante = fecha - datetime.datetime.now()
         if tiempo_restante.total_seconds() > 0:
             if self.comboBox.currentIndex() == 0:
@@ -338,12 +338,14 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
 class MainWindow(QtWidgets.QMainWindow):
     estadoActualizadoSignal = pyqtSignal()
 
+    habitaciones_ips = []
+
     def __init__(self):
         super().__init__()
         loadUi("interfaz/ventana_habitaciones.ui", self)
         self.setWindowTitle("Panel de control")
         self.setFixedSize(1360, 768)
-
+        self.base_datos = BaseDeDatos()
         self.ventana_bd = BaseDeDatos()
         self.ventana_bd.close_connection()
 
@@ -410,20 +412,7 @@ class MainWindow(QtWidgets.QMainWindow):
        # ventana.close()
         subprocess.run(['python', 'ip.py'])
 
-    """def configurar_conexion(self):
-        dialog = ConfigurarConexionDialog(self)
-        if dialog.exec_() == QDialog.Accepted:
-            host, user, password, database = dialog.obtener_datos_conexion()
 
-            # Guardar los nuevos datos en el archivo de configuración
-            config_data = {
-                "DB_HOST": host,
-                "DB_USER": user,
-                "DB_PASSWORD": password,
-                "DB_DATABASE": database
-            }
-            with open("config.json", "w") as file:
-                json.dump(config_data, file)"""
 
     def abrirSegundaVentana(self):
             self.segundaVentana = VentanaSecundaria(self)
@@ -434,10 +423,11 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             tareas = self.ventana_bd.obtener_tareas()
 
-            if tareas is not None:  # Asegúrate de que tareas no sea None
+            if tareas is not None:
                 for tarea in tareas:
-                    self.listWidget.addItem(str(tarea))  # Convierte la tupla a una cadena
-
+                    # Convierte la tupla a una cadena de texto antes de agregarla
+                    tarea_str = " ".join(map(str, tarea))
+                    self.listWidget.addItem(tarea_str)
             else:
                 print("No se pudieron obtener tareas desde la base de datos.")
 
@@ -481,38 +471,35 @@ class MainWindow(QtWidgets.QMainWindow):
         tiempo_formateado = tiempo_actual.toString("hh:mm:ss")
         self.relojLabel.setText(tiempo_formateado)
 
-    def abrir_panel_control(self, numero_habitacion):
-        #print(f"Clic en el botón de la habitación {numero_habitacion}")
-
+    def abrir_panel_control(self, id_habitacion):
+        cursor = None
         try:
-            cursor = self.ventana_bd.conexion_db.cursor()
-            cursor.execute("SELECT Ip FROM habitaciones WHERE Numero=%s", (numero_habitacion,))
-            ip = cursor.fetchone()
+            cursor = self.base_datos.conexion_db.cursor()
 
-            if ip:
-                ip = ip[0]
-                #print(f"IP encontrada para la habitación {numero_habitacion}: {ip}")
+            # Modificar la consulta para obtener el número de la habitación junto con la IP
+            cursor.execute("SELECT Ip, numero FROM habitaciones WHERE id_habitacion=%s", (id_habitacion,))
+            resultado = cursor.fetchone()
 
-                if ip in self.ip_activas:
+            if resultado:
+                ip, numero_habitacion = resultado
+
+                if self.ping(ip):
+                    print(f"IP encontrada para la habitación con id {id_habitacion}: {ip}")
                     try:
                         self.panel_control = PanelControl(ip, numero_habitacion, self)
                         self.panel_control.show()
                     except Exception as e:
                         print("Error al inicializar o mostrar PanelControl:", str(e))
                 else:
-                    QtWidgets.QMessageBox.warning(self, "Advertencia",
-                                                  f"La habitación {numero_habitacion} está inactiva.")
+                    # Mostrar advertencia con el número de la habitación si la IP no está disponible
+                    QtWidgets.QMessageBox.warning(self, "Advertencia", f"La IP para la habitación {numero_habitacion} no está disponible.")
             else:
-                print(f"No se encontró IP para la habitación {numero_habitacion}")
-                QtWidgets.QMessageBox.warning(self, "Advertencia",
-                                              f"No se encontró la IP para la habitación {numero_habitacion}")
-
+                self.mostrar_advertencia("La IP no está activa.")
         except mysql.connector.Error as error:
-            print(f"Error al conectarse a la base de datos: {error}")
-            QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectarse a la base de datos:\n{error}")
-
+            print("Error en la consulta a la base de datos:", str(error))
         finally:
-            cursor.close()
+            if cursor:
+                cursor.close()
 
     def obtener_datos_habitaciones(self):
         try:
@@ -521,10 +508,15 @@ class MainWindow(QtWidgets.QMainWindow):
             # Asegurarse de que solo se obtengan habitaciones con IPs válidas
             query = "SELECT ip, numero FROM habitaciones WHERE ip IS NOT NULL AND ip <> ''"
             cursor.execute(query)
-            data = cursor.fetchall()
+            self.habitaciones = cursor.fetchall()
+
+            # Almacena las IPs en el array global habitaciones_ips
+            global habitaciones_ips
+            habitaciones_ips = [ip for ip, _ in self.habitaciones]
+
             cursor.close()
 
-            return data
+            return self.habitaciones
 
         except mysql.connector.Error as error:
             QtWidgets.QMessageBox.critical(self, "Error", f"Error al conectar con la base de datos: {error}")
@@ -535,8 +527,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # Elimina cualquier diseño existente de scrollAreaWidgetContents
         for layout in self.scrollAreaWidgetContents.findChildren(QLayout):
             layout.deleteLater()
+
         # Inicializa el diseño vertical para los botones
         layout = QVBoxLayout(self.scrollAreaWidgetContents)
+
         # Inicializa todos los botones como ocultos
         for i in range(1, 101):  # Rango de botones, asumiendo que tenemos 100 botones como máximo
             btn = getattr(self, f"btn{i}", None)
@@ -547,7 +541,9 @@ class MainWindow(QtWidgets.QMainWindow):
                     btn.clicked.disconnect()
                 except TypeError:
                     pass  # Ignora la excepción si no hay conexión previa
+
                 btn.clicked.connect(lambda checked=False, num=i: self.abrir_panel_control(num))
+
                 layout.addWidget(btn)
                 layout.setAlignment(Qt.AlignTop)
 
@@ -585,14 +581,14 @@ class MainWindow(QtWidgets.QMainWindow):
                     pixmap = self.cargar_imagen('assets/boton on.png').pixmap(QSize(117, 88))
                     button.setIcon(QIcon(pixmap))
                     button.setIconSize(pixmap.size())
-                    #print(f'La IP {ip} está activa.')
+                    print(f'La IP {ip} está activa.')
                 else:
                     if ip in self.ip_activas:
                         self.ip_activas.remove(ip)
                     pixmap = self.cargar_imagen('assets/boton off.png').pixmap(QSize(117, 88))
                     button.setIcon(QIcon(pixmap))
                     button.setIconSize(pixmap.size())
-                    #print(f'La IP {ip} no está activa.')
+                    print(f'La IP {ip} no está activa.')
 
         return self.ip_activas
 
@@ -611,34 +607,11 @@ class MainWindow(QtWidgets.QMainWindow):
             }
 
             try:
-                response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
+                response = requests.post(url, json=payload)
                 response.raise_for_status()
                 print(f'Mensaje de publicidad enviado a la habitación {ip}')
             except requests.exceptions.RequestException as e:
                 print(f'Error al enviar el mensaje de publicidad a la habitación {ip}: {str(e)}')
-
-    def enviar_video_a_habitaciones(self, ip_activas):
-        video_url = "smb://Server:3434@192.168.100.50/Server/publicidad3.mp4"
-        for ip in ip_activas:
-            url = f'http://{ip}:8080/jsonrpc'
-            payload = {
-                "jsonrpc": "2.0",
-                "method": "Player.Open",
-                "params": {
-                    "item": {"file": video_url}
-                },
-                "id": 1
-            }
-
-            try:
-                response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
-                response.raise_for_status()
-                print(f'Video reproducido en la habitación {ip}')
-            except requests.exceptions.RequestException as e:
-                print(f'Error al reproducir el video en la habitación {ip}: {str(e)}')
-                if hasattr(e, 'response') and e.response is not None:
-                    print(f'Status Code: {e.response.status_code}')
-                    print(f'Response Content: {e.response.text}')
 
     def obtener_menu_actual(self, ip):
         url = f"http://{ip}:8080/jsonrpc"
@@ -693,12 +666,12 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.ip_activas.append(ip)
                     pixmap = self.cargar_imagen('assets/boton on.png').pixmap(QSize(123, 93))
 
-                estado_texto = f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: {current_menu}"
+                estado_texto = f"Habitación {self.ip_number_mapping.get(ip, '')}\n {current_menu}"
             else:
                 if ip in self.ip_activas:
                     self.ip_activas.remove(ip)
                 pixmap = self.cargar_imagen('assets/boton off.png').pixmap(QSize(123, 93))
-                estado_texto = f"Habitación {self.ip_number_mapping.get(ip, '')}\nEstado: Sin conexión"
+                estado_texto = f"Habitación {self.ip_number_mapping.get(ip, '')}\n Sin conexión"
 
             button.setIcon(QIcon(pixmap))
 
@@ -726,13 +699,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def actualizar_estados_botones_thread(self):
         while True:
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                executor.map(lambda ip: self.actualizar_estado_boton(ip), self.ip_list)
+                futures = {executor.submit(self.actualizar_estado_boton, ip): ip for ip in self.ip_list}
+
+                # Esperar a que se completen todas las actualizaciones antes de continuar
+                concurrent.futures.wait(futures)
 
             # Emitir la señal cuando la actualización esté completa
             self.estadoActualizadoSignal.emit()
-            time.sleep(2)
-
-
+            time.sleep(0.001)
     def ejecutar_addon(self, ip, addon_id):
         url = f"http://{ip}:8080/jsonrpc"
         payload = {
