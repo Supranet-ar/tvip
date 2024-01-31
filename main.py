@@ -1,4 +1,5 @@
 import json
+import random
 import sys
 import time
 import datetime
@@ -299,7 +300,7 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
         self.close()
         self.ventanaPrincipal.show()
 
-        # Programa la llamada a enviar_publicidad_a_habitaciones en el horario especificado
+        # Programa la llamada a enviar_publicidad_a_habitaciones o enviar_video_a_habitaciones en el horario especificado
         tiempo_restante = fecha - datetime.datetime.now()
         if tiempo_restante.total_seconds() > 0:
             if self.comboBox.currentIndex() == 0:
@@ -311,8 +312,10 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
         self.ventanaPrincipal.enviar_publicidad_a_habitaciones(self.ventanaPrincipal.ip_activas)
         self.ventanaPrincipal.removerElemento(self.datos)
 
+
+
     def programar_video(self):
-        self.ventanaPrincipal.enviar_video_a_habitaciones(self.ventanaPrincipal.ip_activas)
+        self.ventanaPrincipal.enviar_video_a_habitaciones(self.ventanaPrincipal.ip_activas,self.ventanaPrincipal.lista_videos)
         self.ventanaPrincipal.removerElemento(self.datos)
 
     def actualizarHora(self):
@@ -348,6 +351,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.base_datos = BaseDeDatos()
         self.ventana_bd = BaseDeDatos()
         self.ventana_bd.close_connection()
+
+        self.lista_videos = [
+            "smb://Server:3434@192.168.100.50/Server/publicidad.mp4",
+            "smb://Server:3434@192.168.100.50/Server/publicidad10.mp4",
+            "smb://Server:3434@192.168.100.50/Server/publicidad5.mp4",
+            "smb://Server:3434@192.168.100.50/Server/publicidad6.mp4",
+            "smb://Server:3434@192.168.100.50/Server/publicidad7.mp4",
+            "smb://Server:3434@192.168.100.50/Server/publicidad3.mp4"
+        ]
 
 
         # Almacena las IP activas
@@ -412,7 +424,20 @@ class MainWindow(QtWidgets.QMainWindow):
        # ventana.close()
         subprocess.run(['python', 'ip.py'])
 
+    """def configurar_conexion(self):
+        dialog = ConfigurarConexionDialog(self)
+        if dialog.exec_() == QDialog.Accepted:
+            host, user, password, database = dialog.obtener_datos_conexion()
 
+            # Guardar los nuevos datos en el archivo de configuración
+            config_data = {
+                "DB_HOST": host,
+                "DB_USER": user,
+                "DB_PASSWORD": password,
+                "DB_DATABASE": database
+            }
+            with open("config.json", "w") as file:
+                json.dump(config_data, file)"""
 
     def abrirSegundaVentana(self):
             self.segundaVentana = VentanaSecundaria(self)
@@ -438,7 +463,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.listWidget.addItem(texto)
 
     def removerElemento(self, tarea):
-        self.ventana_bd.eliminar_tarea(tarea)
+        self.base_datos.eliminar_tarea(tarea)
         for index in range(self.listWidget.count()):
             item = self.listWidget.item(index)
             if item.text() == tarea:
@@ -494,7 +519,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     # Mostrar advertencia con el número de la habitación si la IP no está disponible
                     QtWidgets.QMessageBox.warning(self, "Advertencia", f"La IP para la habitación {numero_habitacion} no está disponible.")
             else:
-                self.mostrar_advertencia("La IP no está activa.")
+                print("La IP no está activa.")
         except mysql.connector.Error as error:
             print("Error en la consulta a la base de datos:", str(error))
         finally:
@@ -581,14 +606,14 @@ class MainWindow(QtWidgets.QMainWindow):
                     pixmap = self.cargar_imagen('assets/boton on.png').pixmap(QSize(117, 88))
                     button.setIcon(QIcon(pixmap))
                     button.setIconSize(pixmap.size())
-                    print(f'La IP {ip} está activa.')
+                    #print(f'La IP {ip} está activa.')
                 else:
                     if ip in self.ip_activas:
                         self.ip_activas.remove(ip)
                     pixmap = self.cargar_imagen('assets/boton off.png').pixmap(QSize(117, 88))
                     button.setIcon(QIcon(pixmap))
                     button.setIconSize(pixmap.size())
-                    print(f'La IP {ip} no está activa.')
+                    #print(f'La IP {ip} no está activa.')
 
         return self.ip_activas
 
@@ -612,6 +637,32 @@ class MainWindow(QtWidgets.QMainWindow):
                 print(f'Mensaje de publicidad enviado a la habitación {ip}')
             except requests.exceptions.RequestException as e:
                 print(f'Error al enviar el mensaje de publicidad a la habitación {ip}: {str(e)}')
+
+    def enviar_video_a_habitaciones(self, ip_activas, lista_videos):
+        for video_url in lista_videos:
+            for ip in ip_activas:
+                url = f'http://{ip}:8080/jsonrpc'
+                payload = {
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {"file": video_url}
+                    },
+                    "id": 1
+                }
+
+                try:
+                    response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
+                    response.raise_for_status()
+                    print(f'Video reproducido en la habitación {ip}')
+                except requests.exceptions.RequestException as e:
+                    print(f'Error al reproducir el video en la habitación {ip}: {str(e)}')
+                    if hasattr(e, 'response') and e.response is not None:
+                        print(f'Status Code: {e.response.status_code}')
+                        print(f'Response Content: {e.response.text}')
+
+                # Esperar 30 segundos antes de enviar el siguiente video
+                time.sleep(20)
 
     def obtener_menu_actual(self, ip):
         url = f"http://{ip}:8080/jsonrpc"
@@ -706,7 +757,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
             # Emitir la señal cuando la actualización esté completa
             self.estadoActualizadoSignal.emit()
-            time.sleep(0.001)
+            time.sleep(2)
+
+
     def ejecutar_addon(self, ip, addon_id):
         url = f"http://{ip}:8080/jsonrpc"
         payload = {

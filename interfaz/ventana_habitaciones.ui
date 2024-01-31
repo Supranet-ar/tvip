@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1367</width>
-    <height>668</height>
+    <height>1042</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1653,6 +1653,23 @@ max-width:121;
      </property>
      <property name="text">
       <string>Salir</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>520</y>
+       <width>131</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(85, 85, 127);
+border-radius:5px;</string>
+     </property>
+     <property name="text">
+      <string>PUBLICIDAD</string>
      </property>
     </widget>
    </widget>
