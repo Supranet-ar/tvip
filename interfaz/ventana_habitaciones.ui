@@ -23,7 +23,7 @@
    <widget class="QFrame" name="fondo">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>0</y>
       <width>1369</width>
       <height>771</height>
@@ -1655,21 +1655,22 @@ max-width:121;
       <string>Salir</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="btn_publicar">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>50</x>
        <y>520</y>
-       <width>131</width>
-       <height>41</height>
+       <width>221</width>
+       <height>61</height>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(85, 85, 127);
-border-radius:5px;</string>
+      <string notr="true">background-color: transparent;
+background-image: url(c:/tvip/assets/btn-login.png);
+background-repeat: no-repeat;</string>
      </property>
      <property name="text">
-      <string>PUBLICIDAD</string>
+      <string/>
      </property>
     </widget>
    </widget>

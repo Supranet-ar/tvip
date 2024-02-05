@@ -230,7 +230,8 @@ class PanelControl(QtWidgets.QDialog):
             if 'result' in response_json and response_json['result'] == "OK":
                 print(f"Perfil {profile_name} cargado exitosamente en Kodi!")
             else:
-                print(f"Error al cargar el perfil {profile_name} en Kodi:", response_json)
+                print(
+                    f"Error al cargar el perfil {profile_name} en Kodi. Código de error: {response_json.get('error', {}).get('code')}. Mensaje de error: {response_json.get('error', {}).get('message')}")
         except Exception as e:
             print(f"Error al intentar cargar el perfil en Kodi: {e}")
 
