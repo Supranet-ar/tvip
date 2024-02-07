@@ -2,7 +2,7 @@ import os
 import shutil
 import sys
 import mysql.connector
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QLabel, QTableWidgetItem, QMessageBox, QPushButton
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QLabel, QTableWidgetItem, QMessageBox, QPushButton, QVBoxLayout, QWidget, QHBoxLayout, QSpacerItem, QSizePolicy
 from PyQt5.QtGui import QPixmap
 from PyQt5.uic import loadUi
 
@@ -12,15 +12,15 @@ class MainWindow(QMainWindow):
         loadUi("interfaz/cargar_product.ui", self)
         self.pushButton.clicked.connect(self.seleccionar_imagen)
         self.imagen_label = QLabel(self)
-        self.imagen_label.setGeometry(210, 130, 371, 191)
+        self.imagen_label.setGeometry(269, 130, 500, 200)
         self.imagen_label.setScaledContents(True)
 
-        self.tableWidget.setColumnWidth(0, 100)
+        self.tableWidget.setColumnWidth(0, 180)
         self.tableWidget.setColumnWidth(1, 200)
-        self.tableWidget.setColumnWidth(2, 300)
-        self.tableWidget.setColumnWidth(3, 100)
-        self.tableWidget.setColumnWidth(4, 150)
-
+        self.tableWidget.setColumnWidth(2, 200)
+        self.tableWidget.setColumnWidth(3, 300)
+        self.tableWidget.setColumnWidth(4, 100)
+        self.tableWidget.verticalHeader().setVisible(False)
         self.db_connection = mysql.connector.connect(
             host="192.168.100.117",
             user="tvip",
@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
         )
 
         self.actualizar_tableWidget()
-        self.tableWidget.cellClicked.connect(self.eliminar_producto)
+        self.tableWidget.cellClicked.connect(self.cell_clicked)
 
     def seleccionar_imagen(self):
         options = QFileDialog.Options()
@@ -71,21 +71,40 @@ class MainWindow(QMainWindow):
             miniatura_label.setScaledContents(True)
             url_imagen = producto[2]  # Obtenemos la URL de la imagen directamente de la consulta
             pixmap = QPixmap(url_imagen)
-            pixmap = pixmap.scaled(100, 100)
+            altura_deseada = 150  # Ajusta la altura deseada
+            pixmap = pixmap.scaledToHeight(altura_deseada)
             miniatura_label.setPixmap(pixmap)
             self.tableWidget.setCellWidget(row_position, 3, miniatura_label)
+            self.tableWidget.setRowHeight(row_position, altura_deseada)
 
             # Crear botón con estado activo
-            button = QPushButton("Activo", self)
+            button_layout = QHBoxLayout()
+            button_layout.setContentsMargins(0, 0, 0, 0)
+            button_layout.setSpacing(0)
+
+            button_spacer1 = QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Minimum)
+            button_layout.addItem(button_spacer1)
+            carpeta_origen = r"\\192.168.100.50\Server\IMG_PRODUCTOS"
+            button = QPushButton("Activo" if os.path.exists(os.path.join(carpeta_origen, producto[1])) else "Inactivo", self)
+            button.setMaximumSize(100, 50)
+            button.setStyleSheet("background-color: rgb(12, 81, 73); color: white;")
             button.setCheckable(True)
-            url_imagen = producto[2]
-            nombre_archivo = os.path.basename(url_imagen)
-            carpeta_destino = r"\\192.168.100.50\Server"
-            if os.path.exists(os.path.join(carpeta_destino, nombre_archivo)):
-                button.setText("Inactivo")
-                button.setChecked(False)
-            button.clicked.connect(lambda _, row=row_position: self.toggle_estado(row, button))
-            self.tableWidget.setCellWidget(row_position, 4, button)
+            button_layout.addWidget(button)
+
+            button_spacer2 = QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Minimum)
+            button_layout.addItem(button_spacer2)
+
+            button.clicked.connect(lambda _, row=row_position, btn=button: self.toggle_estado(row, btn))
+            self.tableWidget.setCellWidget(row_position, 4, QWidget(self))
+            self.tableWidget.cellWidget(row_position, 4).setLayout(button_layout)
+
+    def cell_clicked(self, row, column):
+        if column == 1:  # Se hizo clic en la columna 1
+            self.eliminar_producto(row, column)
+        elif column == 3:  # Se hizo clic en la columna 3
+            url_imagen = self.tableWidget.item(row, 2).text()
+            pixmap = QPixmap(url_imagen)
+            self.mostrar_imagen(pixmap)
 
     def eliminar_producto(self, row, column):
         respuesta = QMessageBox.question(self, 'Eliminar producto',
@@ -119,12 +138,17 @@ class MainWindow(QMainWindow):
         id_producto = self.tableWidget.item(row, 0).text()
         cursor = self.db_connection.cursor()
         update_query = "UPDATE productos SET status = %s, image_url = %s WHERE id = %s"
-        cursor.execute(update_query, ("activo" if button.isChecked() else "inactivo", nueva_url, id_producto))
+        cursor.execute(update_query, ("activo" if button.text() == "Activo" else "inactivo", nueva_url, id_producto))
         self.db_connection.commit()
         cursor.close()
+        self.actualizar_tableWidget()
 
-    def mover_imagen(self, row):
-        pass  # No se utiliza mover_imagen en este caso
+        # Actualizar el texto del botón
+        button.setText("Activo" if os.path.exists(os.path.join(carpeta_origen, nombre_archivo)) else "Inactivo")
+
+    def mostrar_imagen(self, pixmap):
+        self.imagen_label.setPixmap(pixmap)
+        self.imagen_label.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

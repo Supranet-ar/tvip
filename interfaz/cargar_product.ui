@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1051</width>
+    <width>1078</width>
     <height>760</height>
    </rect>
   </property>
@@ -24,34 +24,78 @@ background-image: url(c:/tvip/assets/Fondo-Login.png);
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>380</y>
-      <width>1131</width>
+      <y>390</y>
+      <width>1041</width>
       <height>301</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+font: 10pt &quot;Bahnschrift Condensed&quot;;</string>
     </property>
     <column>
      <property name="text">
       <string>ID</string>
+     </property>
+     <property name="font">
+      <font>
+       <family>Bahnschrift Condensed</family>
+       <pointsize>13</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
     </column>
     <column>
      <property name="text">
       <string>Product Name</string>
      </property>
+     <property name="font">
+      <font>
+       <family>Bahnschrift Condensed</family>
+       <pointsize>13</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
     </column>
     <column>
      <property name="text">
       <string>Image URL</string>
+     </property>
+     <property name="font">
+      <font>
+       <family>Bahnschrift Condensed</family>
+       <pointsize>13</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
     </column>
     <column>
      <property name="text">
       <string>Preview</string>
      </property>
+     <property name="font">
+      <font>
+       <family>Bahnschrift Condensed</family>
+       <pointsize>13</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
     </column>
     <column>
      <property name="text">
       <string>Status</string>
+     </property>
+     <property name="font">
+      <font>
+       <family>Bahnschrift Condensed</family>
+       <pointsize>13</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
     </column>
    </widget>
@@ -104,7 +148,7 @@ background-image: url(c:/tvip/assets/Fondo-Login.png);
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>280</x>
+      <x>340</x>
       <y>20</y>
       <width>391</width>
       <height>61</height>
@@ -123,26 +167,36 @@ background-image: url(c:/tvip/assets/Fondo-Login.png);
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>230</y>
-      <width>91</width>
-      <height>31</height>
+      <x>50</x>
+      <y>220</y>
+      <width>131</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);</string>
+     <string notr="true">background-color: transparent;</string>
     </property>
     <property name="text">
-     <string>Select Image</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../../Users/supra/Downloads/folder_13551065.png</normaloff>../../Users/supra/Downloads/folder_13551065.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>50</width>
+      <height>50</height>
+     </size>
     </property>
    </widget>
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>270</x>
       <y>100</y>
-      <width>451</width>
-      <height>271</height>
+      <width>531</width>
+      <height>261</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -158,7 +212,7 @@ background-image: url(c:/tvip/assets/Fondo-Login.png);
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1051</width>
+     <width>1078</width>
      <height>21</height>
     </rect>
    </property>

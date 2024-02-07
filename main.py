@@ -292,17 +292,16 @@ class VentanaSecundaria(QtWidgets.QMainWindow):
         fecha = self.dateTimeEdit.dateTime().toPyDateTime()
         hora = fecha.hour
         minutos = fecha.minute
-        segundos = fecha.second
 
-        self.datos = f"Tarea: {texto}, Hora: {hora:02d}:{minutos:02d}:{segundos:02d}"
-        self.fecha_hora_programada = fecha  # Almacena la fecha y hora programada
+        self.datos = f"Tarea: {texto}, Hora: {hora:02d}:{minutos:02d}"
+        self.fecha_hora_programada = fecha.replace(second=0)  # Elimina los segundos
         self.guardarDatosSignal.emit(self.datos)
         self.ventanaPrincipal.ventana_bd.insertar_tarea(self.datos)
         self.close()
         self.ventanaPrincipal.show()
 
         # Programa la llamada a enviar_publicidad_a_habitaciones o enviar_video_a_habitaciones en el horario especificado
-        tiempo_restante = fecha - datetime.datetime.now()
+        tiempo_restante = self.fecha_hora_programada - datetime.datetime.now()
         if tiempo_restante.total_seconds() > 0:
             if self.comboBox.currentIndex() == 0:
                 threading.Timer(tiempo_restante.total_seconds(), self.programar_publicidad).start()
@@ -354,12 +353,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ventana_bd.close_connection()
 
         self.lista_videos = [
-            "smb://Server:3434@192.168.100.50/Server/publicidad.mp4",
             "smb://Server:3434@192.168.100.50/Server/publicidad10.mp4",
-            "smb://Server:3434@192.168.100.50/Server/publicidad5.mp4",
-            "smb://Server:3434@192.168.100.50/Server/publicidad6.mp4",
-            "smb://Server:3434@192.168.100.50/Server/publicidad7.mp4",
-            "smb://Server:3434@192.168.100.50/Server/publicidad3.mp4"
+
         ]
 
 
@@ -380,6 +375,7 @@ class MainWindow(QtWidgets.QMainWindow):
             button.setStyleSheet("color: white;")
 
         self.btn_agregar.clicked.connect(self.ejecutarip)
+        self.btn_productos.clicked.connect(self.ejecutarproductos)
         self.btn_programar.clicked.connect(self.abrirSegundaVentana)
         self.salirButton.clicked.connect(self.cerrarVentana)
 
@@ -424,6 +420,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def ejecutarip(self):
        # ventana.close()
         subprocess.run(['python', 'ip.py'])
+
+    def ejecutarproductos(self):
+       # ventana.close()
+        subprocess.run(['python', 'productos.py'])
 
     """def configurar_conexion(self):
         dialog = ConfigurarConexionDialog(self)
@@ -633,7 +633,7 @@ class MainWindow(QtWidgets.QMainWindow):
             }
 
             try:
-                response = requests.post(url, json=payload)
+                response = requests.post(url, json=payload, auth=(KODI_USERNAME, KODI_PASSWORD))
                 response.raise_for_status()
                 print(f'Mensaje de publicidad enviado a la habitación {ip}')
             except requests.exceptions.RequestException as e:
@@ -663,7 +663,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         print(f'Response Content: {e.response.text}')
 
                 # Esperar 30 segundos antes de enviar el siguiente video
-                time.sleep(20)
+                #time.sleep(20)
 
     def obtener_menu_actual(self, ip):
         url = f"http://{ip}:8080/jsonrpc"
