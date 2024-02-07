@@ -5,6 +5,28 @@ import mysql.connector
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QLabel, QTableWidgetItem, QMessageBox, QPushButton, QVBoxLayout, QWidget, QHBoxLayout, QSpacerItem, QSizePolicy
 from PyQt5.QtGui import QPixmap
 from PyQt5.uic import loadUi
+from PyQt5.QtWidgets import QLineEdit, QVBoxLayout, QDialogButtonBox, QDialog
+
+class ImageInputDialog(QDialog):
+    def __init__(self, parent=None):
+        super(ImageInputDialog, self).__init__(parent)
+        self.setWindowTitle("Ingresar Datos del Producto")
+        self.layout = QVBoxLayout(self)
+
+        self.label_precio = QLabel("Precio:", self)
+        self.lineEdit_precio = QLineEdit(self)
+        self.layout.addWidget(self.label_precio)
+        self.layout.addWidget(self.lineEdit_precio)
+
+        self.label_descripcion = QLabel("Descripción:", self)
+        self.lineEdit_descripcion = QLineEdit(self)
+        self.layout.addWidget(self.label_descripcion)
+        self.layout.addWidget(self.lineEdit_descripcion)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, parent=self)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+        self.layout.addWidget(self.buttonBox)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -12,7 +34,7 @@ class MainWindow(QMainWindow):
         loadUi("interfaz/cargar_product.ui", self)
         self.pushButton.clicked.connect(self.seleccionar_imagen)
         self.imagen_label = QLabel(self)
-        self.imagen_label.setGeometry(269, 130, 500, 200)
+        self.imagen_label.setGeometry(400, 130, 500, 200)
         self.imagen_label.setScaledContents(True)
 
         self.tableWidget.setColumnWidth(0, 180)
@@ -20,6 +42,8 @@ class MainWindow(QMainWindow):
         self.tableWidget.setColumnWidth(2, 200)
         self.tableWidget.setColumnWidth(3, 300)
         self.tableWidget.setColumnWidth(4, 100)
+        self.tableWidget.setColumnWidth(5, 100)  # Nueva columna para el precio
+        self.tableWidget.setColumnWidth(6, 100)  # Nueva columna para la descripción
         self.tableWidget.verticalHeader().setVisible(False)
         self.db_connection = mysql.connector.connect(
             host="192.168.100.117",
@@ -34,23 +58,37 @@ class MainWindow(QMainWindow):
     def seleccionar_imagen(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        filename, _ = QFileDialog.getOpenFileName(self, "Seleccionar imagen", "", "Archivos de imagen (*.png *.jpg *.jpeg *.bmp *.gif)", options=options)
+        filename, _ = QFileDialog.getOpenFileName(self, "Seleccionar imagen", "",
+                                                  "Archivos de imagen (*.png *.jpg *.jpeg *.bmp *.gif)",
+                                                  options=options)
         if filename:
-            pixmap = QPixmap(filename)
-            self.imagen_label.setPixmap(pixmap)
-            self.imagen_label.show()
+            input_dialog = ImageInputDialog(self)
+            if input_dialog.exec_() == QDialog.Accepted:
+                try:
+                    precio = float(input_dialog.lineEdit_precio.text())
+                except ValueError:
+                    QMessageBox.critical(self, "Error", "Ingrese un precio válido.")
+                    return
+                descripcion = input_dialog.lineEdit_descripcion.text()
 
-            nombre_archivo = filename.split("/")[-1]
-            ruta_archivo = filename
+                pixmap = QPixmap(filename)
+                self.imagen_label.setPixmap(pixmap)
+                self.imagen_label.show()
 
-            cursor = self.db_connection.cursor()
-            insert_query = "INSERT INTO productos (product_name, image_url, status) VALUES (%s, %s, %s)"
-            data = (nombre_archivo, ruta_archivo, "activo")
-            cursor.execute(insert_query, data)
-            self.db_connection.commit()
-            cursor.close()
+                nombre_archivo = filename.split("/")[-1]
+                ruta_archivo = filename
 
-            self.actualizar_tableWidget()
+                try:
+                    cursor = self.db_connection.cursor()
+                    insert_query = "INSERT INTO productos (product_name, image_url, precio, status, descripcion) VALUES (%s, %s, %s, %s, %s)"
+                    data = (nombre_archivo, ruta_archivo, precio, "activo", descripcion)
+                    cursor.execute(insert_query, data)
+                    self.db_connection.commit()
+                    cursor.close()
+                except mysql.connector.Error as err:
+                    QMessageBox.critical(self, "Error", f"Error al insertar el producto en la base de datos: {err}")
+
+                self.actualizar_tableWidget()
 
     def actualizar_tableWidget(self):
         cursor = self.db_connection.cursor()
@@ -63,6 +101,10 @@ class MainWindow(QMainWindow):
             row_position = self.tableWidget.rowCount()
             self.tableWidget.insertRow(row_position)
             for column, data in enumerate(producto):
+                if column == 3:
+                    continue  # Saltar la columna 3 (URL de la imagen)
+                if column == 4:
+                    column += 2  # Mover el precio y la descripción dos columnas a la derecha
                 item = QTableWidgetItem(str(data))
                 self.tableWidget.setItem(row_position, column, item)
 
@@ -127,7 +169,7 @@ class MainWindow(QMainWindow):
         url_imagen = self.tableWidget.item(row, 2).text()
         nombre_archivo = os.path.basename(url_imagen)
         carpeta_origen = r"\\192.168.100.50\Server\IMG_PRODUCTOS"
-        carpeta_destino = r"\\192.168.100.50\Server"
+        carpeta_destino = r"\\192.168.100.50\Server\IMG_PRODC_INACTIVOS"
 
         if os.path.exists(os.path.join(carpeta_origen, nombre_archivo)):
             shutil.move(os.path.join(carpeta_origen, nombre_archivo), carpeta_destino)
