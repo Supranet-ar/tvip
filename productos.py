@@ -85,9 +85,13 @@ class MainWindow(QMainWindow):
             button_spacer1 = QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Minimum)
             button_layout.addItem(button_spacer1)
             carpeta_origen = r"\\192.168.100.50\Server\IMG_PRODUCTOS"
-            button = QPushButton("Activo" if os.path.exists(os.path.join(carpeta_origen, producto[1])) else "Inactivo", self)
+            button = QPushButton("Activo" if os.path.exists(os.path.join(carpeta_origen, producto[1])) else "Inactivo",
+                                 self)
             button.setMaximumSize(100, 50)
-            button.setStyleSheet("background-color: rgb(12, 81, 73); color: white;")
+            if button.text() == "Inactivo":
+                button.setStyleSheet("background-color: red; color: white;")
+            else:
+                button.setStyleSheet("background-color: rgb(12, 81, 73); color: white;")
             button.setCheckable(True)
             button_layout.addWidget(button)
 
